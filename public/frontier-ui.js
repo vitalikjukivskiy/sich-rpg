@@ -1,6 +1,6 @@
 import {plural} from './uk.js';
 let context;
-const statNames={strength:'сили',agility:'вправності',intuition:'влучності'};
+const statNames={strength:'сили',agility:'спритності',intuition:'вправності'};
 export function journeyTabs(ctx){return `<nav class="journey-tabs" aria-label="Шляхи пригод">${[['forest','Сюжетна кампанія'],['roads','Дорожні пригоди'],['trials','Випробування ради']].map(([id,t])=>`<a href="#${id}" class="${ctx.route===id?'active':''}">${t}</a>`).join('')}</nav>`;}
 export function frontierHub(ctx){return `<section class="frontier-hub"><a href="#roads"><span>ОБОЗИ Й ЗУСТРІЧІ</span><h2>Власна дорога</h2><p>Випадкові події, важкі рішення й платня за довезений припас.</p><strong>Спорядити обоз →</strong></a><a href="#trials"><span>ПІСЛЯ ФІНАЛУ КАМПАНІЇ</span><h2>Виклик ради</h2><p>Три сильні суперники й чотири майстрові відзнаки.</p><strong>${ctx.state.player.storyComplete?'Прийняти виклик':'Дізнатися про випробування'} →</strong></a></section>`;}
 export function roadBanner(ctx){const j=ctx.state.journey;return j&&['choice','combat'].includes(j.status)?`<aside class="road-banner">${ctx.icon('compass')} Ваш обоз у дорозі · зустріч ${j.stage+1} / ${j.total}<a href="#${j.status==='combat'?'arena':'roads'}">${j.status==='combat'?'До дорожньої сутички':'До дорожнього рішення'} →</a></aside>`:'';}

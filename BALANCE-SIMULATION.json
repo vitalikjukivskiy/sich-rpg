@@ -1,0 +1,87 @@
+{
+  "runs": 10000,
+  "seed": 27102026,
+  "method": "Randomized strategies, paired seeds and swapped order",
+  "matrix": {
+    "sabre vs hammer": {
+      "winRate": 42.07,
+      "avgRounds": 10.9,
+      "dodgePerCombat": 1.2,
+      "critPerCombat": 0.9,
+      "blocksPerCombat": 10.3,
+      "controlsPerCombat": 0
+    },
+    "sabre vs mace": {
+      "winRate": 49.28,
+      "avgRounds": 13.9,
+      "dodgePerCombat": 4,
+      "critPerCombat": 4.1,
+      "blocksPerCombat": 11.8,
+      "controlsPerCombat": 0.1
+    },
+    "sabre vs pike": {
+      "winRate": 50.29,
+      "avgRounds": 10.7,
+      "dodgePerCombat": 3.3,
+      "critPerCombat": 2.4,
+      "blocksPerCombat": 9,
+      "controlsPerCombat": 0
+    },
+    "sabre vs axe": {
+      "winRate": 55.12,
+      "avgRounds": 11.4,
+      "dodgePerCombat": 3.3,
+      "critPerCombat": 4.3,
+      "blocksPerCombat": 9.7,
+      "controlsPerCombat": 0
+    },
+    "hammer vs mace": {
+      "winRate": 42.97,
+      "avgRounds": 15,
+      "dodgePerCombat": 0.9,
+      "critPerCombat": 0.9,
+      "blocksPerCombat": 14.5,
+      "controlsPerCombat": 0.2
+    },
+    "hammer vs pike": {
+      "winRate": 48.92,
+      "avgRounds": 11.2,
+      "dodgePerCombat": 0.7,
+      "critPerCombat": 0.7,
+      "blocksPerCombat": 10.9,
+      "controlsPerCombat": 0
+    },
+    "hammer vs axe": {
+      "winRate": 48.67,
+      "avgRounds": 12.7,
+      "dodgePerCombat": 0.8,
+      "critPerCombat": 1.7,
+      "blocksPerCombat": 12.4,
+      "controlsPerCombat": 0
+    },
+    "mace vs pike": {
+      "winRate": 49.73,
+      "avgRounds": 14.1,
+      "dodgePerCombat": 2.4,
+      "critPerCombat": 2.6,
+      "blocksPerCombat": 12.9,
+      "controlsPerCombat": 0.2
+    },
+    "mace vs axe": {
+      "winRate": 43.44,
+      "avgRounds": 14.4,
+      "dodgePerCombat": 0.9,
+      "critPerCombat": 5.4,
+      "blocksPerCombat": 13.9,
+      "controlsPerCombat": 0.2
+    },
+    "pike vs axe": {
+      "winRate": 48.69,
+      "avgRounds": 11.7,
+      "dodgePerCombat": 1.9,
+      "critPerCombat": 3.3,
+      "blocksPerCombat": 10.7,
+      "controlsPerCombat": 0
+    }
+  }
+}

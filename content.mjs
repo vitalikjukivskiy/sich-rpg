@@ -33,6 +33,26 @@ extraItems.push(...[
  ['council_seal','Печатка захисника доріг','ring','ring',12,2000,14,12,8],
  ['council_amulet','Медальйон визнаної служби','amulet','amulet',12,2000,12,14,8]
 ].map(([id,name,slot,art,level,price,damage,armor,honorCost])=>({id,name,slot,art,icon:slot==='weapon'?'sword':'shield',level,price,damage,armor,honorCost,rarity:'legendary',description:'Відзнака ради за перемоги у випробуваннях. Придбайте за відзнаки або знайдіть на спільному ринку.'})));
+// Class gear: legacy weapons retained; class is selected by primary weapon only.
+export const classGear=[
+ ['starter_hammer','Тренувальний молот','hammer',1,65,5,2,'Влучність проти ухильників.'],
+ ['starter_mace','Учнівська булава','mace',1,65,4,3,'Перші прийоми контролю.'],
+ ['starter_pike','Піка новобранця','pike',1,65,5,2,'Універсальна тактика.'],
+ ['starter_axe','Сокира прикордонника','axe',1,65,6,1,'Критична сила удару.'],
+ ['hammer','Бойовий молот','hammer',5,420,18,13,'Важкий проти ухильників.'],
+ ['mace','Кована булава','mace',5,430,17,14,'Контроль і витривалість.'],
+ ['pike','Степова піка','pike',5,410,18,8,'Виважена тактика.'],
+ ['war_axe','Сокира найманця','axe',5,440,21,8,'Важка критична атака.'],
+ ['duelist_sabre','Шабля дуелянта','sabre',5,420,17,7,'Швидкість і критичні атаки.'],
+ ['war_hammer','Молот майстра','hammer',9,1200,30,23,'Антикрит.'],
+ ['war_mace','Булава отамана','mace',9,1250,27,27,'Удар і контроль.'],
+ ['war_pike','Піка хорунжого','pike',9,1180,29,17,'Універсальний стиль.'],
+ ['battle_axe','Сокира Чорної Застави','axe',9,1350,35,17,'Критова міць.']
+];
+extraItems.push(...classGear.map(([id,name,combatClass,level,price,damage,armor,description])=>({id,name,combatClass,slot:'weapon',art:combatClass==='sabre'?'sword':'axe',icon:'sword',level,price,damage,armor,description,rarity:level>=9?'rare':'fine'})));
+for(const [combatClass,name,stat] of [['sabre','Жупан дуелянта','dodge'],['hammer','Панцир молотобійця','antiCrit'],['mace','Кольчуга булавника','hp'],['pike','Нагрудник списника','antiDodge'],['axe','Панцир рубаки','crit']]){
+ extraItems.push({id:'class_armor_'+combatClass,name,combatClass,slot:'body',art:'mail',icon:'shield',level:5,price:350,armor:15,combatBonus:{[stat]:stat==='hp'?100:5},rarity:'fine',description:'Спеціалізований обладунок класу '+name.toLowerCase()+'.'});
+}
 const enemyData=[
  ['road_scout','Дозорець степової дороги',2,'crimea'],['rogue_musketeer','Мушкетер без патенту',3,'sweden'],['rogue_hussar','Вершник Чорної Корогви',4,'commonwealth'],
  ['river_guard','Вартовий старої переправи',4,'cossacks'],['caravan_raider','Караванний нападник',5,'ottoman'],['powder_smuggler','Контрабандист пороху',5,'sweden'],

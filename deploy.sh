@@ -1,27 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")"
-for bin in git gh node npx; do
-  command -v "$bin" >/dev/null || { echo "Бракує $bin. GitHub CLI: https://cli.github.com; Node.js: https://nodejs.org"; exit 1; }
-done
-repo=sich-rpg
-project=zkhhmcsgdnufryyrcqwo
-gh auth status >/dev/null 2>&1 || gh auth login
-owner="$(gh api user --jq .login)"
-full="$owner/$repo"
-if gh repo view "$full" >/dev/null 2>&1; then echo "Репозиторій $full уже існує — нічого не перезаписано."; exit 1; fi
-npx --yes supabase login
-npx --yes supabase functions deploy sich-api --project-ref "$project" --no-verify-jwt
-if [[ -e .git ]]; then echo 'Знайдено інший .git; безпечна зупинка.'; exit 1; fi
-git init -b main
-git config user.name "$owner"
-uid="$(gh api user --jq .id)"
-git config user.email "$uid+$owner@users.noreply.github.com"
-git add --all
-git commit -m 'Січ: повна RPG, мультиплеєр, Supabase та GitHub Pages'
-gh repo create "$full" --public --source . --remote origin --push
-if ! gh api -X POST "repos/$full/pages" -f build_type=workflow; then
-  echo "Увімкніть Pages: https://github.com/$full/settings/pages (Source: GitHub Actions)"
+for cmd in gh git node npm npx; do command -v "$cmd" >/dev/null || { echo "Missing: $cmd"; exit 1; }; done
+OWNER=$(gh api user --jq .login)
+[ "$OWNER" = "vitalikjukivskiy" ] || { echo "Wrong GitHub account: $OWNER"; exit 1; }
+node scripts/sync-edge-engine.mjs
+npm test
+npx --yes supabase functions deploy sich-api --project-ref zkhhmcsgdnufryyrcqwo --no-verify-jwt
+TMP=$(mktemp -d)
+gh repo clone vitalikjukivskiy/sich-rpg "$TMP"
+rsync -a --exclude .git --exclude node_modules --exclude data ./ "$TMP/"
+cd "$TMP"
+git config user.name "$OWNER"
+UID_GH=$(gh api user --jq .id)
+git config user.email "$UID_GH+$OWNER@users.noreply.github.com"
+git add -A
+if ! git diff --cached --quiet; then
+ git commit -m 'Beta 0.2: balanced classes, timed combat, market floors, UI'
+ git push origin HEAD:main
 fi
-gh workflow run pages.yml --repo "$full" || echo "Запуск вручну: https://github.com/$full/actions"
-echo "Перевірте публікацію: https://$owner.github.io/$repo/"
+echo 'Submitted to GitHub Pages. Check Actions: https://github.com/vitalikjukivskiy/sich-rpg/actions'

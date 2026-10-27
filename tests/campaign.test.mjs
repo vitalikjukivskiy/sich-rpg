@@ -14,9 +14,9 @@ for(const faction of ['cossacks','commonwealth','crimea','sweden','ottoman'])tes
   for(const mail of p.deliveries.filter(d=>d.claimedAt===null))marketAction(db,p,{type:'claim',id:mail.id});
   while(p.points>0)act({type:'stat',stat:p.stats.strength<p.stats.vitality*1.4?'strength':'vitality'});
   const score=i=>(i.damage||0)*2+(i.armor||0);
-  for(const instance of p.instances){const item=items.find(i=>i.id===instance.item),old=items.find(i=>i.id===p.equipment[item.slot]);if(item.slot!=='consumable'&&p.level>=requiredLevel(p,item)&&score(item)>score(old||{}))act({type:'equip',instance:instance.uid});}
+  for(const instance of p.instances){const item=items.find(i=>i.id===instance.item),old=items.find(i=>i.id===p.equipment[item.slot]);if(!item.combatClass&&item.slot!=='consumable'&&p.level>=requiredLevel(p,item)&&score(item)>score(old||{}))act({type:'equip',instance:instance.uid});}
   for(let n=0;n<9;n++){
-   const choices=items.filter(i=>!i.honorCost&&i.slot!=='consumable'&&requiredLevel(p,i)<=p.level&&shopPrice(p,i)<=p.gold&&score(i)>score(items.find(x=>x.id===p.equipment[i.slot])||{})).sort((a,b)=>((score(b)-score(items.find(x=>x.id===p.equipment[b.slot])||{}))/shopPrice(p,b))-((score(a)-score(items.find(x=>x.id===p.equipment[a.slot])||{}))/shopPrice(p,a)));
+   const choices=items.filter(i=>!i.honorCost&&!i.combatClass&&i.slot!=='consumable'&&requiredLevel(p,i)<=p.level&&shopPrice(p,i)<=p.gold&&score(i)>score(items.find(x=>x.id===p.equipment[i.slot])||{})).sort((a,b)=>((score(b)-score(items.find(x=>x.id===p.equipment[b.slot])||{}))/shopPrice(p,b))-((score(a)-score(items.find(x=>x.id===p.equipment[a.slot])||{}))/shopPrice(p,a)));
    if(!choices.length)break;const item=choices[0];act({type:'buy',item:item.id});act({type:'equip',instance:p.instances.at(-1).uid});
   }
   act({type:'rest'});

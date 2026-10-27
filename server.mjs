@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { newPlayer, derived, cities, items, opponents, quests } from './game.mjs';
-import { action, migrate, clanAction, duelAction, worldSnapshot } from './world.mjs';
+import { action, migrate, clanAction, duelAction, advanceDuels, worldSnapshot } from './world.mjs';
 import {marketAction,marketSnapshot,expireMarket} from './market.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
@@ -45,7 +45,7 @@ const server=http.createServer(async(req,res)=>{
         if(origin&&origin!==`http://${req.headers.host}`)return json(res,403,{error:'Запит з іншого сайту відхилено.'});
         if(!req.headers['content-type']?.startsWith('application/json'))return json(res,415,{error:'Потрібен JSON.'});
       }
-      if(Object.values(db.market||{}).some(l=>l.status==='active'&&l.expiresAt<=Date.now())){const expired=structuredClone(db);expireMarket(expired);save(expired);}
+      if(Object.values(db.market||{}).some(l=>l.status==='active'&&l.expiresAt<=Date.now())||Object.values(db.duels||{}).some(d=>d.status==='active'&&(!d.deadline||Date.now()>=d.deadline))||Object.values(db.players||{}).some(p=>p.battle&&!p.battle.result&&p.battle.deadline&&Date.now()>=p.battle.deadline)){const expired=structuredClone(db);expireMarket(expired);advanceDuels(expired);for(const hero of Object.values(expired.players)){if(hero.battle&&!hero.battle.result&&hero.battle.deadline&&Date.now()>=hero.battle.deadline)action(hero,{type:'timeout'});}save(expired);}
       const s=session(req,res);let p=migrate(db.players[s.player]);p.lastSeen=Date.now();
       if(req.method==='GET'&&url.pathname==='/api/state')return json(res,200,snapshot(p));
       if(req.method!=='POST')return json(res,404,{error:'Сторінку не знайдено.'});

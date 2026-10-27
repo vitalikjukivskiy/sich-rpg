@@ -8,7 +8,7 @@ function pair(){const a=migrate(newPlayer('Остап')),b=migrate(newPlayer('С
 test('п’ять погоджених сторін; присяга, перехід, бойові переваги',()=>{
  const p=migrate(newPlayer());assert.deepEqual(factions.map(f=>f.id),['cossacks','commonwealth','crimea','sweden','ottoman']);
  const base=derived(p).damage;action(p,{type:'faction',faction:'cossacks'});assert.equal(p.gold,280);assert.equal(derived(p).damage,base+2);
- action(p,{type:'faction',faction:'sweden'});assert.equal(p.gold,230);assert.equal(p.city,'harbor');assert.equal(derived(p).crit,15.5);assert.throws(()=>action(p,{type:'faction',faction:'sweden'}));
+ action(p,{type:'faction',faction:'sweden'});assert.equal(p.gold,230);assert.equal(p.city,'harbor');assert.equal(derived(p).crit,28);assert.throws(()=>action(p,{type:'faction',faction:'sweden'}));
 });
 test('припаси, кузня, максимум покращення та майстровий виріб',()=>{
  const p=migrate(newPlayer());action(p,{type:'gather',resource:'ore'});assert.equal(p.materials.ore,1);assert.equal(p.energy,54);

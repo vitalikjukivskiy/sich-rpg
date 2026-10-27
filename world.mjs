@@ -1,5 +1,6 @@
 import {action as baseAction,items,award,derived,blocks,zones} from './game.mjs';
 import {randomUUID} from 'node:crypto';
+import {ROUND_MS,CLASS_RULES,combatProfile,validMove,resolveHit,formatCombatLog,meetsRequirements} from './balance.mjs';
 import {factions,contracts,rules,requiredLevel,shopPrice,forgePrice} from './factions.mjs';
 import {recipes,dailyQuests,refreshDaily,progressOf} from './content.mjs';
 import {migrateInventory,syncInventory,findInstance,addInstance,removeInstance,CAPACITY} from './inventory.mjs';
@@ -17,7 +18,7 @@ function starter(p){
 export function action(p,a,rng=Math.random){
  migrate(p);
  if(p.duelId)throw new Error('Спочатку завершіть дуель.');
- if(onRoad(p)&&!['roadChoice','roadAbandon','turn','potion','leave','surrender','stat','claim','daily'].includes(a.type))throw new Error('Ви в дорозі. Завершіть подорож або поверніть обоз. Лікуйтеся настоянками й під час зустрічей.');
+ if(onRoad(p)&&!['roadChoice','roadAbandon','turn','timeout','potion','leave','surrender','stat','claim','daily'].includes(a.type))throw new Error('Ви в дорозі. Завершіть подорож або поверніть обоз. Лікуйтеся настоянками й під час зустрічей.');
  if(['roadStart','roadChoice','roadAbandon'].includes(a.type)){roadAction(p,a,rng);return p;}
  if(['trialStart','honorBuy'].includes(a.type)){idle(p);trialAction(p,a);return p;}
  if(a.type==='retrain'){
@@ -35,8 +36,8 @@ export function action(p,a,rng=Math.random){
   if(a.type==='buy'){const item=items.find(i=>i.id===a.item);check(item,'Предмет не знайдено.');check(!item.honorCost,'Ця річ доступна за відзнаки у випробуваннях ради.');check(p.level>=requiredLevel(p,item),'Недостатній рівень.');const price=shopPrice(p,item);check(p.gold>=price,'Бракує талерів.');check(p.instances.length<CAPACITY,'У скрині немає місця.');addInstance(p,item.id);p.gold-=price;p.purchases++;return p;}
   const instance=findInstance(p,a),item=items.find(i=>i.id===instance?.item);check(instance&&item,'Предмет не знайдено.');
   if(a.type==='sell'){removeInstance(p,instance.uid);p.gold+=Math.floor(item.price/2);return p;}
-  check(item.slot!=='consumable','Цей предмет потрібно використати.');check(p.level>=requiredLevel(p,item),'Недостатній рівень.');
-  if(p.equipmentInstances[item.slot]===instance.uid)delete p.equipmentInstances[item.slot];else p.equipmentInstances[item.slot]=instance.uid;syncInventory(p);return p;
+  check(item.slot!=='consumable','Цей предмет потрібно використати.');check(p.level>=requiredLevel(p,item),'Недостатній рівень.');check(meetsRequirements(p,item),'Недостатньо характеристик для спорядження.');
+  if(p.equipmentInstances[item.slot]===instance.uid)delete p.equipmentInstances[item.slot];else p.equipmentInstances[item.slot]=instance.uid;syncInventory(p);p.hp=Math.min(p.hp,derived(p).maxHp);return p;
  }
  if(a.type==='faction'){
   idle(p);const f=factions.find(f=>f.id===a.faction);check(f,'Такої сторони немає.');check(p.faction!==f.id,'Ви вже на цій службі.');const first=!p.faction,price=first?0:50;check(p.gold>=price,'Зміна служби коштує 50 талерів.');const hp=derived(p).maxHp;p.gold-=price;p.faction=f.id;p.city=f.city;p.alignment=f.name;
@@ -88,35 +89,93 @@ export function clanAction(db,p,a){
   check(clan,'Ви не у курені.');clan.members=clan.members.filter(id=>id!==p.id);if(clan.leader===p.id)clan.leader=clan.members[0]||null;if(!clan.members.length)delete db.clans[clan.id];delete p.clanId;
  }else throw new Error('Невідома дія куреня.');
 }
+function duelRound(db,duel,now=Date.now(),rng=Math.random){
+ if(duel.status!=='active')return false;
+ const people=duel.players.map(id=>db.players[id]);
+ const [x,y]=people, m0=duel.moves[x.id],m1=duel.moves[y.id];
+ if(m0===undefined||m1===undefined){if(now<(duel.deadline||0))return false;}
+ const moves=[m0||null,m1||null],profiles=people.map(p=>combatProfile(p));
+ const hits=people.map((p,i)=>resolveHit(
+  {profile:profiles[i]},
+  {profile:profiles[1-i],block:moves[1-i]?.block??-1,stance:moves[1-i]?.stance||'attack',disoriented:duel.effects?.[people[1-i].id]?.disoriented>0,immunity:duel.effects?.[people[1-i].id]?.immunity>0,ability:!!moves[1-i]?.ability},moves[i],moves[1-i],rng));
+ duel.round++;
+ if(!moves[0]&&!moves[1]){
+  for(let i=0;i<2;i++)duel.hp[people[i].id]=Math.max(duel.round<=2?1:0,duel.hp[people[i].id]-Math.max(1,Math.round(profiles[i].maxHp*.08)));
+  duel.log.push(`Раунд ${duel.round}. ЧАС ВИЙШОВ в обох гравців. Кожен втратив 8% здоров’я.`);
+ }else{
+  for(let i=0;i<2;i++){
+   const target=people[1-i];duel.hp[target.id]=Math.max(0,duel.hp[target.id]-hits[i].damage);
+   duel.log.push(`Раунд ${duel.round}. ${formatCombatLog(people[i].name,hits[i],target.name)}`);
+   if(hits[i].control){const e=duel.effects[target.id];if(!e.immunity){e.disoriented=2;e.immunity=3;}}
+  }
+ }
+ // Mirror relative duel damage into persistent character HP for healing and PvE continuity.
+ for(let i=0;i<2;i++){const player=people[i];player.hp=Math.max(0,Math.round(derived(player).maxHp*duel.hp[player.id]/profiles[i].maxHp));}
+ for(const p of people){const e=duel.effects?.[p.id];if(e){e.immunity=Math.max(0,e.immunity-1);e.disoriented=Math.max(0,e.disoriented-1);}}
+ const alive=people.filter(p=>duel.hp[p.id]>0);
+ if(alive.length<2||duel.round>=25){
+  let winner=alive.length===1?alive[0].id:null;
+  if(duel.round>=25&&alive.length===2){const proportions=people.map((p,i)=>duel.hp[p.id]/profiles[i].maxHp);if(Math.abs(proportions[0]-proportions[1])>.001)winner=people[proportions[0]>proportions[1]?0:1].id;}
+  duel.status='finished';duel.winner=winner;
+  for(const u of people){if(winner===u.id){u.wins++;award(u,60,45);}else if(winner)u.losses++;u.history.unshift({id:duel.id,enemy:people.find(z=>z.id!==u.id).name,result:winner===u.id?'win':winner?'loss':'draw',round:duel.round,at:now});u.history=u.history.slice(0,20);}
+  duel.log.push(winner?`ПЕРЕМОЖЕЦЬ: ${db.players[winner].name}. +60 досвіду, +45 талерів.`:'НІЧИЯ: обидва воїни завершили бій.');
+ }else duel.deadline=now+ROUND_MS;
+ duel.moves={};duel.log=duel.log.slice(-60);return true;
+}
+export function advanceDuels(db,now=Date.now()){
+ let changed=false;for(const duel of Object.values(db.duels||{})){
+  if(duel.status!=='active')continue;
+  if(!duel.hp||!duel.deadline){
+   duel.hp=Object.fromEntries(duel.players.map(id=>{const p=db.players[id];return [id,Math.max(1,Math.round(combatProfile(p).maxHp*p.hp/derived(p).maxHp))];}));
+   duel.stamina??=Object.fromEntries(duel.players.map(id=>[id,100]));duel.cooldowns??=Object.fromEntries(duel.players.map(id=>[id,0]));
+   duel.effects??=Object.fromEntries(duel.players.map(id=>[id,{disoriented:0,immunity:0}]));duel.deadline=now+ROUND_MS;changed=true;
+  }
+  if(now>=duel.deadline)changed=duelRound(db,duel,now)||changed;
+ }
+ return changed;
+}
 export function duelAction(db,p,a,rng=Math.random){
  check(!onRoad(p),'Поверніться з дороги перед дуеллю.');
  db.duels??={};let duel=p.duelId&&db.duels[p.duelId];
  if(a.type==='create'){
-  idle(p);check(p.hp>0,'Спочатку відновіть здоров’я.');p.battle=null;const id=randomUUID();db.duels[id]={id,players:[p.id],status:'waiting',round:0,moves:{},log:['Відкрито заявку на чесний поєдинок.'],createdAt:Date.now()};p.duelId=id;return;
+  idle(p);check(p.hp>0,'Спочатку відновіть здоров’я.');p.battle=null;
+  const id=randomUUID();db.duels[id]={id,players:[p.id],status:'waiting',round:0,moves:{},log:['Відкрито заявку на чесний поєдинок.'],createdAt:Date.now()};p.duelId=id;return;
  }
  if(a.type==='join'){
   idle(p);check(p.hp>0,'Спочатку відновіть здоров’я.');duel=db.duels[a.id];check(duel&&duel.status==='waiting'&&duel.players.length===1&&duel.players[0]!==p.id,'Заявка вже недоступна.');
-  check(db.players[duel.players[0]].hp>0,'Суперник не готовий.');p.battle=null;duel.players.push(p.id);p.duelId=duel.id;duel.status='active';duel.log.push('Суперник приєднався. Обидва воїни обирають тактику.');return;
+  check(db.players[duel.players[0]].hp>0,'Суперник не готовий.');p.battle=null;duel.players.push(p.id);p.duelId=duel.id;duel.status='active';duel.deadline=Date.now()+ROUND_MS;
+  duel.hp=Object.fromEntries(duel.players.map(id=>{const p=db.players[id];return [id,Math.max(1,Math.round(combatProfile(p).maxHp*p.hp/derived(p).maxHp))];}));
+  duel.stamina=Object.fromEntries(duel.players.map(id=>[id,100]));
+  duel.cooldowns=Object.fromEntries(duel.players.map(id=>[id,0]));
+  duel.effects=Object.fromEntries(duel.players.map(id=>[id,{disoriented:0,immunity:0}]));
+  duel.log.push('Суперник приєднався. 30 секунд на вибір удару та двох блоків.');return;
  }
  check(duel,'Дуель не знайдено.');
  if(a.type==='leave'){
   check(duel.status!=='active','Активну дуель можна завершити здачею.');delete p.duelId;if(duel.status==='waiting')delete db.duels[duel.id];return;
  }
  check(duel.status==='active','Дуель ще не почалася або вже завершена.');
- const players=duel.players.map(id=>db.players[id]);
- function complete(winner){duel.status='finished';duel.winner=winner;for(const u of players){if(winner===u.id){u.wins++;award(u,60,45);}else if(winner)u.losses++;u.history.unshift({id:duel.id,enemy:players.find(x=>x.id!==u.id).name,result:winner===u.id?'win':winner?'loss':'draw',round:duel.round,at:Date.now()});u.history=u.history.slice(0,20);}duel.log.push(winner?`Переможець: ${db.players[winner].name}. +60 досвіду, +45 талерів.`:'Нічия. Обидва воїни впали.');}
- if(a.type==='surrender'){complete(players.find(x=>x.id!==p.id).id);return;}
- check(a.type==='turn','Невідома дія дуелі.');check(!duel.moves[p.id],'Ваш хід уже прийнято. Чекаємо на суперника.');
- check(Number.isInteger(a.attack)&&a.attack>=0&&a.attack<4&&Number.isInteger(a.block)&&a.block>=0&&a.block<6&&['attack','defense'].includes(a.stance),'Оберіть коректну тактику.');check(a.power===undefined||typeof a.power==='boolean','Невідомий прийом.');check(!a.power||p.energy>=10,'Бракує витривалості.');
- duel.moves[p.id]={attack:a.attack,block:a.block,stance:a.stance,power:!!a.power};
- if(players.every(x=>duel.moves[x.id])){
-  const damage=players.map((attacker,index)=>{const defender=players[1-index],m=duel.moves[attacker.id],def=duel.moves[defender.id],ad=derived(attacker),dd=derived(defender);attacker.energy=m.power?attacker.energy-10:Math.min(60,attacker.energy+rules(attacker).recovery);let n=Math.max(1,Math.round((ad.damage+Math.floor(rng()*6))*(m.stance==='attack'?1.16:.86)*(def.stance==='defense'?.8:1.1)*(m.power?1.5:1)-dd.armor*.6));if(rng()*100<ad.crit)n=Math.round(n*1.65);if(blocks[def.block].includes(m.attack))n=Math.max(1,Math.round(n*.3));if(rng()*100<dd.dodge*(def.stance==='defense'?1.3:.7))n=0;return n;});
-  duel.round++;players.forEach((u,i)=>{u.hp=Math.max(0,u.hp-damage[1-i]);duel.log.push(`Хід ${duel.round}. ${u.name}: удар у ${zones[duel.moves[u.id].attack]}, ${damage[i]} шкоди.`);});duel.moves={};
-  if(players.some(u=>u.hp===0)){const winner=players.filter(u=>u.hp>0);complete(winner.length===1?winner[0].id:null);}duel.log=duel.log.slice(-60);
+ if(a.type==='surrender'){
+  const enemy=duel.players.find(id=>id!==p.id),other=db.players[enemy];
+  duel.status='finished';duel.winner=enemy;duel.moves={};duel.hp[p.id]=0;
+  other.wins++;p.losses++;award(other,60,45);
+  for(const u of [p,other]){u.history.unshift({id:duel.id,enemy:u.id===p.id?other.name:p.name,result:u.id===p.id?'loss':'win',round:duel.round,at:Date.now()});u.history=u.history.slice(0,20);}
+  duel.log.push(`${p.name} здався. ПЕРЕМОЖЕЦЬ: ${other.name}. +60 досвіду, +45 талерів.`);return;
  }
+ check(a.type==='turn','Невідома дія дуелі.');check(!duel.moves[p.id],'Ваш хід уже прийнято. Чекаємо на суперника.');
+ check(Date.now()<duel.deadline,'Час для ходу минув.');
+ check(validMove(a),'Оберіть удар, два блоки та стійку.');
+ const rule=CLASS_RULES[combatProfile(p).classId];
+ check(!a.ability||duel.cooldowns[p.id]<=duel.round,'Прийом ще відновлюється.');
+ const cost=(a.ability?rule.cost:0)+(a.power?20:0);
+ check(duel.stamina[p.id]>=cost,'Бракує бойової витривалості.');
+ duel.stamina[p.id]=Math.min(100,duel.stamina[p.id]-cost+(cost===0?8:0));
+ if(a.ability)duel.cooldowns[p.id]=duel.round+rule.cooldown;
+ duel.moves[p.id]={attack:a.attack,block:a.block,stance:a.stance,power:!!a.power,ability:!!a.ability};
+ if(duel.players.every(id=>duel.moves[id]))duelRound(db,duel,Date.now(),rng);
 }
 export function worldSnapshot(db,p){
  const publicPlayer=u=>({id:u.id,name:u.name,level:u.level,hp:u.hp,maxHp:derived(u).maxHp});
- const d=p.duelId&&db.duels?.[p.duelId];const duel=d?{id:d.id,status:d.status,round:d.round,log:d.log,winner:d.winner,players:d.players.map(id=>publicPlayer(db.players[id])),submitted:!!d.moves[p.id]}:null;
+ const d=p.duelId&&db.duels?.[p.duelId];const duel=d?{id:d.id,status:d.status,round:d.round,log:d.log,winner:d.winner,players:d.players.map(id=>({...publicPlayer(db.players[id]),hp:d.hp?.[id]??db.players[id].hp,maxHp:d.hp?combatProfile(db.players[id]).maxHp:derived(db.players[id]).maxHp})),submitted:!!d.moves[p.id],deadline:d.deadline,stamina:d.stamina?.[p.id]??100,abilityCooldown:d.cooldowns?.[p.id]??0,combatProfile:combatProfile(p)}:null;
  return {...roadSnapshot(p),...trialSnapshot(p),...clanWorksSnapshot(db,p),factions,contracts,recipes,dailyQuests:dailyQuests.map(q=>({...q,progress:Math.min(q.target,Math.max(0,progressOf(p,q.metric)-(p.daily.base[q.metric]||0))),claimed:p.daily.claimed.includes(q.id)})),economy:rules(p),itemRules:items.map(i=>({id:i.id,price:shopPrice(p,i),level:requiredLevel(p,i)})),duel,lobby:Object.values(db.duels||{}).filter(x=>x.status==='waiting'&&x.createdAt>Date.now()-3600000).map(x=>({id:x.id,player:publicPlayer(db.players[x.players[0]])})),clans:Object.values(db.clans||{}).map(c=>({...c,members:c.members.map(id=>publicPlayer(db.players[id]))})),online:Object.values(db.players).filter(u=>(u.lastSeen||0)>Date.now()-60000).map(publicPlayer).slice(0,30)};
 }

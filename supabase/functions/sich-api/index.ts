@@ -6,7 +6,7 @@
  */
 import {prepareClan,recordClanProgress} from './engine/clanworks.mjs';
 import {newPlayer,derived,cities,items,opponents,quests} from './engine/game.mjs';
-import {action,migrate,clanAction,duelAction,worldSnapshot} from './engine/world.mjs';
+import {action,migrate,clanAction,duelAction,advanceDuels,worldSnapshot} from './engine/world.mjs';
 import {marketAction,marketSnapshot,expireMarket} from './engine/market.mjs';
 
 const apiOrigin=Deno.env.get('SUPABASE_URL')!;
@@ -59,6 +59,8 @@ async function perform(req:Request, route:string, body:any, incoming:string,ip:s
   const db=await loadWorld(),next:World=structuredClone(db),now=Date.now();
   let dirty=false;
   if(Object.values(next.market||{}).some((l:any)=>l.status==='active'&&l.expiresAt<=now)){expireMarket(next);dirty=true;}
+  if(advanceDuels(next,now))dirty=true;
+  for(const hero of Object.values(next.players) as any[]){if(hero.battle&&!hero.battle.result&&hero.battle.deadline&&now>=hero.battle.deadline){action(hero,{type:'timeout'});dirty=true;}}
   let session=incoming&&next.sessions[incoming];let outgoing=incoming;
   if(!session||session.expires<=now||!next.players[session.player]){
    outgoing=randomToken();const p=newPlayer();next.players[p.id]=p;

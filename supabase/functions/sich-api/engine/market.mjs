@@ -3,6 +3,7 @@ import {items} from './game.mjs';
 import {rules} from './factions.mjs';
 import {migrateInventory,addInstance,removeInstance,CAPACITY} from './inventory.mjs';
 import {onRoad} from './roads.mjs';
+import {priceFloor} from './balance.mjs';
 const HOUR=3600000;
 const resources={herb:'Лікувальні трави',ore:'Залізна руда',resin:'Порох'};
 function check(value,message){if(!value)throw new Error(message);}
@@ -24,12 +25,13 @@ export function marketAction(db,p,a,now=Date.now()){
   if(a.kind==='item'){
    const instance=p.instances.find(i=>i.uid===a.instance),item=items.find(i=>i.id===instance?.item);check(instance&&item,'Предмет не знайдено.');
    check(!Object.values(p.equipmentInstances).includes(instance.uid),'Спочатку зніміть цей предмет.');
-   name=item.name+(instance.rank?' +'+instance.rank:'');payload={kind:'item',instance:removeInstance(p,instance.uid),item:item.id,rank:instance.rank,quantity:1,category:['weapon','pistol'].includes(item.slot)?'weapon':item.slot==='consumable'?'consumable':'armor',level:item.level};
+   check(a.price>=priceFloor(item,instance.rank),'Мінімальна ціна цієї речі: '+priceFloor(item,instance.rank)+' талерів.');name=item.name+(instance.rank?' +'+instance.rank:'');payload={kind:'item',instance:removeInstance(p,instance.uid),item:item.id,rank:instance.rank,quantity:1,category:['weapon','pistol'].includes(item.slot)?'weapon':item.slot==='consumable'?'consumable':'armor',level:item.level};
   }else{
    check(a.kind==='resource'&&resources[a.resource],'Оберіть відомий припас.');check(Number.isSafeInteger(a.quantity)&&a.quantity>=1&&a.quantity<=100000,'Кількість припасів: від 1 до 100 000.');check(p.materials[a.resource]>=a.quantity,'Недостатньо припасів.');
    p.materials[a.resource]-=a.quantity;name=resources[a.resource];payload={kind:'resource',resource:a.resource,quantity:a.quantity,category:'resource',level:1};
   }
   const feeRate=rules(p).marketFee,fee=Math.max(1,Math.ceil(a.price*feeRate)),id=randomUUID();
+  db.marketAudit??=[];if(a.kind==='item'&&a.price>priceFloor(items.find(i=>i.id===payload.item),payload.rank)*10){db.marketAudit.push({kind:'overpriced',seller:p.id,item:payload.item,price:a.price,at:now});db.marketAudit=db.marketAudit.slice(-1000);}
   db.market[id]={id,...payload,name,price:a.price,feeRate,fee,net:a.price-fee,seller:p.id,sellerName:p.name,sellerFaction:p.faction,status:'active',createdAt:now,expiresAt:now+a.hours*HOUR};return;
  }
  if(a.type==='claim'){
@@ -46,10 +48,10 @@ export function marketAction(db,p,a,now=Date.now()){
  else p.materials[lot.resource]+=lot.quantity;
  p.gold-=lot.price;p.marketPurchases=(p.marketPurchases||0)+1;
  const seller=db.players[lot.seller];check(seller,'Продавця не знайдено.');delivery(seller,{kind:'gold',amount:lot.net},'Продано: '+lot.name+' · комісія '+lot.fee+' тал.',now);seller.marketSales=(seller.marketSales||0)+1;
- lot.status='sold';lot.buyer=p.id;lot.buyerName=p.name;lot.closedAt=now;
+ lot.status='sold';lot.buyer=p.id;lot.buyerName=p.name;lot.closedAt=now;db.marketAudit??=[];db.marketAudit.push({kind:'trade',seller:lot.seller,buyer:p.id,lot:lot.id,price:lot.price,at:now});db.marketAudit=db.marketAudit.slice(-1000);
  db.marketFees=(db.marketFees||0)+lot.fee;
 }
 export function marketSnapshot(db,p,now=Date.now()){
  const publicLot=l=>({id:l.id,name:l.name,item:l.item,rank:l.rank,resource:l.resource,kind:l.kind,quantity:l.quantity,category:l.category,level:l.level,price:l.price,seller:l.seller,sellerName:l.sellerName,sellerFaction:l.sellerFaction,status:l.status,createdAt:l.createdAt,expiresAt:l.expiresAt,...(l.seller===p.id?{fee:l.fee,feeRate:l.feeRate,net:l.net,buyerName:l.buyerName}:{} )});
- return {market:{lots:Object.values(db.market||{}).filter(l=>l.status==='active'&&l.expiresAt>now).sort((a,b)=>b.createdAt-a.createdAt).map(publicLot),mine:Object.values(db.market||{}).filter(l=>l.seller===p.id).sort((a,b)=>b.createdAt-a.createdAt).slice(0,100).map(publicLot),deliveries:(p.deliveries||[]).filter(d=>d.claimedAt===null),feeRate:rules(p).marketFee,maxListings:20}};
+ return {market:{priceFloors:Object.fromEntries(items.map(item=>[item.id,priceFloor(item)])),lots:Object.values(db.market||{}).filter(l=>l.status==='active'&&l.expiresAt>now).sort((a,b)=>b.createdAt-a.createdAt).map(publicLot),mine:Object.values(db.market||{}).filter(l=>l.seller===p.id).sort((a,b)=>b.createdAt-a.createdAt).slice(0,100).map(publicLot),deliveries:(p.deliveries||[]).filter(d=>d.claimedAt===null),feeRate:rules(p).marketFee,maxListings:20}};
 }
