@@ -1,5 +1,5 @@
-import {itemArt} from './skins.js?v=20261028-demo2';
-import {plural} from './uk.js?v=20261028-demo2';
+import {itemArt} from './skins.js?v=20261028-nav1';
+import {plural} from './uk.js?v=20261028-nav1';
 let context,tab='browse',search='',category='all',sort='new',selection='';
 const pages={browse:0,mine:0,mail:0},PAGE_SIZE=2;
 const sellDraft={quantity:'1',price:'',hours:'24'};
@@ -38,7 +38,7 @@ export function marketPage(ctx){
   const paginationView=pagination(m.deliveries.length),slice=m.deliveries.slice(paginationView.page*PAGE_SIZE,paginationView.page*PAGE_SIZE+PAGE_SIZE);
   content=m.deliveries.length?`<div class="market-lots">${slice.map(d=>{const item=d.instance&&catalog(d.instance.item),name=d.kind==='gold'?d.amount+' талерів':d.kind==='item'?(item?.name||'Предмет')+(d.instance.rank?' +'+d.instance.rank:''):({herb:'Трави',ore:'Залізна руда',resin:'Порох'}[d.resource]+' ×'+d.quantity);return `<section class="panel market-lot">${d.kind==='gold'?`<div class="receipt-coin">${I('coin')}</div>`:art(d.instance?.item||d.resource)}<div class="market-lot-copy"><h3>${E(name)}</h3><p>${E(d.reason)}</p><small>${date(d.createdAt)}</small></div>${B('Отримати',`data-market-claim="${d.id}" ${locked(s)||d.kind==='item'&&p.instances.length>=60?'disabled':''}`,'primary')}</section>`;}).join('')}</div>${paginationView.html}`:'<div class="empty-state">Посилок поки немає. Тут з’являються виручка, повернуті лоти й нагороди за кампанію.</div>';
  }
- return H('ТОРГОВИЙ МАЙДАН П’ЯТИ ЗЕМЕЛЬ','Спільна комісійка','Речі й припаси всіх сторін на одному ринку.')+`<div class="info-banner">${I('coin')}<span>Комісія ${m.feeRate*100}% після продажу · до ${m.maxListings} активних лотів · розміщення безкоштовне.${m.newAccount?' Перша доба: торговий обіг до 5000 талерів.':''} Виручка й повернення — у пошті писаря.</span></div>`+lock+tabs+content;
+ return H('ТОРГОВИЙ МАЙДАН П’ЯТИ ЗЕМЕЛЬ','Ринок гравців','Купуйте й продавайте речі та припаси іншим гравцям.')+`<div class="info-banner">${I('coin')}<span>Комісія ${m.feeRate*100}% після продажу · до ${m.maxListings} активних лотів · розміщення безкоштовне.${m.newAccount?' Перша доба: торговий обіг до 5000 талерів.':''} Виручка й повернення — у пошті писаря.</span></div>`+lock+tabs+content;
 }
 document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!context||!b||b.disabled)return;
