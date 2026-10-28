@@ -47,5 +47,13 @@ const timed=await api('/api/state');db.world.players[timed.data.player.id].hp=1;
 await api('/api/action',timed.token,{type:'battle',enemy:'recruit'});
 const oldRandom=Math.random;const lethalDeadline=db.world.players[timed.data.player.id].battle.deadline;
 try{Date.now=()=>lethalDeadline;Math.random=()=>.99;await api('/api/action',timed.token,{type:'potion'},400);assert.equal(db.world.players[timed.data.player.id].hp,0);assert.equal(db.world.players[timed.data.player.id].battle.result,'loss');}finally{Date.now=clock;Math.random=oldRandom;}
-console.log('EDGE INTEGRATION PASS | first player, second player, faction, register/login, chat, idempotency, concurrent CAS, simultaneous duel, hidden moves, presence heartbeat, timeout persistence on rejected action, persisted world | revision='+db.revision);
+const questStart=await api('/api/action',one.token,{type:'contract',contract:'crossing'});
+const questFight=await api('/api/action',one.token,{type:'campaignFight'});
+assert.equal(questFight.data.player.battle.source,'campaign');
+assert.deepEqual(questFight.data.player.battle.campaign,{id:questStart.data.player.campaign.id,contract:'crossing',stage:0});
+db.world.players[questFight.data.player.id].battle.enemy.currentHp=1;
+try{Math.random=()=>.2;const questWin=await api('/api/action',one.token,{type:'turn',attack:3,block:0,stance:'defense'});assert.equal(questWin.data.player.battle.result,'win');assert.equal(questWin.data.player.campaign.currentBattle,null);}finally{Math.random=oldRandom;}
+const questReload=await api('/api/state',one.token);assert.equal(questReload.data.player.battle.source,'campaign');assert.equal(questReload.data.player.battle.campaign.contract,'crossing');
+await api('/api/action',one.token,{type:'leave'});
+console.log('EDGE INTEGRATION PASS | first player, second player, faction, register/login, chat, idempotency, concurrent CAS, simultaneous duel, hidden moves, presence heartbeat, timeout persistence on rejected action, persisted world, campaign origin after victory/reload | revision='+db.revision);
 globalThis.fetch=oldFetch;

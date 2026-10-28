@@ -7,7 +7,8 @@ import {migrateInventory,syncInventory,findInstance,addInstance,removeInstance,C
 import {roadAction,resolveRoadBattle,roadSnapshot,onRoad} from './roads.mjs';
 import {trialAction,resolveTrialBattle,trialSnapshot} from './trials.mjs';
 import {clanWorksAction,clanWorksSnapshot} from './clanworks.mjs';
-export function migrate(p){p.materials??={herb:0,ore:0,resin:0};p.upgrades??={};p.gathered??=0;p.forged??=0;p.forestWins??=0;p.faction??=null;p.reputation??={};p.campaign??=null;p.starterClaimed??=false;p.deliveries??=[];p.completedContracts??=[];if(p.campaign?.status==='complete'&&!p.completedContracts.includes(p.campaign.contract))p.completedContracts.push(p.campaign.contract);p.storyComplete??=p.completedContracts.includes('five_roads');p.journey??=null;p.journeysWon??=0;p.journeyRoutes??=[];p.honor??=0;p.trialsCompleted??=[];p.trialRecords??={};refreshDaily(p);migrateInventory(p);p.hp=Math.max(0,Math.min(p.hp??derived(p).maxHp,derived(p).maxHp));if(p.alignment==='Шлях свободи')p.alignment='Вільний козак';return p;}
+function markCampaignBattle(p){const c=p.campaign,b=p.battle;if(c?.id&&b?.id&&c.currentBattle===b.id&&!b.source){b.source='campaign';b.campaign={id:c.id,contract:c.contract,stage:c.stage};}}
+export function migrate(p){p.materials??={herb:0,ore:0,resin:0};p.upgrades??={};p.gathered??=0;p.forged??=0;p.forestWins??=0;p.faction??=null;p.reputation??={};p.campaign??=null;p.starterClaimed??=false;p.deliveries??=[];p.completedContracts??=[];if(p.campaign?.status==='complete'&&!p.completedContracts.includes(p.campaign.contract))p.completedContracts.push(p.campaign.contract);p.storyComplete??=p.completedContracts.includes('five_roads');p.journey??=null;p.journeysWon??=0;p.journeyRoutes??=[];p.honor??=0;p.trialsCompleted??=[];p.trialRecords??={};refreshDaily(p);migrateInventory(p);markCampaignBattle(p);p.hp=Math.max(0,Math.min(p.hp??derived(p).maxHp,derived(p).maxHp));if(p.alignment==='Шлях свободи')p.alignment='Вільний козак';return p;}
 function check(v,m){if(!v)throw new Error(m);}
 export function idle(p){check(!p.duelId,'Спочатку завершіть дуель.');check(!p.battle||p.battle.result,'Спочатку завершіть поточний поєдинок.');}
 function starter(p){
@@ -49,7 +50,7 @@ export function action(p,a,rng=Math.random){
   idle(p);check(p.faction,'Оберіть свою сторону на мапі.');check(!p.campaign||p.campaign.status!=='active','Спочатку завершіть або скасуйте поточний похід.');const contract=contracts.find(c=>c.id===a.contract);check(contract,'Доручення не знайдено.');check(p.level>=contract.level,'Замалий рівень для цього походу.');check(!contract.requires||p.completedContracts.includes(contract.requires),'Спочатку завершіть попередній розділ кампанії.');p.campaign={id:randomUUID(),contract:contract.id,faction:p.faction,stage:0,status:'active',currentBattle:null,rewardGiven:false};return p;
  }
  if(a.type==='campaignFight'){
-  idle(p);const c=p.campaign,contract=contracts.find(x=>x.id===c?.contract);check(c?.status==='active'&&contract,'Немає активного походу.');check(p.hp>0,'Відновіть здоров’я перед наступною сутичкою.');baseAction(p,{type:'battle',enemy:contract.enemies[c.stage]},rng);c.currentBattle=p.battle.id;return p;
+  idle(p);const c=p.campaign,contract=contracts.find(x=>x.id===c?.contract);check(c?.status==='active'&&contract,'Немає активного походу.');check(p.hp>0,'Відновіть здоров’я перед наступною сутичкою.');baseAction(p,{type:'battle',enemy:contract.enemies[c.stage]},rng);c.currentBattle=p.battle.id;markCampaignBattle(p);return p;
  }
  if(a.type==='cancelContract'){idle(p);check(p.campaign?.status==='active','Немає активного походу.');p.campaign.status='cancelled';return p;}
  if(a.type==='gather'){

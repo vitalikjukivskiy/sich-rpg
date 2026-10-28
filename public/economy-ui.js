@@ -1,5 +1,5 @@
-import {itemArt} from './skins.js?v=20261028-nav1';
-import {plural} from './uk.js?v=20261028-nav1';
+import {itemArt} from './skins.js?v=20261028-return1';
+import {plural} from './uk.js?v=20261028-return1';
 let context;
 const views={shop:{category:'all',style:'all',page:0},inventory:{category:'all',style:'all',page:0}};
 const smithState={tab:'forge',forge:0,recipes:0};
