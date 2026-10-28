@@ -1,5 +1,5 @@
 const randomUUID = () => crypto.randomUUID();
-import {combatProfile,classOf,CLASS_RULES,clamp} from './balance.mjs';
+import {combatProfile,classOf,CLASS_RULES,clamp,STANCES,resolveHit,formatCombatLog} from './balance.mjs';
 import {equippedRank} from './inventory.mjs';
 import {rules} from './factions.mjs';
 import {extraItems,extraOpponents,extraQuests,progressOf} from './content.mjs';
@@ -20,7 +20,7 @@ export const items = [
   { id:'axe', name:'Мушкет піхотинця', ranged:true, slot:'weapon', icon:'axe', price:230, level:2, damage:11, description:'Довгий ствол і кремінний замок. Для пострілу потрібен порох.' },
   { id:'ring', name:'Печатка сотника', slot:'ring', icon:'ring', price:160, level:2, damage:3, armor:2, description:'Особиста печатка — знак довіри й доброго імені.' },
   { id:'plate', name:'Панцир гусара', slot:'body', icon:'armor', price:420, level:3, armor:13, description:'Сталевий захист для небезпечних прикордонних сутичок.' },
-  { id:'potion', name:'Лікувальна настоянка', slot:'consumable', icon:'potion', price:25, level:1, heal:45, description:'Відновлює 45 здоров’я. Можна пити в бою замість ходу.' },
+  { id:'potion', name:'Лікувальна настоянка', slot:'consumable', icon:'potion', price:25, level:1, heal:45, description:'Відновлює 45 здоров’я або 18% максимального запасу, якщо це більше. У бою витрачає хід.' },
   { id:'boots', name:'Козацькі чоботи', slot:'boots', icon:'armor', price:75, level:1, armor:2, description:'Міцна шкіра для далеких доріг.' },
   { id:'belt', name:'Козацький кушак', slot:'belt', icon:'ring', price:95, level:1, armor:2, description:'Широкий тканий пояс. Усе потрібне завжди під рукою.' },
   { id:'pistol', name:'Пістоль старшини', slot:'pistol', icon:'sword', price:190, level:2, damage:4, ranged:true, description:'Колісний замок і різьблене руків’я. Дозволяє зробити постріл у бою.' },
@@ -50,13 +50,15 @@ export function newPlayer(name='Мандрівник') {
 export function derived(p) {
   const gear=Object.entries(p.equipment).map(([slot,id])=>{const item=items.find(i=>i.id===id);if(!item)return null;const rank=equippedRank(p,slot,id);return {...item,damage:(item.damage||0)+(['weapon','pistol'].includes(item.slot)?rank*2:0),armor:(item.armor||0)+(!['weapon','pistol'].includes(item.slot)?rank*2:0)};}).filter(Boolean);
   const perk={damage:p.faction==='cossacks'?2:0,armor:p.faction==='commonwealth'?2:0,hp:p.faction==='ottoman'?10:0,crit:p.faction==='sweden'?3:0,dodge:p.faction==='crimea'?3:0};
+  const soft=n=>n<=20?n:20+(n-20)*.35;
   const combat=combatProfile(p),rule=CLASS_RULES[combat.classId],classArmor=gear.find(i=>i.combatClass===combat.classId&&i.slot==='body')?.combatBonus||{};
-  return {maxHp:Math.round((60+p.stats.vitality*8+(p.level-1)*10+perk.hp)*rule.hp/850)+(classArmor.hp||0),maxEnergy:60,
-   damage:Math.round((perk.damage+5+p.stats.strength*2+gear.reduce((n,i)=>n+(i.damage||0),0))*rule.attack/100),
+  const maxHp=Math.round((100+(rule.vitalityHp||12)*soft(Math.max(0,p.stats.vitality-5))+(p.level-1)*10+perk.hp)*rule.hp/850)+(classArmor.hp||0);
+  return {maxHp,potionHeal:Math.max(45,Math.round(maxHp*.18)),maxEnergy:60,
+   damage:Math.round((perk.damage+15+gear.reduce((n,i)=>n+(i.damage||0),0))*rule.attack/100*(1+.012*soft(Math.max(0,p.stats.strength-5)))),
    armor:perk.armor+gear.reduce((n,i)=>n+(i.armor||0),0),
-   crit:clamp(3,40,combat.crit+perk.crit+(classArmor.crit||0)),dodge:clamp(3,35,combat.dodge+perk.dodge+(classArmor.dodge||0)),
-   antiCrit:combat.antiCrit+(classArmor.antiCrit||0),antiDodge:combat.antiDodge+(classArmor.antiDodge||0),
-   classId:combat.classId,className:combat.className,ability:rule.ability,critMultiplier:combat.critMultiplier,nextXp:p.level*100};
+   crit:clamp(3,40,combat.crit),dodge:clamp(3,35,combat.dodge),
+   antiCrit:combat.antiCrit,antiDodge:combat.antiDodge,
+   classId:combat.classId,className:combat.className,ability:rule.ability,abilityCost:rule.cost,abilityCooldown:rule.cooldown,critMultiplier:combat.critMultiplier,nextXp:p.level*100};
 }
 export function questProgress(p,q) {return q.metric==='visited'?p.visited.length:progressOf(p,q.metric);}
 function requireThat(condition,message) {if(!condition) throw new Error(message);}
@@ -68,7 +70,7 @@ export function award(p,xp,gold) {
 function finish(p,result) {
   const b=p.battle;b.result=result;
   if(result==='win'){p.wins++;if(b.enemy.forest){p.forestWins=(p.forestWins||0)+1;p.materials??={herb:0,ore:0,resin:0};p.materials.resin+=2;}award(p,b.enemy.xp,b.enemy.gold);b.log.push(`Перемога! +${b.enemy.xp} досвіду, +${b.enemy.gold} талерів.${b.enemy.forest?' Здобуто 2 мірки пороху.':''}`);}
-  else if(result==='draw'){b.log.push('Нічия. Обидва воїни впали одночасно. Відновіть сили у лікарні.');}
+  else if(result==='draw'){b.log.push('Нічия. Поєдинок завершено без переможця. Відновіть сили перед наступним герцем.');}
   else {p.losses++;b.log.push('Поразка. Відновіть сили у лікарні та спробуйте іншу тактику.');}
   p.history.unshift({id:b.id,enemy:b.enemy.name,result,round:b.round,at:Date.now()});p.history=p.history.slice(0,20);
 }
@@ -80,20 +82,21 @@ export function action(p,a,rng=Math.random) {
     case 'buy': {idle(p);const i=items.find(i=>i.id===a.item);requireThat(i,'Предмет не знайдено.');requireThat(p.level>=i.level,'Недостатній рівень.');requireThat(p.gold>=i.price,'Бракує талерів.');requireThat(p.inventory.length<60,'У наплічнику немає місця.');p.gold-=i.price;p.inventory.push(i.id);p.purchases++;break;}
     case 'sell': {idle(p);const i=items.find(i=>i.id===a.item);requireThat(i&&p.inventory.includes(i.id),'Предмет не знайдено.');const amount=p.inventory.filter(id=>id===i.id).length;requireThat(!Object.values(p.equipment).includes(i.id)||amount>1,'Спочатку зніміть цей предмет.');p.inventory.splice(p.inventory.indexOf(i.id),1);p.gold+=Math.floor(i.price/2);break;}
     case 'equip': {idle(p);const i=items.find(i=>i.id===a.item);requireThat(i&&p.inventory.includes(i.id),'Предмет не знайдено.');requireThat(i.slot!=='consumable','Цей предмет потрібно використати.');requireThat(p.level>=i.level,'Недостатній рівень.');if(p.equipment[i.slot]===i.id)delete p.equipment[i.slot];else p.equipment[i.slot]=i.id;break;}
-    case 'stat': {idle(p);requireThat(['strength','agility','intuition','vitality'].includes(a.stat),'Невідома характеристика.');requireThat(p.points>0,'Немає вільних очок.');p.stats[a.stat]++;p.points--;if(a.stat==='vitality')p.hp+=8;break;}
+    case 'stat': {idle(p);requireThat(['strength','agility','intuition','vitality'].includes(a.stat),'Невідома характеристика.');requireThat(p.points>0,'Немає вільних очок.');const previous=derived(p).maxHp;p.stats[a.stat]++;p.points--;if(a.stat==='vitality')p.hp+=derived(p).maxHp-previous;break;}
     case 'claim': {idle(p);const q=quests.find(q=>q.id===a.quest);requireThat(q,'Завдання не знайдено.');requireThat(!p.claimed.includes(q.id),'Нагороду вже отримано.');requireThat(questProgress(p,q)>=q.target,'Завдання ще не виконано.');p.claimed.push(q.id);award(p,q.xp,q.gold);break;}
-    case 'battle': {idle(p);requireThat(p.hp>0,'Відновіть здоров’я у лікарні.');const e=opponents.find(e=>e.id===a.enemy);requireThat(e,'Суперника не знайдено.');p.battle={id:randomUUID(),enemy:{...e,currentHp:e.hp},round:0,result:null,log:[`Ви викликали на поєдинок: ${e.name}. Оберіть удар, блок і стійку.`],deadline:Date.now()+30000};break;}
+    case 'battle': {idle(p);requireThat(p.hp>0,'Відновіть здоров’я у лікарні.');const e=opponents.find(e=>e.id===a.enemy);requireThat(e,'Суперника не знайдено.');p.battle={id:randomUUID(),enemy:{...e,currentHp:e.hp},round:0,result:null,log:[`Ви викликали на поєдинок: ${e.name}. Оберіть удар, блок і стійку.`],deadline:Date.now()+30000,stamina:100};break;}
     case 'leave': requireThat(p.battle?.result,'Поєдинок ще триває.');p.battle=null;break;
     case 'surrender': requireThat(p.battle&&!p.battle.result,'Немає активного поєдинку.');finish(p,'loss');break;
-    case 'potion': {requireThat(p.inventory.includes('potion'),'У вас немає зілля.');requireThat(!p.battle?.result,'Спочатку закрийте завершений бій.');requireThat(p.hp>0&&p.hp<derived(p).maxHp,'Зцілення зараз не потрібне.');p.inventory.splice(p.inventory.indexOf('potion'),1);p.hp=Math.min(derived(p).maxHp,p.hp+45);if(p.battle){const intent=p.battle.intent;p.battle.round++;const damage=Math.max(1,Math.round(p.battle.enemy.damage*(intent?.damage||1)-derived(p).armor));p.battle.intent=enemyPlan(p.battle);p.hp=Math.max(0,p.hp-damage);p.battle.log.push(`Ви випили зілля (+45 здоров’я). Суперник завдав ${damage} шкоди.`);if(p.hp===0)finish(p,'loss');else p.battle.deadline=Date.now()+30000;}break;}
+    case 'potion': {requireThat(!p.battle||Date.now()<(p.battle.deadline||Infinity),'Час раунду минув.');requireThat(p.inventory.includes('potion'),'У вас немає зілля.');requireThat(!p.battle?.result,'Спочатку закрийте завершений бій.');requireThat(p.hp>0&&p.hp<derived(p).maxHp,'Зцілення зараз не потрібне.');const heal=derived(p).potionHeal;p.inventory.splice(p.inventory.indexOf('potion'),1);p.hp=Math.min(derived(p).maxHp,p.hp+heal);if(p.battle){const intent=p.battle.intent;p.battle.round++;const hit=resolveHit({profile:npcProfile(p.battle.enemy,intent)},{profile:pveProfile(p),block:-1,stance:'attack'},{attack:intent?.zone??Math.floor(rng()*4),block:-1,stance:'attack'},null,rng),damage=hit.damage;p.battle.intent=enemyPlan(p.battle);if(p.battle.enemyEffect){p.battle.enemyEffect.disoriented=Math.max(0,p.battle.enemyEffect.disoriented-1);p.battle.enemyEffect.immunity=Math.max(0,p.battle.enemyEffect.immunity-1);}p.hp=Math.max(0,p.hp-damage);p.battle.log.push(`Ви випили настоянку (+${heal} здоров’я). Суперник завдав ${damage} шкоди.`);if(p.hp===0)finish(p,'loss');else if(p.battle.round>=100)finish(p,'draw');else p.battle.deadline=Date.now()+30000;}break;}
     case 'timeout': {
       const b=p.battle;requireThat(b&&!b.result,'Немає активного поєдинку.');
       requireThat(Date.now()>=(b.deadline||Infinity),'Час раунду ще не завершився.');
-      const intent=b.intent,d=derived(p);
-      const damage=Math.max(1,Math.round((b.enemy.damage+3)*(intent?.damage||1)*(1-Math.min(.4,d.armor/(d.armor+250)))));
-      b.round++;p.hp=Math.max(0,p.hp-damage);b.intent=enemyPlan(b);
-      b.log.push(`ЧАС ВИЙШОВ! Ви пропустили атаку й отримали ${damage} шкоди без блоку.`);
-      if(!p.hp)finish(p,'loss');else b.deadline=Date.now()+30000;break;
+      const intent=b.intent,attack={attack:intent?.zone??Math.floor(rng()*4),block:-1,stance:'attack'};
+      const hit=resolveHit({profile:npcProfile(b.enemy,intent)},{profile:pveProfile(p),block:-1,stance:'attack'},attack,null,rng);
+      b.round++;p.hp=Math.max(0,p.hp-hit.damage);b.intent=enemyPlan(b);
+      if(b.enemyEffect){b.enemyEffect.disoriented=Math.max(0,b.enemyEffect.disoriented-1);b.enemyEffect.immunity=Math.max(0,b.enemyEffect.immunity-1);}
+      b.log.push(`ЧАС ВИЙШОВ! ${p.name}: атаку пропущено, захист зон не спрацював. ${formatCombatLog(b.enemy.name,hit,p.name)}`);
+      if(!p.hp)finish(p,'loss');else if(b.round>=100)finish(p,'draw');else b.deadline+=30000;b.log=b.log.slice(-60);break;
     }
     case 'turn': {
       const b=p.battle;requireThat(b&&!b.result,'Немає активного поєдинку.');
@@ -104,27 +107,30 @@ export function action(p,a,rng=Math.random) {
       requireThat(a.power===undefined||typeof a.power==='boolean','Невідомий прийом.');
       requireThat(a.shot===undefined||typeof a.shot==='boolean','Невідомий постріл.');
       requireThat(a.ability===undefined||typeof a.ability==='boolean','Невідомий прийом.');
-      const style=CLASS_RULES[classOf(p)],useAbility=!!a.ability;
+      b.stamina??=100;const style=CLASS_RULES[classOf(p)],useAbility=!!a.ability;
       requireThat(!useAbility||b.round>=(b.abilityReady||0),'Прийом ще відновлюється.');
-      requireThat(!useAbility||p.energy>=style.cost+(a.power?10:0),'Бракує витривалості для прийому.');
-      requireThat(!a.power||p.energy>=10,'Для сильного удару потрібно 10 витривалості.');
+      requireThat(!useAbility||(b.stamina??100)>=style.cost+(a.power?20:0),'Бракує витривалості для прийому.');
+      requireThat(!a.power||(b.stamina??100)>=20,'Для сильної атаки потрібно 20 бойової витривалості.');
       const shot=!!a.shot;if(shot){requireThat(items.some(i=>i.ranged&&(i.id===p.equipment.pistol||i.id===p.equipment.weapon)),'Спорядіть пістоль або мушкет.');requireThat((p.materials?.resin||0)>0,'Немає пороху. Знайдіть його в припасах.');p.materials.resin--;}
-      const d=derived(p),intent=b.intent,enemyAttack=intent?.zone??Math.floor(rng()*4),enemyBlock=intent?.block||blocks[Math.floor(rng()*6)],aggressive=a.stance==='attack';
-      if(a.power)p.energy-=10;else p.energy=Math.min(60,p.energy+rules(p).recovery);
-      if(useAbility){p.energy-=style.cost;b.abilityReady=b.round+style.cooldown;}
-      let out=Math.max(1,Math.round((d.damage+Math.floor(rng()*7))*(aggressive?1.16:.86)*(a.power?1.5:1)*(shot?1.6:1)-b.enemy.armor-(intent?.armor||0)));
-      const crit=rng()*100<d.crit; if(crit)out=Math.round(out*(d.critMultiplier+(d.classId==='axe'&&useAbility?.15:0)));
-      if(d.classId==='hammer'&&useAbility)out=Math.round(out*1.12);
-      const blocked=enemyBlock.includes(a.attack);if(blocked)out=Math.max(1,Math.round(out*.3));
-      let inc=Math.max(1,Math.round((b.enemy.damage+Math.floor(rng()*6))*(intent?.damage||1)*(aggressive?1.12:.76)-d.armor*.6));
-      const guarded=blocks[a.block].includes(enemyAttack),dodged=rng()*100<d.dodge*(aggressive?.7:1.3);
-      if(guarded)inc=Math.max(1,Math.round(inc*.3));if(dodged)inc=0;
-      b.round++;b.intent=enemyPlan(b);b.enemy.currentHp=Math.max(0,b.enemy.currentHp-out);p.hp=Math.max(0,p.hp-inc);
-      b.log.push(`Хід ${b.round}. Ви завдали ${out} шкоди в ${zones[a.attack]}${crit?' — критичний удар':''}${blocked?' (блок суперника)':''}. ${dodged?'Ви ухилилися.':`Суперник завдав ${inc} шкоди в ${zones[enemyAttack]}${guarded?' (ваш блок)':''}.`}`);
+      const d=derived(p),intent=b.intent,enemyAttack=intent?.zone??Math.floor(rng()*4),enemyBlock=blocks.findIndex(pair=>pair.join()===(intent?.block||blocks[Math.floor(rng()*6)]).join());
+      const cost=(a.power?20:0)+(useAbility?style.cost:0);b.stamina=Math.min(100,b.stamina-cost+(cost===0?8:0));
+      if(useAbility)b.abilityReady=b.round+style.cooldown;
+      const playerProfile=pveProfile(p),enemyProfile=npcProfile(b.enemy,intent);
+      if(shot)playerProfile.attack*=1.6;
+      const enemyMove={attack:enemyAttack,block:enemyBlock,stance:intent?.kind==='guard'?'defense':'attack'};
+      const outgoing=resolveHit({profile:playerProfile},{profile:enemyProfile,...enemyMove,disoriented:b.enemyEffect?.disoriented>0,immunity:b.enemyEffect?.immunity>0},a,enemyMove,rng);
+      const incoming=resolveHit({profile:enemyProfile},{profile:playerProfile,...a},enemyMove,a,rng);
+      if(b.enemyEffect){b.enemyEffect.disoriented=Math.max(0,b.enemyEffect.disoriented-1);b.enemyEffect.immunity=Math.max(0,b.enemyEffect.immunity-1);}
+      if(outgoing.control)b.enemyEffect={disoriented:1,immunity:2};
+      b.round++;b.intent=enemyPlan(b);b.enemy.currentHp=Math.max(0,b.enemy.currentHp-outgoing.damage);p.hp=Math.max(0,p.hp-incoming.damage);
+      b.log.push(`Хід ${b.round}. ${formatCombatLog(p.name,outgoing,b.enemy.name)} ${formatCombatLog(b.enemy.name,incoming,p.name)}`);
       if(p.hp===0&&b.enemy.currentHp===0)finish(p,'draw');else if(p.hp===0)finish(p,'loss');else if(b.enemy.currentHp===0)finish(p,'win');
-      if(!b.result)b.deadline=Date.now()+30000; b.log=b.log.slice(-60);break;
+      if(!b.result&&b.round>=100)finish(p,'draw');if(!b.result)b.deadline=Date.now()+30000; b.log=b.log.slice(-60);break;
     }
     default: throw new Error('Невідома дія.');
   }
   return p;
 }
+
+export function pveProfile(p){const d=derived(p),full=combatProfile(p);return {...full,crit:d.crit,dodge:d.dodge,antiCrit:d.antiCrit,antiDodge:d.antiDodge,pace:1,attack:d.damage,armor:d.armor*6.25,zoneArmor:full.zoneArmor?.map(n=>Math.max(0,n-60+d.armor-(full.armor-60))*6.25)};}
+export function npcProfile(enemy,intent){return {classId:'npc',pace:1,attack:enemy.damage*(intent?.damage||1),armor:(enemy.armor+(intent?.armor||0))*6.25,crit:enemy.crit??12,antiCrit:enemy.antiCrit??6,dodge:enemy.dodge??8,antiDodge:enemy.antiDodge??6,critMultiplier:1.5};}

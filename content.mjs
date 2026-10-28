@@ -100,3 +100,25 @@ extraQuests.push(...[
 ].map(([id,name,text,target,metric,gold,xp])=>({id,name,text,target,metric,gold,xp,icon:metric.startsWith('trial')?'trophy':'compass'})));
 export function progressOf(p,metric){return metric==='chapters'?(p.completedContracts?.length||0):metric==='routes'?(p.journeyRoutes?.length||0):metric==='trials'?(p.trialsCompleted?.length||0):p[metric]||0;}
 export function refreshDaily(p){const day=today();if(p.daily?.day!==day)p.daily={day,base:{wins:p.wins||0,gathered:p.gathered||0,marketSales:p.marketSales||0},claimed:[]};}
+
+// Complete class ladders; cosmetic variants share the same item budget.
+for(const [key,label] of [['sabre','Шабля'],['hammer','Молот'],['mace','Булава'],['pike','Піка'],['axe','Сокира']]){
+ for(const [tier,level,price,damage,rarity] of [['epic',12,2100,38,'epic'],['legendary',16,3600,48,'legendary']]){
+  extraItems.push({id:tier+'_'+key,name:label+(tier==='epic'?' Чорноморської варти':' Січової легенди'),combatClass:key,slot:'weapon',art:'weapon-'+key,icon:'sword',level,price,damage,armor:0,rarity,description:'Майстрова лінійка. Класові прийоми зберігають свої переваги та слабкості.'});
+ }
+ for(const [tier,level,price,rarity] of [['epic',12,1900,'epic'],['legendary',16,3300,'legendary']]){
+  const base=extraItems.find(i=>i.id==='class_armor_'+key);extraItems.push({...base,id:tier+'_armor_'+key,name:base.name+(tier==='epic'?' Чорноморської варти':' Січової легенди'),level,price,rarity,armor:base.armor+(tier==='epic'?8:14),art:'armor-'+key});
+ }
+}
+// Readable silhouettes, armor budgets and class-specific effects.
+for(const item of extraItems){
+ if(item.combatClass&&item.slot==='weapon')item.art='weapon-'+item.combatClass;
+ if(item.combatClass&&item.slot==='body'){
+  item.art='armor-'+item.combatClass;
+  const key=item.combatClass;
+  item.combatBonus={sabre:{dodge:5},hammer:{antiCrit:5},mace:{hp:100,controlResistance:1},pike:{antiDodge:3,dodge:2,antiCrit:2},axe:{critMultiplier:.15}}[key];
+  if(item.id.startsWith('class_armor_'))item.armor={sabre:9,hammer:18,mace:16,pike:12,axe:15}[key];
+ }
+}
+// A rare sabre fills the same level-nine tier as the other four styles.
+extraItems.push({id:'rare_sabre',name:'Шабля січового майстра',combatClass:'sabre',slot:'weapon',art:'weapon-sabre',icon:'sword',level:9,price:1200,damage:30,armor:0,rarity:'rare',description:'Легкий клинок для точного удару й маневру.'});

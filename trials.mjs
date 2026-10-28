@@ -6,7 +6,7 @@ import {plural} from './public/uk.js';
 export const trials=[
  {id:'sentinel',name:'Вартовий Соляної Брами',text:'Перше випробування ради. Вартовий перевіряє, чи вистачить вам витримки після завершення походів.',level:12,hp:550,damage:90,armor:20,xp:300,gold:150,firstHonor:3,honor:1,portrait:'crimea',requires:null},
  {id:'marshal',name:'Майстер Залізного Строю',text:'Досвідчений дуелянт не відступає. Важкий захист і сильний натиск перевірять ваше спорядження.',level:12,hp:900,damage:115,armor:35,xp:500,gold:230,firstHonor:6,honor:2,portrait:'sweden',requires:'sentinel'},
- {id:'champion',name:'Чемпіон П’яти Доріг',text:'Останній герць ради. Підготуйте настоянки й оберіть збірку, на яку справді покладаєтеся.',level:12,hp:1250,damage:145,armor:50,xp:800,gold:350,firstHonor:9,honor:3,portrait:'commonwealth',requires:'marshal'}
+ {id:'champion',name:'Чемпіон П’яти Доріг',text:'Останній герць ради. Підготуйте настоянки й оберіть збірку, на яку справді покладаєтеся.',level:12,hp:1000,damage:105,armor:50,xp:800,gold:350,firstHonor:9,honor:3,portrait:'commonwealth',requires:'marshal'}
 ];
 export const honors=[{item:'council_sabre',cost:12},{item:'council_plate',cost:12},{item:'council_seal',cost:8},{item:'council_amulet',cost:8}];
 const check=(v,m)=>{if(!v)throw new Error(m);};
@@ -16,7 +16,7 @@ export function trialAction(p,a){
   const offer=honors.find(o=>o.item===a.item),item=items.find(i=>i.id===offer?.item);check(offer&&item,'Відзнаку не знайдено.');check(p.level>=item.level,'Замалий рівень.');check((p.honor||0)>=offer.cost,'Бракує відзнак ради.');check(p.instances.length<CAPACITY,'У скрині немає місця.');addInstance(p,item.id);p.honor-=offer.cost;return;
  }
  check(a.type==='trialStart','Невідома дія випробування.');const trial=trials.find(t=>t.id===a.trial);check(trial,'Випробування не знайдено.');check(p.level>=trial.level,'Замалий рівень.');check(!trial.requires||p.trialsCompleted?.includes(trial.requires),'Спочатку пройдіть попереднє випробування.');check(p.hp>0,'Відновіть здоров’я.');
- const id=randomUUID();p.battle={id,source:'trial',enemy:{...trial,currentHp:trial.hp},round:0,result:null,log:['Рада засвідчує ваш виклик. Суперник: '+trial.name+'.']};p.battle.intent=enemyPlan(p.battle);p.trial={id:trial.id,battleId:id,rewarded:false};
+ const id=randomUUID();p.battle={id,source:'trial',enemy:{...trial,currentHp:trial.hp},round:0,result:null,stamina:100,deadline:Date.now()+30000,log:['Рада засвідчує ваш виклик. Суперник: '+trial.name+'.']};p.battle.intent=enemyPlan(p.battle);p.trial={id:trial.id,battleId:id,rewarded:false};
 }
 export function resolveTrialBattle(p){
  const t=p.trial,b=p.battle;if(!t||t.rewarded||t.battleId!==b?.id||!b.result)return;t.rewarded=true;if(b.result!=='win')return;

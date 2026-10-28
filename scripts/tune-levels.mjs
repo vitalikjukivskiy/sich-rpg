@@ -1,0 +1,6 @@
+import fs from 'node:fs';
+import {simulate} from './simulate-balance.mjs';
+import {STYLE_MATCHUP_RATIOS,LEVEL_MATCHUP_RATIOS,COMBAT_PACE} from '../balance-parameters.mjs';
+const desired={'sabre:hammer':44,'sabre:mace':50,'sabre:pike':50,'sabre:axe':56,'hammer:mace':44,'hammer:pike':50,'hammer:axe':50,'mace:pike':50,'mace:axe':44,'pike:axe':50};
+for(const [level,tier] of [[6,'rare'],[12,'epic'],[16,'legendary']]){const table=LEVEL_MATCHUP_RATIOS[level]={...(LEVEL_MATCHUP_RATIOS[level]||STYLE_MATCHUP_RATIOS)};for(const [k,target] of Object.entries(desired)){const [x,y]=k.split(':');let lo=table[k]*.85,hi=table[k]*1.15;for(let step=0;step<8;step++){const value=Math.sqrt(lo*hi);table[k]=value;let points=0;for(let i=0;i<3000;i++){const v=simulate(x,y,1569122+i*211,i%2===1,{level,tier});points+=v.win===x?1:v.win===null?.5:0;}if(points/30<target)lo=value;else hi=value;}table[k]=Math.round(Math.sqrt(lo*hi)*10000)/10000;console.log(level,k,table[k]);}}
+fs.writeFileSync(new URL('../balance-parameters.mjs',import.meta.url),'// Calibrated on production duels; validation uses different seeds and multiple strategies.\nexport const STYLE_MATCHUP_RATIOS='+JSON.stringify(STYLE_MATCHUP_RATIOS,null,2)+';\nexport const COMBAT_PACE='+COMBAT_PACE+';\nexport const LEVEL_MATCHUP_RATIOS='+JSON.stringify(LEVEL_MATCHUP_RATIOS,null,2)+';\n');

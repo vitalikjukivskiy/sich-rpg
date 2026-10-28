@@ -25,7 +25,7 @@ for(const faction of ['cossacks','commonwealth','crimea','sweden','ottoman'])tes
   act(trial?{type:'trialStart',trial}:campaign?{type:'campaignFight'}:{type:'battle',enemy:p.level>=4?'knight':'recruit'});
   while(!p.battle.result){assert.ok(rounds++<4000,'Зависання бойового циклу');const d=derived(p),intent=p.battle.intent;
    if(p.hp+45<d.maxHp&&p.inventory.includes('potion')&&(intent?.kind==='guard'||!trial&&p.hp<45))act({type:'potion'});
-   else{const blocks=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];act({type:'turn',attack:intent?.block?[0,1,2,3].find(n=>!intent.block.includes(n)):Math.floor(rng()*4),block:intent?.zone!==undefined?blocks.findIndex(b=>b.includes(intent.zone)):Math.floor(rng()*6),stance:intent?.kind==='guard'?'attack':'defense',power:p.energy>=10,shot:false});}
+   else{const blocks=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];act({type:'turn',attack:intent?.block?[0,1,2,3].find(n=>!intent.block.includes(n)):Math.floor(rng()*4),block:intent?.zone!==undefined?blocks.findIndex(b=>b.includes(intent.zone)):Math.floor(rng()*6),stance:intent?.kind==='guard'?'attack':'defense',power:(p.battle.stamina??100)>=20,shot:false});}
   }
   const result=p.battle.result;act({type:'leave'});return result;
  }

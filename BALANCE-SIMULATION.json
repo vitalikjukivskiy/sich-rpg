@@ -1,87 +1,769 @@
 {
   "runs": 10000,
   "seed": 27102026,
-  "method": "Randomized strategies, paired seeds and swapped order",
+  "engine": "Production world.duelAction and duelRound, no duplicated combat model",
   "matrix": {
     "sabre vs hammer": {
-      "winRate": 42.07,
-      "avgRounds": 10.9,
-      "dodgePerCombat": 1.2,
-      "critPerCombat": 0.9,
-      "blocksPerCombat": 10.3,
-      "controlsPerCombat": 0
+      "winRate": 44.76,
+      "avgRounds": 9.5,
+      "dodgePerCombat": 0.9663,
+      "critPerCombat": 0.6874,
+      "blocksPerCombat": 8.9819,
+      "controlsPerCombat": 0,
+      "maxHitFraction": 0.3034782608695652,
+      "roundLimitRate": 0
     },
     "sabre vs mace": {
-      "winRate": 49.28,
-      "avgRounds": 13.9,
-      "dodgePerCombat": 4,
-      "critPerCombat": 4.1,
-      "blocksPerCombat": 11.8,
-      "controlsPerCombat": 0.1
+      "winRate": 48.79,
+      "avgRounds": 13.2,
+      "dodgePerCombat": 4.6031,
+      "critPerCombat": 4.0751,
+      "blocksPerCombat": 10.8441,
+      "controlsPerCombat": 1.6289,
+      "maxHitFraction": 0.30823529411764705,
+      "roundLimitRate": 0.0001
     },
     "sabre vs pike": {
-      "winRate": 50.29,
-      "avgRounds": 10.7,
-      "dodgePerCombat": 3.3,
-      "critPerCombat": 2.4,
-      "blocksPerCombat": 9,
-      "controlsPerCombat": 0
+      "winRate": 49.51,
+      "avgRounds": 9.6,
+      "dodgePerCombat": 3.0549,
+      "critPerCombat": 2.2263,
+      "blocksPerCombat": 8.0448,
+      "controlsPerCombat": 0,
+      "maxHitFraction": 0.3452631578947368,
+      "roundLimitRate": 0
     },
     "sabre vs axe": {
-      "winRate": 55.12,
-      "avgRounds": 11.4,
-      "dodgePerCombat": 3.3,
-      "critPerCombat": 4.3,
-      "blocksPerCombat": 9.7,
-      "controlsPerCombat": 0
+      "winRate": 56,
+      "avgRounds": 10,
+      "dodgePerCombat": 3.4341,
+      "critPerCombat": 3.927,
+      "blocksPerCombat": 8.2974,
+      "controlsPerCombat": 0,
+      "maxHitFraction": 0.4470588235294118,
+      "roundLimitRate": 0
     },
     "hammer vs mace": {
-      "winRate": 42.97,
-      "avgRounds": 15,
-      "dodgePerCombat": 0.9,
-      "critPerCombat": 0.9,
-      "blocksPerCombat": 14.5,
-      "controlsPerCombat": 0.2
+      "winRate": 44.6,
+      "avgRounds": 13.2,
+      "dodgePerCombat": 0.7927,
+      "critPerCombat": 0.7698,
+      "blocksPerCombat": 12.7976,
+      "controlsPerCombat": 2.3259,
+      "maxHitFraction": 0.22695652173913045,
+      "roundLimitRate": 0
     },
     "hammer vs pike": {
-      "winRate": 48.92,
-      "avgRounds": 11.2,
-      "dodgePerCombat": 0.7,
-      "critPerCombat": 0.7,
-      "blocksPerCombat": 10.9,
-      "controlsPerCombat": 0
+      "winRate": 51.69,
+      "avgRounds": 9.6,
+      "dodgePerCombat": 0.5814,
+      "critPerCombat": 0.5479,
+      "blocksPerCombat": 9.2784,
+      "controlsPerCombat": 0,
+      "maxHitFraction": 0.2817391304347826,
+      "roundLimitRate": 0
     },
     "hammer vs axe": {
-      "winRate": 48.67,
-      "avgRounds": 12.7,
-      "dodgePerCombat": 0.8,
-      "critPerCombat": 1.7,
-      "blocksPerCombat": 12.4,
-      "controlsPerCombat": 0
+      "winRate": 49.46,
+      "avgRounds": 10.7,
+      "dodgePerCombat": 0.6366,
+      "critPerCombat": 1.0682,
+      "blocksPerCombat": 10.3871,
+      "controlsPerCombat": 0,
+      "maxHitFraction": 0.3373913043478261,
+      "roundLimitRate": 0
     },
     "mace vs pike": {
-      "winRate": 49.73,
-      "avgRounds": 14.1,
-      "dodgePerCombat": 2.4,
-      "critPerCombat": 2.6,
-      "blocksPerCombat": 12.9,
-      "controlsPerCombat": 0.2
+      "winRate": 50.84,
+      "avgRounds": 13.5,
+      "dodgePerCombat": 3.5001,
+      "critPerCombat": 2.2179,
+      "blocksPerCombat": 11.7685,
+      "controlsPerCombat": 1.9051,
+      "maxHitFraction": 0.27263157894736845,
+      "roundLimitRate": 0.0001
     },
     "mace vs axe": {
-      "winRate": 43.44,
-      "avgRounds": 14.4,
-      "dodgePerCombat": 0.9,
-      "critPerCombat": 5.4,
-      "blocksPerCombat": 13.9,
-      "controlsPerCombat": 0.2
+      "winRate": 46.9,
+      "avgRounds": 12.6,
+      "dodgePerCombat": 0.7968,
+      "critPerCombat": 4.7345,
+      "blocksPerCombat": 12.1611,
+      "controlsPerCombat": 2.2445,
+      "maxHitFraction": 0.2784290738569754,
+      "roundLimitRate": 0
     },
     "pike vs axe": {
-      "winRate": 48.69,
-      "avgRounds": 11.7,
-      "dodgePerCombat": 1.9,
-      "critPerCombat": 3.3,
-      "blocksPerCombat": 10.7,
-      "controlsPerCombat": 0
+      "winRate": 47.17,
+      "avgRounds": 10.4,
+      "dodgePerCombat": 2.5853,
+      "critPerCombat": 2.6324,
+      "blocksPerCombat": 9.1346,
+      "controlsPerCombat": 0,
+      "maxHitFraction": 0.4126315789473684,
+      "roundLimitRate": 0
     }
-  }
+  },
+  "validation": [
+    {
+      "options": {
+        "level": 6,
+        "tier": "rare",
+        "build": "standard"
+      },
+      "runs": 3000,
+      "matrix": {
+        "sabre vs hammer": {
+          "winRate": 43.12,
+          "avgRounds": 10,
+          "dodgePerCombat": 1.2373333333333334,
+          "critPerCombat": 0.6173333333333333,
+          "blocksPerCombat": 9.42,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.28956521739130436,
+          "roundLimitRate": 0
+        },
+        "sabre vs mace": {
+          "winRate": 49.87,
+          "avgRounds": 13.3,
+          "dodgePerCombat": 4.630333333333334,
+          "critPerCombat": 3.962666666666667,
+          "blocksPerCombat": 11.038666666666666,
+          "controlsPerCombat": 1.685,
+          "maxHitFraction": 0.3035294117647059,
+          "roundLimitRate": 0
+        },
+        "sabre vs pike": {
+          "winRate": 49.2,
+          "avgRounds": 9.7,
+          "dodgePerCombat": 3.284,
+          "critPerCombat": 2.150333333333333,
+          "blocksPerCombat": 8.023333333333333,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.34,
+          "roundLimitRate": 0
+        },
+        "sabre vs axe": {
+          "winRate": 54.47,
+          "avgRounds": 10.1,
+          "dodgePerCombat": 3.457666666666667,
+          "critPerCombat": 3.817,
+          "blocksPerCombat": 8.396666666666667,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.44588235294117645,
+          "roundLimitRate": 0
+        },
+        "hammer vs mace": {
+          "winRate": 43.9,
+          "avgRounds": 13.8,
+          "dodgePerCombat": 0.827,
+          "critPerCombat": 0.773,
+          "blocksPerCombat": 13.362666666666666,
+          "controlsPerCombat": 2.418,
+          "maxHitFraction": 0.21913043478260869,
+          "roundLimitRate": 0
+        },
+        "hammer vs pike": {
+          "winRate": 48.32,
+          "avgRounds": 9.9,
+          "dodgePerCombat": 0.6076666666666667,
+          "critPerCombat": 0.5783333333333334,
+          "blocksPerCombat": 9.545333333333334,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.2747826086956522,
+          "roundLimitRate": 0
+        },
+        "hammer vs axe": {
+          "winRate": 49.68,
+          "avgRounds": 11,
+          "dodgePerCombat": 0.656,
+          "critPerCombat": 1.1313333333333333,
+          "blocksPerCombat": 10.711333333333334,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.32608695652173914,
+          "roundLimitRate": 0
+        },
+        "mace vs pike": {
+          "winRate": 49.9,
+          "avgRounds": 13.3,
+          "dodgePerCombat": 2.9616666666666664,
+          "critPerCombat": 2.2826666666666666,
+          "blocksPerCombat": 11.797333333333333,
+          "controlsPerCombat": 1.9626666666666666,
+          "maxHitFraction": 0.26210526315789473,
+          "roundLimitRate": 0
+        },
+        "mace vs axe": {
+          "winRate": 43.5,
+          "avgRounds": 12.7,
+          "dodgePerCombat": 0.7833333333333333,
+          "critPerCombat": 4.822333333333333,
+          "blocksPerCombat": 12.278333333333334,
+          "controlsPerCombat": 2.249,
+          "maxHitFraction": 0.27600979192166464,
+          "roundLimitRate": 0
+        },
+        "pike vs axe": {
+          "winRate": 49.33,
+          "avgRounds": 10.3,
+          "dodgePerCombat": 2.2023333333333333,
+          "critPerCombat": 2.6643333333333334,
+          "blocksPerCombat": 9.158333333333333,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.3968421052631579,
+          "roundLimitRate": 0
+        }
+      }
+    },
+    {
+      "options": {
+        "level": 12,
+        "tier": "epic",
+        "build": "standard"
+      },
+      "runs": 3000,
+      "matrix": {
+        "sabre vs hammer": {
+          "winRate": 43.73,
+          "avgRounds": 8.6,
+          "dodgePerCombat": 0.799,
+          "critPerCombat": 0.65,
+          "blocksPerCombat": 8.254333333333333,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.3346872461413485,
+          "roundLimitRate": 0
+        },
+        "sabre vs mace": {
+          "winRate": 50,
+          "avgRounds": 11.9,
+          "dodgePerCombat": 4.119,
+          "critPerCombat": 3.7196666666666665,
+          "blocksPerCombat": 9.877,
+          "controlsPerCombat": 1.543,
+          "maxHitFraction": 0.34505494505494505,
+          "roundLimitRate": 0
+        },
+        "sabre vs pike": {
+          "winRate": 48.75,
+          "avgRounds": 8.8,
+          "dodgePerCombat": 2.725,
+          "critPerCombat": 2.1043333333333334,
+          "blocksPerCombat": 7.4046666666666665,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.3775811209439528,
+          "roundLimitRate": 0
+        },
+        "sabre vs axe": {
+          "winRate": 54.28,
+          "avgRounds": 9.4,
+          "dodgePerCombat": 3.2196666666666665,
+          "critPerCombat": 3.705,
+          "blocksPerCombat": 7.833666666666667,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.4824175824175824,
+          "roundLimitRate": 0
+        },
+        "hammer vs mace": {
+          "winRate": 44.28,
+          "avgRounds": 11.6,
+          "dodgePerCombat": 0.6883333333333334,
+          "critPerCombat": 0.6553333333333333,
+          "blocksPerCombat": 11.241666666666667,
+          "controlsPerCombat": 2.112,
+          "maxHitFraction": 0.2607636068237206,
+          "roundLimitRate": 0
+        },
+        "hammer vs pike": {
+          "winRate": 48.95,
+          "avgRounds": 8.6,
+          "dodgePerCombat": 0.53,
+          "critPerCombat": 0.5006666666666667,
+          "blocksPerCombat": 8.315666666666667,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.31681559707554835,
+          "roundLimitRate": 0
+        },
+        "hammer vs axe": {
+          "winRate": 50.3,
+          "avgRounds": 9.7,
+          "dodgePerCombat": 0.5733333333333334,
+          "critPerCombat": 1.003,
+          "blocksPerCombat": 9.438,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.37124289195775795,
+          "roundLimitRate": 0
+        },
+        "mace vs pike": {
+          "winRate": 50.23,
+          "avgRounds": 12.1,
+          "dodgePerCombat": 3.2943333333333333,
+          "critPerCombat": 1.986,
+          "blocksPerCombat": 10.481333333333334,
+          "controlsPerCombat": 1.7066666666666668,
+          "maxHitFraction": 0.3087512291052114,
+          "roundLimitRate": 0
+        },
+        "mace vs axe": {
+          "winRate": 43.1,
+          "avgRounds": 11.3,
+          "dodgePerCombat": 0.7026666666666667,
+          "critPerCombat": 4.308666666666666,
+          "blocksPerCombat": 10.948666666666666,
+          "controlsPerCombat": 2.066333333333333,
+          "maxHitFraction": 0.3111587982832618,
+          "roundLimitRate": 0
+        },
+        "pike vs axe": {
+          "winRate": 49.07,
+          "avgRounds": 9.8,
+          "dodgePerCombat": 2.5376666666666665,
+          "critPerCombat": 2.466,
+          "blocksPerCombat": 8.485666666666667,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.44542772861356933,
+          "roundLimitRate": 0
+        }
+      }
+    },
+    {
+      "options": {
+        "level": 16,
+        "tier": "legendary",
+        "build": "standard"
+      },
+      "runs": 3000,
+      "matrix": {
+        "sabre vs hammer": {
+          "winRate": 43,
+          "avgRounds": 9.1,
+          "dodgePerCombat": 0.6553333333333333,
+          "critPerCombat": 0.736,
+          "blocksPerCombat": 8.800333333333333,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.31896551724137934,
+          "roundLimitRate": 0
+        },
+        "sabre vs mace": {
+          "winRate": 49.65,
+          "avgRounds": 12.8,
+          "dodgePerCombat": 4.431,
+          "critPerCombat": 4.043666666666667,
+          "blocksPerCombat": 10.596,
+          "controlsPerCombat": 1.631,
+          "maxHitFraction": 0.3236151603498542,
+          "roundLimitRate": 0
+        },
+        "sabre vs pike": {
+          "winRate": 49.77,
+          "avgRounds": 9.5,
+          "dodgePerCombat": 2.8446666666666665,
+          "critPerCombat": 2.2933333333333334,
+          "blocksPerCombat": 7.961666666666667,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.36086956521739133,
+          "roundLimitRate": 0
+        },
+        "sabre vs axe": {
+          "winRate": 55.17,
+          "avgRounds": 10.3,
+          "dodgePerCombat": 3.5283333333333333,
+          "critPerCombat": 4.114,
+          "blocksPerCombat": 8.58,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.44509232264334303,
+          "roundLimitRate": 0
+        },
+        "hammer vs mace": {
+          "winRate": 43.52,
+          "avgRounds": 12.2,
+          "dodgePerCombat": 0.7326666666666667,
+          "critPerCombat": 0.6926666666666667,
+          "blocksPerCombat": 11.882,
+          "controlsPerCombat": 2.199333333333333,
+          "maxHitFraction": 0.24856321839080459,
+          "roundLimitRate": 0
+        },
+        "hammer vs pike": {
+          "winRate": 48.48,
+          "avgRounds": 9.1,
+          "dodgePerCombat": 0.5613333333333334,
+          "critPerCombat": 0.532,
+          "blocksPerCombat": 8.819333333333333,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.30028735632183906,
+          "roundLimitRate": 0
+        },
+        "hammer vs axe": {
+          "winRate": 49.97,
+          "avgRounds": 10.5,
+          "dodgePerCombat": 0.618,
+          "critPerCombat": 1.076,
+          "blocksPerCombat": 10.173333333333334,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.34698275862068967,
+          "roundLimitRate": 0
+        },
+        "mace vs pike": {
+          "winRate": 49.08,
+          "avgRounds": 13.3,
+          "dodgePerCombat": 4.033,
+          "critPerCombat": 2.1126666666666667,
+          "blocksPerCombat": 11.201666666666666,
+          "controlsPerCombat": 1.7493333333333334,
+          "maxHitFraction": 0.2982608695652174,
+          "roundLimitRate": 0
+        },
+        "mace vs axe": {
+          "winRate": 43.3,
+          "avgRounds": 12.4,
+          "dodgePerCombat": 0.763,
+          "critPerCombat": 4.692666666666667,
+          "blocksPerCombat": 11.954333333333333,
+          "controlsPerCombat": 2.203333333333333,
+          "maxHitFraction": 0.28768382352941174,
+          "roundLimitRate": 0
+        },
+        "pike vs axe": {
+          "winRate": 48.73,
+          "avgRounds": 10.9,
+          "dodgePerCombat": 3.2373333333333334,
+          "critPerCombat": 2.677,
+          "blocksPerCombat": 9.327666666666667,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.4217391304347826,
+          "roundLimitRate": 0
+        }
+      }
+    },
+    {
+      "options": {
+        "level": 6,
+        "tier": "rare",
+        "build": "durable"
+      },
+      "runs": 1000,
+      "matrix": {
+        "sabre vs hammer": {
+          "winRate": 44.6,
+          "avgRounds": 10.1,
+          "dodgePerCombat": 1.276,
+          "critPerCombat": 0.628,
+          "blocksPerCombat": 9.583,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.28706896551724137,
+          "roundLimitRate": 0
+        },
+        "sabre vs mace": {
+          "winRate": 49.9,
+          "avgRounds": 13.3,
+          "dodgePerCombat": 4.681,
+          "critPerCombat": 3.957,
+          "blocksPerCombat": 11.028,
+          "controlsPerCombat": 1.656,
+          "maxHitFraction": 0.3014018691588785,
+          "roundLimitRate": 0
+        },
+        "sabre vs pike": {
+          "winRate": 49.25,
+          "avgRounds": 9.8,
+          "dodgePerCombat": 3.392,
+          "critPerCombat": 2.144,
+          "blocksPerCombat": 8.065,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.34,
+          "roundLimitRate": 0
+        },
+        "sabre vs axe": {
+          "winRate": 56.05,
+          "avgRounds": 10.2,
+          "dodgePerCombat": 3.495,
+          "critPerCombat": 3.838,
+          "blocksPerCombat": 8.402,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.4427570093457944,
+          "roundLimitRate": 0
+        },
+        "hammer vs mace": {
+          "winRate": 44.6,
+          "avgRounds": 13.9,
+          "dodgePerCombat": 0.858,
+          "critPerCombat": 0.789,
+          "blocksPerCombat": 13.456,
+          "controlsPerCombat": 2.459,
+          "maxHitFraction": 0.21724137931034482,
+          "roundLimitRate": 0
+        },
+        "hammer vs pike": {
+          "winRate": 51.4,
+          "avgRounds": 9.9,
+          "dodgePerCombat": 0.62,
+          "critPerCombat": 0.586,
+          "blocksPerCombat": 9.606,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.27241379310344827,
+          "roundLimitRate": 0
+        },
+        "hammer vs axe": {
+          "winRate": 52.2,
+          "avgRounds": 11.2,
+          "dodgePerCombat": 0.704,
+          "critPerCombat": 1.12,
+          "blocksPerCombat": 10.861,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.3232758620689655,
+          "roundLimitRate": 0
+        },
+        "mace vs pike": {
+          "winRate": 49.8,
+          "avgRounds": 13.3,
+          "dodgePerCombat": 2.946,
+          "critPerCombat": 2.31,
+          "blocksPerCombat": 11.647,
+          "controlsPerCombat": 1.968,
+          "maxHitFraction": 0.26210526315789473,
+          "roundLimitRate": 0
+        },
+        "mace vs axe": {
+          "winRate": 41.7,
+          "avgRounds": 12.7,
+          "dodgePerCombat": 0.771,
+          "critPerCombat": 4.835,
+          "blocksPerCombat": 12.298,
+          "controlsPerCombat": 2.257,
+          "maxHitFraction": 0.27600979192166464,
+          "roundLimitRate": 0
+        },
+        "pike vs axe": {
+          "winRate": 49.5,
+          "avgRounds": 10.3,
+          "dodgePerCombat": 2.217,
+          "critPerCombat": 2.649,
+          "blocksPerCombat": 9.127,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.3968421052631579,
+          "roundLimitRate": 0
+        }
+      }
+    },
+    {
+      "options": {
+        "level": 12,
+        "tier": "epic",
+        "build": "accurate"
+      },
+      "runs": 1000,
+      "matrix": {
+        "sabre vs hammer": {
+          "winRate": 42.65,
+          "avgRounds": 8.7,
+          "dodgePerCombat": 0.787,
+          "critPerCombat": 0.636,
+          "blocksPerCombat": 8.312,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.3346872461413485,
+          "roundLimitRate": 0
+        },
+        "sabre vs mace": {
+          "winRate": 50.1,
+          "avgRounds": 11.3,
+          "dodgePerCombat": 3.636,
+          "critPerCombat": 3.586,
+          "blocksPerCombat": 9.554,
+          "controlsPerCombat": 1.486,
+          "maxHitFraction": 0.34505494505494505,
+          "roundLimitRate": 0
+        },
+        "sabre vs pike": {
+          "winRate": 48.9,
+          "avgRounds": 8.6,
+          "dodgePerCombat": 2.191,
+          "critPerCombat": 2.101,
+          "blocksPerCombat": 7.41,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.3775811209439528,
+          "roundLimitRate": 0
+        },
+        "sabre vs axe": {
+          "winRate": 57.2,
+          "avgRounds": 9,
+          "dodgePerCombat": 2.852,
+          "critPerCombat": 3.598,
+          "blocksPerCombat": 7.562,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.4824175824175824,
+          "roundLimitRate": 0
+        },
+        "hammer vs mace": {
+          "winRate": 50.8,
+          "avgRounds": 11.3,
+          "dodgePerCombat": 0.707,
+          "critPerCombat": 0.65,
+          "blocksPerCombat": 11.004,
+          "controlsPerCombat": 2.094,
+          "maxHitFraction": 0.2607636068237206,
+          "roundLimitRate": 0
+        },
+        "hammer vs pike": {
+          "winRate": 49.7,
+          "avgRounds": 8.6,
+          "dodgePerCombat": 0.53,
+          "critPerCombat": 0.512,
+          "blocksPerCombat": 8.286,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.31681559707554835,
+          "roundLimitRate": 0
+        },
+        "hammer vs axe": {
+          "winRate": 59.5,
+          "avgRounds": 9.4,
+          "dodgePerCombat": 0.591,
+          "critPerCombat": 0.945,
+          "blocksPerCombat": 9.177,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.37124289195775795,
+          "roundLimitRate": 0
+        },
+        "mace vs pike": {
+          "winRate": 54.2,
+          "avgRounds": 11.4,
+          "dodgePerCombat": 2.317,
+          "critPerCombat": 1.986,
+          "blocksPerCombat": 10.102,
+          "controlsPerCombat": 1.791,
+          "maxHitFraction": 0.3087512291052114,
+          "roundLimitRate": 0
+        },
+        "mace vs axe": {
+          "winRate": 43.1,
+          "avgRounds": 10.8,
+          "dodgePerCombat": 0.648,
+          "critPerCombat": 4.094,
+          "blocksPerCombat": 10.398,
+          "controlsPerCombat": 2.028,
+          "maxHitFraction": 0.3269447576099211,
+          "roundLimitRate": 0
+        },
+        "pike vs axe": {
+          "winRate": 46.1,
+          "avgRounds": 9.2,
+          "dodgePerCombat": 1.78,
+          "critPerCombat": 2.388,
+          "blocksPerCombat": 8.221,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.44542772861356933,
+          "roundLimitRate": 0
+        }
+      }
+    },
+    {
+      "options": {
+        "level": 16,
+        "tier": "legendary",
+        "build": "durable"
+      },
+      "runs": 1000,
+      "matrix": {
+        "sabre vs hammer": {
+          "winRate": 47.6,
+          "avgRounds": 10.3,
+          "dodgePerCombat": 1.163,
+          "critPerCombat": 0.815,
+          "blocksPerCombat": 9.818,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.2866365397030342,
+          "roundLimitRate": 0
+        },
+        "sabre vs mace": {
+          "winRate": 59.65,
+          "avgRounds": 13.3,
+          "dodgePerCombat": 4.655,
+          "critPerCombat": 4.193,
+          "blocksPerCombat": 10.965,
+          "controlsPerCombat": 1.645,
+          "maxHitFraction": 0.2965271593944791,
+          "roundLimitRate": 0
+        },
+        "sabre vs pike": {
+          "winRate": 46.65,
+          "avgRounds": 10.5,
+          "dodgePerCombat": 3.096,
+          "critPerCombat": 2.565,
+          "blocksPerCombat": 8.914,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.3170359052711994,
+          "roundLimitRate": 0
+        },
+        "sabre vs axe": {
+          "winRate": 66.1,
+          "avgRounds": 10.7,
+          "dodgePerCombat": 3.658,
+          "critPerCombat": 4.275,
+          "blocksPerCombat": 8.867,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.40783615316117544,
+          "roundLimitRate": 0
+        },
+        "hammer vs mace": {
+          "winRate": 62,
+          "avgRounds": 12.9,
+          "dodgePerCombat": 0.803,
+          "critPerCombat": 0.733,
+          "blocksPerCombat": 12.501,
+          "controlsPerCombat": 2.317,
+          "maxHitFraction": 0.22336991607488701,
+          "roundLimitRate": 0
+        },
+        "hammer vs pike": {
+          "winRate": 46.45,
+          "avgRounds": 10.3,
+          "dodgePerCombat": 0.64,
+          "critPerCombat": 0.614,
+          "blocksPerCombat": 9.993,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.26985151710781147,
+          "roundLimitRate": 0
+        },
+        "hammer vs axe": {
+          "winRate": 66.85,
+          "avgRounds": 11.1,
+          "dodgePerCombat": 0.692,
+          "critPerCombat": 1.117,
+          "blocksPerCombat": 10.753,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.3118140735958683,
+          "roundLimitRate": 0
+        },
+        "mace vs pike": {
+          "winRate": 42.2,
+          "avgRounds": 13.6,
+          "dodgePerCombat": 3.311,
+          "critPerCombat": 2.317,
+          "blocksPerCombat": 11.83,
+          "controlsPerCombat": 1.973,
+          "maxHitFraction": 0.2620320855614973,
+          "roundLimitRate": 0
+        },
+        "mace vs axe": {
+          "winRate": 41.7,
+          "avgRounds": 12.4,
+          "dodgePerCombat": 0.752,
+          "critPerCombat": 4.699,
+          "blocksPerCombat": 11.966,
+          "controlsPerCombat": 2.22,
+          "maxHitFraction": 0.28768382352941174,
+          "roundLimitRate": 0
+        },
+        "pike vs axe": {
+          "winRate": 53.95,
+          "avgRounds": 11.2,
+          "dodgePerCombat": 2.635,
+          "critPerCombat": 2.842,
+          "blocksPerCombat": 9.847,
+          "controlsPerCombat": 0,
+          "maxHitFraction": 0.3705118411000764,
+          "roundLimitRate": 0
+        }
+      }
+    }
+  ]
 }

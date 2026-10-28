@@ -24,7 +24,7 @@ test('повний бій: витривалість, нагорода, забо�
  for(const a of [{type:'travel',city:'forest'},{type:'rest'},{type:'equip',item:'shield'}])assert.throws(()=>action(p,a),/завершіть/);
  assert.throws(()=>action(p,{type:'turn',attack:99,block:0,stance:'attack'}),/зону/);
  for(let i=0;i<20&&!p.battle.result;i++)action(p,{type:'turn',attack:3,block:0,stance:'defense',power:true},()=>.2);
- assert.equal(p.battle.result,'win');assert.equal(p.wins,1);assert.equal(p.gold,272);assert.equal(p.xp,45);assert.ok(p.energy<60);
+ assert.equal(p.battle.result,'win');assert.equal(p.wins,1);assert.equal(p.gold,272);assert.equal(p.xp,45);assert.ok(p.battle.stamina<100);
  assert.equal(p.history.length,1);assert.throws(()=>action(p,{type:'turn',attack:3,block:0,stance:'attack'}),/Немає/);
  action(p,{type:'leave'});action(p,{type:'rest'});assert.equal(p.hp,100);assert.equal(p.energy,60);
 });
@@ -33,7 +33,7 @@ test('поразка, нічия, зілля, обмеження енергії'
  assert.equal(p.battle.result,'loss');assert.equal(p.hp,0);assert.equal(p.losses,1);assert.equal(p.gold,240);
  action(p,{type:'leave'});assert.throws(()=>action(p,{type:'battle',enemy:'recruit'}),/здоров’я/);action(p,{type:'rest'});
  p.hp=30;action(p,{type:'potion'});assert.equal(p.hp,75);assert.equal(p.inventory.filter(x=>x==='potion').length,1);
- action(p,{type:'battle',enemy:'recruit'});p.energy=0;assert.throws(()=>action(p,{type:'turn',attack:0,block:0,stance:'attack',power:true}),/витривалості/);
+ action(p,{type:'battle',enemy:'recruit'});p.battle.stamina=0;assert.throws(()=>action(p,{type:'turn',attack:0,block:0,stance:'attack',power:true}),/витривалості/);
  p.hp=1;p.battle.enemy.currentHp=1;action(p,{type:'turn',attack:0,block:0,stance:'attack'},()=>.5);assert.equal(p.battle.result,'draw');assert.equal(p.wins,0);
 });
 test('подорожі відмічають лише унікальні міста; нагорода мандрівника',()=>{
@@ -41,7 +41,7 @@ test('подорожі відмічають лише унікальні міст
  action(p,{type:'claim',quest:'traveler'});assert.equal(p.gold,340);assert.throws(()=>action(p,{type:'travel',city:'invalid'}),/немає/);
 });
 test('зілля в бою витрачає предмет і дає супернику хід',()=>{
- const p=newPlayer();p.hp=30;action(p,{type:'battle',enemy:'recruit'});action(p,{type:'potion'});assert.equal(p.battle.round,1);assert.equal(p.hp,70);assert.equal(p.inventory.filter(x=>x==='potion').length,1);
+ const p=newPlayer();p.hp=30;action(p,{type:'battle',enemy:'recruit'});action(p,{type:'potion'},()=>.99);assert.equal(p.battle.round,1);assert.ok(p.hp<75&&p.hp>30);assert.equal(p.inventory.filter(x=>x==='potion').length,1);
 });
 test('місткість, неіснуючі дії та недостатні очки',()=>{
  const p=newPlayer();p.inventory=Array(60).fill('potion');assert.throws(()=>action(p,{type:'buy',item:'potion'}),/місця/);
