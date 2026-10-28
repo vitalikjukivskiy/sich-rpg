@@ -1,4 +1,4 @@
-import {plural} from './uk.js';
+import {plural} from './uk.js?v=20261028';
 let context;
 const statNames={strength:'сили',agility:'спритності',intuition:'вправності'};
 export function journeyTabs(ctx){return `<nav class="journey-tabs" aria-label="Шляхи пригод">${[['forest','Сюжетна кампанія'],['roads','Дорожні пригоди'],['trials','Випробування ради']].map(([id,t])=>`<a href="#${id}" class="${ctx.route===id?'active':''}">${t}</a>`).join('')}</nav>`;}

@@ -1,0 +1,20 @@
+name: Перевірка ігрового рушія
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm test
+      - run: node scripts/sync-edge-engine.mjs
+      - run: git diff --exit-code -- supabase/functions/sich-api/engine
+      - run: npm run test:edge
+      - run: npm run balance:check

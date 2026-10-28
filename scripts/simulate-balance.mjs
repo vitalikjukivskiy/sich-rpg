@@ -1,23 +1,23 @@
 import fs from 'node:fs';
 import {pathToFileURL} from 'node:url';
-import {CLASS_RULES,resolveHit,clamp} from '../balance.mjs';
-export const styles=['attack','defense','mixed','ability','adaptive'];
-export const names=Object.keys(CLASS_RULES),result={runs:10000,seed:27102026,method:'Randomized strategies, paired seeds and swapped order',matrix:{}};
-function rng(seed){let s=seed>>>0;return ()=>((s=Math.imul(s,1664525)+1013904223>>>0)/4294967296);}
-function move(style,profile,round,energy,r){const stance=style==='defense'?'defense':style==='attack'?'attack':r()<.5?'defense':'attack';const ab=style==='ability'&&round%4===0&&energy>=20;return {attack:Math.floor(r()*4),block:Math.floor(r()*6),stance,ability:ab,power:energy>=20&&(style==='attack'||style==='ability'||r()<.3)};}
-export function simulate(x,y,seed,swap=false){const r=rng(seed),keys=swap?[y,x]:[x,y],ps=keys.map(k=>({...CLASS_RULES[k],classId:k,armor:60}));let hp=ps.map(p=>p.hp),energy=[100,100],round=0;const style=keys.map(()=>styles[Math.floor(r()*styles.length)]);let misses=0,crits=0,blocks=0,controls=0;
- for(;round<25&&hp.every(h=>h>0);round++){
-  const moves=ps.map((p,i)=>move(style[i],p,round,energy[i],r));
-  const attacks=ps.map((p,i)=>resolveHit({profile:ps[i]},{profile:ps[1-i],block:moves[1-i].block,stance:moves[1-i].stance,ability:moves[1-i].ability,immunity:false},moves[i],moves[1-i],r));
-  for(let i=0;i<2;i++){hp[1-i]-=attacks[i].damage;energy[i]=clamp(0,100,energy[i]-(moves[i].power?20:0)-(moves[i].ability?ps[i].cost:0)+(!moves[i].power&&!moves[i].ability?8:0));misses+=Number(!!attacks[i].dodged);crits+=Number(!!attacks[i].crit);blocks+=Number(!!attacks[i].blocked);controls+=Number(!!attacks[i].control);}
- }
- const rel=hp.map((h,i)=>h/ps[i].hp),win=rel[0]===rel[1]?null:rel[0]>rel[1]?keys[0]:keys[1];return {win,round,misses,crits,blocks,controls};}
-if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
-for(let a=0;a<names.length;a++)for(let b=a+1;b<names.length;b++){
- const x=names[a],y=names[b],key=x+' vs '+y;let won=0,draw=0,rounds=0,misses=0,crits=0,blocks=0,controls=0;
- for(let i=0;i<10000;i++){const v=simulate(x,y,27102026+i*211+(a*5+b)*101,i%2===1);won+=v.win===x?1:0;draw+=v.win===null?1:0;rounds+=v.round;misses+=v.misses;crits+=v.crits;blocks+=v.blocks;controls+=v.controls;}
- result.matrix[key]={winRate:Math.round(10000*(won+draw/2)/10000)/100,avgRounds:Math.round(rounds/10000*10)/10,dodgePerCombat:Math.round(misses/10000*10)/10,critPerCombat:Math.round(crits/10000*10)/10,blocksPerCombat:Math.round(blocks/10000*10)/10,controlsPerCombat:Math.round(controls/10000*10)/10};
-}
-const output=new URL('../BALANCE-SIMULATION.json',import.meta.url);fs.writeFileSync(output,JSON.stringify(result,null,2));console.log(JSON.stringify(result.matrix,null,2));
-
-}
+import {newPlayer,derived,items} from '../game.mjs';
+import {migrate,duelAction} from '../world.mjs';
+import {CLASS_RULES,requirement} from '../balance.mjs';
+export const styles=['attack','defense','control','balanced','adaptive'];
+export const names=Object.keys(CLASS_RULES);
+function random(seed){let s=seed>>>0;return ()=>((s=Math.imul(s,1664525)+1013904223>>>0)/4294967296);}
+const weapons={sabre:'duelist_sabre',hammer:'hammer',mace:'mace',pike:'pike',axe:'war_axe'};
+function hero(key,level,build,tier){const p=migrate(newPlayer(key));p.level=level;p.stats={strength:5,agility:5,intuition:5,vitality:5};const weapon=tier==='epic'?'epic_'+key:tier==='legendary'?'legendary_'+key:weapons[key];const required=requirement(items.find(i=>i.id===weapon),items.find(i=>i.id===weapon).level);Object.assign(p.stats,required);const points=Math.max(0,(level-1)*3-Object.values(required).reduce((sum,n)=>sum+n-5,0));
+ const primary={sabre:['agility','intuition'],hammer:['strength','intuition'],mace:['strength','vitality'],pike:['intuition','agility'],axe:['strength','vitality']}[key];
+ for(let i=0;i<points;i++){const stat=build==='durable'?(i%2?'vitality':primary[0]):build==='accurate'?(i%2?'intuition':primary[0]):primary[i%2];p.stats[stat]++;}
+ p.equipment={weapon:tier==='epic'?'epic_'+key:tier==='legendary'?'legendary_'+key:weapons[key],body:tier==='epic'?'epic_armor_'+key:tier==='legendary'?'legendary_armor_'+key:'class_armor_'+key};p.hp=derived(p).maxHp;return p;}
+function choose(style,p,d,r){const profile=d.profiles[p.id],cost=CLASS_RULES[profile.classId].cost,energy=d.stamina[p.id],cool=d.cooldowns[p.id]<=d.round;
+ const stance=style==='defense'?'defense':style==='attack'?'attack':style==='adaptive'?(d.hp[p.id]/profile.maxHp<.45?'defense':'attack'):r()<.5?'defense':'attack';
+ const ability=cool&&energy>=cost&&(style==='control'||style==='adaptive'||r()<.35);const power=energy-(ability?cost:0)>=20&&(style==='attack'||style==='control'||r()<.3);
+ return {type:'turn',attack:Math.floor(r()*4),block:Math.floor(r()*6),stance,ability,power};}
+export function simulate(x,y,seed,swap=false,options={}){const r=random(seed),keys=swap?[y,x]:[x,y],level=options.level||10,build=options.build||'standard',tier=options.tier||'rare';const ps=keys.map(k=>hero(k,level,build,tier)),db={players:Object.fromEntries(ps.map(p=>[p.id,p])),duels:{}};
+ duelAction(db,ps[0],{type:'create'});duelAction(db,ps[1],{type:'join',id:ps[0].duelId});const d=db.duels[ps[0].duelId],strategies=keys.map(()=>styles[Math.floor(r()*styles.length)]);
+ while(d.status==='active'){const moves=ps.map((p,i)=>choose(strategies[i],p,d,r));duelAction(db,ps[0],moves[0],r);duelAction(db,ps[1],moves[1],r);}
+ return {win:d.winner?db.players[d.winner].name:null,round:d.round,misses:d.metrics.dodges,crits:d.metrics.crits,blocks:d.metrics.blocks,controls:d.metrics.controls,maxHitFraction:d.metrics.maxHitFraction};}
+function matrix(runs,seed,options){const result={};for(let a=0;a<names.length;a++)for(let b=a+1;b<names.length;b++){const x=names[a],y=names[b];let won=0,draw=0,rounds=0,misses=0,crits=0,blocks=0,controls=0,maxHitFraction=0,limit=0;for(let i=0;i<runs;i++){const v=simulate(x,y,seed+i*211+(a*5+b)*101,i%2===1,options);won+=v.win===x;draw+=v.win===null;rounds+=v.round;misses+=v.misses;crits+=v.crits;blocks+=v.blocks;controls+=v.controls;maxHitFraction=Math.max(maxHitFraction,v.maxHitFraction);limit+=v.round===25;}result[x+' vs '+y]={winRate:Math.round(10000*(won+draw/2)/runs)/100,avgRounds:Math.round(rounds/runs*10)/10,dodgePerCombat:misses/runs,critPerCombat:crits/runs,blocksPerCombat:blocks/runs,controlsPerCombat:controls/runs,maxHitFraction,roundLimitRate:limit/runs};console.log(x,y,result[x+' vs '+y].winRate,result[x+' vs '+y].avgRounds);}return result;}
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){const runs=Number(process.env.SIM_RUNS||10000),result={runs,seed:27102026,engine:'Production world.duelAction and duelRound, no duplicated combat model',matrix:matrix(runs,27102026,{})};if(process.env.SIM_EXTENDED==='1')result.validation=[{level:6,tier:'rare',build:'standard'},{level:12,tier:'epic',build:'standard'},{level:16,tier:'legendary',build:'standard'},{level:6,tier:'rare',build:'durable'},{level:12,tier:'epic',build:'accurate'},{level:16,tier:'legendary',build:'durable'}].map(options=>({options,runs:options.build==='standard'?3000:1000,matrix:matrix(options.build==='standard'?3000:1000,8302291,options)}));fs.writeFileSync(new URL('../BALANCE-SIMULATION.json',import.meta.url),JSON.stringify(result,null,2));}

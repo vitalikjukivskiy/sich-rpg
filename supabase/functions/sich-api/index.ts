@@ -4,9 +4,10 @@
  * Публічний анонімний API використовує власні стійкі токени гравців. SERVICE_ROLE_KEY
  * ніколи не передається у браузер, а постійний JSONB-стан захищений RLS.
  */
+import {applyRequest} from './engine/requests.mjs';
 import {prepareClan,recordClanProgress} from './engine/clanworks.mjs';
 import {newPlayer,derived,cities,items,opponents,quests} from './engine/game.mjs';
-import {action,migrate,clanAction,duelAction,advanceDuels,worldSnapshot} from './engine/world.mjs';
+import {action,migrate,clanAction,duelAction,advanceDuels,advanceBattles,worldSnapshot} from './engine/world.mjs';
 import {marketAction,marketSnapshot,expireMarket} from './engine/market.mjs';
 
 const apiOrigin=Deno.env.get('SUPABASE_URL')!;
@@ -44,7 +45,7 @@ async function commitWorld(before:World,next:World){
 function snapshot(db:World,p:any){
  migrate(p);const clanId=p.clanId;
  const registeredIds=new Set(Object.values(db.accounts).map((a:any)=>a.player));
- return {revision:db.revision,player:{...p,journey:p.journey?{...p.journey,events:undefined,pending:undefined}:null},derived:derived(p),cities,items,opponents,quests,...worldSnapshot(db,p),...marketSnapshot(db,p),registered:registeredIds.has(p.id),rankings:Object.values(db.players).filter((x:any)=>registeredIds.has(x.id)||x.id===p.id).sort((a:any,b:any)=>b.wins-a.wins||b.level-a.level).slice(0,20).map((x:any)=>({id:x.id,name:x.name,level:x.level,wins:x.wins,losses:x.losses})),chat:db.chat.filter((m:any)=>!m.channel||m.channel==='city'||m.channel==='clan'&&clanId&&m.clanId===clanId||m.channel==='private'&&(m.from===p.id||m.to===p.id)).slice(-60)};
+ return {build:'beta-0.2.1-20261028',serverTime:Date.now(),revision:db.revision,player:{...p,actionReceipts:undefined,journey:p.journey?{...p.journey,events:undefined,pending:undefined}:null},derived:derived(p),cities,items,opponents,quests,...worldSnapshot(db,p),...marketSnapshot(db,p),registered:registeredIds.has(p.id),rankings:Object.values(db.players).filter((x:any)=>registeredIds.has(x.id)||x.id===p.id).sort((a:any,b:any)=>b.wins-a.wins||b.level-a.level).slice(0,20).map((x:any)=>({id:x.id,name:x.name,level:x.level,wins:x.wins,losses:x.losses})),chat:db.chat.filter((m:any)=>!m.channel||m.channel==='city'||m.channel==='clan'&&clanId&&m.clanId===clanId||m.channel==='private'&&(m.from===p.id||m.to===p.id)).slice(-60)};
 }
 const te=new TextEncoder();
 async function hashPassword(password:string,salt:string){
@@ -60,7 +61,8 @@ async function perform(req:Request, route:string, body:any, incoming:string,ip:s
   let dirty=false;
   if(Object.values(next.market||{}).some((l:any)=>l.status==='active'&&l.expiresAt<=now)){expireMarket(next);dirty=true;}
   if(advanceDuels(next,now))dirty=true;
-  for(const hero of Object.values(next.players) as any[]){if(hero.battle&&!hero.battle.result&&hero.battle.deadline&&now>=hero.battle.deadline){action(hero,{type:'timeout'});dirty=true;}}
+  if(advanceBattles(next,now))dirty=true;
+  const automatic=dirty?structuredClone(next):null;
   let session=incoming&&next.sessions[incoming];let outgoing=incoming;
   if(!session||session.expires<=now||!next.players[session.player]){
    outgoing=randomToken();const p=newPlayer();next.players[p.id]=p;
@@ -68,15 +70,13 @@ async function perform(req:Request, route:string, body:any, incoming:string,ip:s
    for(const [k,s]of Object.entries(next.sessions) as [string,any][])if(s.expires<now)delete next.sessions[k];
    dirty=true;
   }
-  let p=migrate(next.players[session.player]);p.lastSeen=now;
+  let p=migrate(next.players[session.player]);if(now-(p.lastSeen||0)>=20000)dirty=true;p.lastSeen=now;
+  try{
   if(req.method==='POST'){
    dirty=true;
    if(['/api/market','/api/action','/api/clan','/api/duel'].includes(route)){
     try{
-     if(route==='/api/market')marketAction(next,p,body);
-     else if(route==='/api/action')action(p,body);
-     else if(route==='/api/clan')clanAction(next,p,body);
-     else duelAction(next,p,body);
+     applyRequest(next,p,route,body);
     }catch(error){throw new ApiError(error instanceof Error?error.message:'Невідома ігрова дія.');}
    }
    else if(route==='/api/register'){
@@ -105,6 +105,7 @@ async function perform(req:Request, route:string, body:any, incoming:string,ip:s
     next.chat.push({from:p.id,to:channel==='private'?body.to:null,channel,clanId:channel==='clan'?p.clanId:null,name:p.name,text:message,at:now,city:p.city});next.chat=next.chat.slice(-500);
    }else throw new ApiError('Невідома дія.',404);
   }else if(route!=='/api/state')throw new ApiError('Сторінку не знайдено.',404);
+  }catch(error){if(automatic&&!await commitWorld(db,automatic))continue;throw error;}
   if(dirty){
    if(!await commitWorld(db,next))continue;
    return {state:snapshot(next,p),token:outgoing};

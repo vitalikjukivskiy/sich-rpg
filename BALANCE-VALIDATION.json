@@ -1,0 +1,102 @@
+{
+  "totalDuels": 220000,
+  "overall": {
+    "sabre": 49.77,
+    "hammer": 50.25,
+    "mace": 51.09,
+    "pike": 48.78,
+    "axe": 50.12
+  },
+  "validation": [
+    {
+      "level": 6,
+      "tier": "rare",
+      "build": "standard",
+      "overall": {
+        "sabre": 49.17,
+        "hammer": 49.7,
+        "mace": 49.91,
+        "pike": 50.48,
+        "axe": 50.76
+      }
+    },
+    {
+      "level": 12,
+      "tier": "epic",
+      "build": "standard",
+      "overall": {
+        "sabre": 49.19,
+        "hammer": 49.95,
+        "mace": 49.76,
+        "pike": 50.29,
+        "axe": 50.81
+      }
+    },
+    {
+      "level": 16,
+      "tier": "legendary",
+      "build": "standard",
+      "overall": {
+        "sabre": 49.4,
+        "hammer": 49.74,
+        "mace": 49.8,
+        "pike": 50.35,
+        "axe": 50.71
+      }
+    },
+    {
+      "level": 6,
+      "tier": "rare",
+      "build": "durable",
+      "overall": {
+        "sabre": 49.95,
+        "hammer": 50.9,
+        "mace": 49.25,
+        "pike": 49.76,
+        "axe": 50.14
+      }
+    },
+    {
+      "level": 12,
+      "tier": "epic",
+      "build": "accurate",
+      "overall": {
+        "sabre": 49.71,
+        "hammer": 54.34,
+        "mace": 49.1,
+        "pike": 48.33,
+        "axe": 48.53
+      }
+    },
+    {
+      "level": 16,
+      "tier": "legendary",
+      "build": "durable",
+      "overall": {
+        "sabre": 55,
+        "hammer": 56.93,
+        "mace": 40.56,
+        "pike": 54.66,
+        "axe": 42.85
+      }
+    }
+  ],
+  "failures": [],
+  "warnings": [
+    "{\"level\":6,\"tier\":\"rare\",\"build\":\"durable\"}: mace vs axe 41.7% (target 42–47)",
+    "{\"level\":12,\"tier\":\"epic\",\"build\":\"accurate\"}: hammer vs mace 50.8% (target 42–47)",
+    "{\"level\":12,\"tier\":\"epic\",\"build\":\"accurate\"}: hammer vs axe 59.5% (target 47–53)",
+    "{\"level\":12,\"tier\":\"epic\",\"build\":\"accurate\"}: mace vs pike 54.2% (target 47–53)",
+    "{\"level\":12,\"tier\":\"epic\",\"build\":\"accurate\"}: pike vs axe 46.1% (target 47–53)",
+    "{\"level\":16,\"tier\":\"legendary\",\"build\":\"durable\"}: sabre vs hammer 47.6% (target 42–47)",
+    "{\"level\":16,\"tier\":\"legendary\",\"build\":\"durable\"}: sabre vs mace 59.65% (target 47–53)",
+    "{\"level\":16,\"tier\":\"legendary\",\"build\":\"durable\"}: sabre vs pike 46.65% (target 47–53)",
+    "{\"level\":16,\"tier\":\"legendary\",\"build\":\"durable\"}: sabre vs axe 66.1% (target 53–58)",
+    "{\"level\":16,\"tier\":\"legendary\",\"build\":\"durable\"}: hammer vs mace 62% (target 42–47)",
+    "{\"level\":16,\"tier\":\"legendary\",\"build\":\"durable\"}: hammer vs pike 46.45% (target 47–53)",
+    "{\"level\":16,\"tier\":\"legendary\",\"build\":\"durable\"}: hammer vs axe 66.85% (target 47–53)",
+    "{\"level\":16,\"tier\":\"legendary\",\"build\":\"durable\"}: mace vs pike 42.2% (target 47–53)",
+    "{\"level\":16,\"tier\":\"legendary\",\"build\":\"durable\"}: mace vs axe 41.7% (target 42–47)",
+    "{\"level\":16,\"tier\":\"legendary\",\"build\":\"durable\"}: pike vs axe 53.95% (target 47–53)"
+  ]
+}

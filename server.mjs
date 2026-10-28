@@ -1,3 +1,4 @@
+import {applyRequest} from './requests.mjs';
 import {prepareClan,recordClanProgress} from './clanworks.mjs';
 import http from 'node:http';
 import fs from 'node:fs';
@@ -5,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { newPlayer, derived, cities, items, opponents, quests } from './game.mjs';
-import { action, migrate, clanAction, duelAction, advanceDuels, worldSnapshot } from './world.mjs';
+import { action, migrate, clanAction, duelAction, advanceDuels, advanceBattles, worldSnapshot } from './world.mjs';
 import {marketAction,marketSnapshot,expireMarket} from './market.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
@@ -26,7 +27,7 @@ function session(req,res){
   res.setHeader('Set-Cookie',`vm_session=${id}; HttpOnly; SameSite=Strict; Path=/; Max-Age=2592000`);save();return s;
 }
 function newSession(res,id){const token=randomBytes(32).toString('hex');db.sessions[token]={player:id,expires:Date.now()+SESSION_MS};res.setHeader('Set-Cookie',`vm_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=2592000`);save();}
-function snapshot(p){migrate(p);const clanId=p.clanId;return {revision:db.revision||0,player:{...p,journey:p.journey?{...p.journey,events:undefined,pending:undefined}:null},derived:derived(p),cities,items,opponents,quests,...worldSnapshot(db,p),...marketSnapshot(db,p),registered:Object.values(db.accounts).some(a=>a.player===p.id),rankings:Object.values(db.players).filter(x=>Object.values(db.accounts).some(a=>a.player===x.id)||x.id===p.id).sort((a,b)=>b.wins-a.wins||b.level-a.level).slice(0,20).map(x=>({id:x.id,name:x.name,level:x.level,wins:x.wins,losses:x.losses})),chat:db.chat.filter(m=>!m.channel||m.channel==='city'||m.channel==='clan'&&clanId&&m.clanId===clanId||m.channel==='private'&&(m.from===p.id||m.to===p.id)).slice(-60)};}
+function snapshot(p){migrate(p);const clanId=p.clanId;return {build:'beta-0.2.1-20261028',serverTime:Date.now(),revision:db.revision||0,player:{...p,actionReceipts:undefined,journey:p.journey?{...p.journey,events:undefined,pending:undefined}:null},derived:derived(p),cities,items,opponents,quests,...worldSnapshot(db,p),...marketSnapshot(db,p),registered:Object.values(db.accounts).some(a=>a.player===p.id),rankings:Object.values(db.players).filter(x=>Object.values(db.accounts).some(a=>a.player===x.id)||x.id===p.id).sort((a,b)=>b.wins-a.wins||b.level-a.level).slice(0,20).map(x=>({id:x.id,name:x.name,level:x.level,wins:x.wins,losses:x.losses})),chat:db.chat.filter(m=>!m.channel||m.channel==='city'||m.channel==='clan'&&clanId&&m.clanId===clanId||m.channel==='private'&&(m.from===p.id||m.to===p.id)).slice(-60)};}
 function json(res,status,data){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(data));}
 const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.ico':'image/x-icon'};
 const limits=new Map();
@@ -45,7 +46,7 @@ const server=http.createServer(async(req,res)=>{
         if(origin&&origin!==`http://${req.headers.host}`)return json(res,403,{error:'Запит з іншого сайту відхилено.'});
         if(!req.headers['content-type']?.startsWith('application/json'))return json(res,415,{error:'Потрібен JSON.'});
       }
-      if(Object.values(db.market||{}).some(l=>l.status==='active'&&l.expiresAt<=Date.now())||Object.values(db.duels||{}).some(d=>d.status==='active'&&(!d.deadline||Date.now()>=d.deadline))||Object.values(db.players||{}).some(p=>p.battle&&!p.battle.result&&p.battle.deadline&&Date.now()>=p.battle.deadline)){const expired=structuredClone(db);expireMarket(expired);advanceDuels(expired);for(const hero of Object.values(expired.players)){if(hero.battle&&!hero.battle.result&&hero.battle.deadline&&Date.now()>=hero.battle.deadline)action(hero,{type:'timeout'});}save(expired);}
+      if(Object.values(db.market||{}).some(l=>l.status==='active'&&l.expiresAt<=Date.now())||Object.values(db.duels||{}).some(d=>d.status==='active'&&(!d.deadline||Date.now()>=d.deadline))||Object.values(db.players||{}).some(p=>p.battle&&!p.battle.result&&(!p.battle.deadline||Date.now()>=p.battle.deadline))){const expired=structuredClone(db);expireMarket(expired);advanceDuels(expired);advanceBattles(expired);save(expired);}
       const s=session(req,res);let p=migrate(db.players[s.player]);p.lastSeen=Date.now();
       if(req.method==='GET'&&url.pathname==='/api/state')return json(res,200,snapshot(p));
       if(req.method!=='POST')return json(res,404,{error:'Сторінку не знайдено.'});
@@ -53,14 +54,8 @@ const server=http.createServer(async(req,res)=>{
       let body;try{body=JSON.parse(raw);}catch{return json(res,400,{error:'Некоректні дані.'});}
       if(!body||typeof body!=='object'||Array.isArray(body))return json(res,400,{error:'Некоректні дані.'});
       p=migrate(db.players[s.player]);
-      if(url.pathname==='/api/market'){
-        const transaction=structuredClone(db),actor=transaction.players[p.id];marketAction(transaction,actor,body);save(transaction);p=db.players[p.id];
-      }else if(url.pathname==='/api/action'){
-        const transaction=structuredClone(db);action(transaction.players[p.id],body);save(transaction);p=db.players[p.id];
-      }else if(url.pathname==='/api/clan'){
-        const transaction=structuredClone(db);clanAction(transaction,transaction.players[p.id],body);save(transaction);p=db.players[p.id];
-      }else if(url.pathname==='/api/duel'){
-        const transaction=structuredClone(db);duelAction(transaction,transaction.players[p.id],body);save(transaction);p=db.players[p.id];
+      if(['/api/market','/api/action','/api/clan','/api/duel'].includes(url.pathname)){
+        const transaction=structuredClone(db);applyRequest(transaction,transaction.players[p.id],url.pathname,body);save(transaction);p=db.players[p.id];
       }else if(url.pathname==='/api/register'){
         if(!allow('auth:'+req.socket.remoteAddress,15))return json(res,429,{error:'Забагато спроб входу. Зачекайте хвилину.'});
         const name=String(body.name||'').trim(),password=String(body.password||'');
