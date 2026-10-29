@@ -1,6 +1,6 @@
 {
   "name": "sich-rpg",
-  "version": "0.2.4-beta",
+  "version": "0.2.5-beta",
   "private": true,
   "type": "module",
   "description": "Самостійна україномовна браузерна RPG козацької доби",

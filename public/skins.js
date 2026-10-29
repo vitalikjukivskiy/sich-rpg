@@ -10,15 +10,15 @@ function atlasFrame({file,width,height,box,classes,label='',fit='xMidYMid meet'}
 export function portrait(player,classId='sabre',extra=''){
  const skin=player.skin&&player.skin!=='auto'?player.skin:classId;
  if(skin==='legacy')return '<img class="legacy-skin '+escape(extra)+'" src="./assets/sich-hero.png" alt="Козак у традиційному жупані" decoding="async">';
- const key=Object.hasOwn(skinNames,skin)?skin:'sabre',index=classKeys.indexOf(key),combat=extra.split(/\s+/).includes('combat-skin'),character=extra.split(/\s+/).includes('character-skin');
+ const key=Object.hasOwn(skinNames,skin)?skin:'sabre',index=classKeys.indexOf(key),combat=extra.split(/\s+/).includes('combat-skin'),character=extra.split(/\s+/).includes('character-skin'),full=/paperdoll-skin|opponent-full-skin/.test(extra);
  // The atlas is five equal columns. ViewBox isolates one column, so any frame size
  // preserves the warrior's proportions and can never reveal a neighbouring skin.
- const box=combat?[index*307.2,70,307.2,420]:character?[index*307.2,85,307.2,500]:[index*307.2,65,307.2,750];
- return atlasFrame({file:'class-skins.png',width:1536,height:1024,box,classes:'class-portrait skin-'+key+' '+extra,label:skinNames[key],fit:'xMidYMin slice'});
+ const box=full?[index*307.2,0,307.2,1024]:combat?[index*307.2,70,307.2,420]:character?[index*307.2,85,307.2,500]:[index*307.2,65,307.2,750];
+ return atlasFrame({file:'class-skins.png',width:1536,height:1024,box,classes:'class-portrait skin-'+key+' '+extra,label:skinNames[key],fit:full?'xMidYMid meet':'xMidYMin slice'});
 }
 export function factionPortrait(id,extra='',label=''){
- const index=factionKeys.indexOf(id),key=index<0?'cossacks':id,column=Math.max(0,index),combat=/combat-face|combat-skin/.test(extra);
- return atlasFrame({file:'sich-factions.png',width:1774,height:887,box:[column*354.8,combat?90:({cossacks:110,commonwealth:100,crimea:120,sweden:95,ottoman:60})[key],354.8,combat?430:650],classes:'faction-portrait faction-'+key+' '+extra,label,fit:'xMidYMin slice'});
+ const index=factionKeys.indexOf(id),key=index<0?'cossacks':id,column=Math.max(0,index),combat=/combat-face|combat-skin/.test(extra),full=extra.split(/\s+/).includes('opponent-full-skin');
+ return atlasFrame({file:'sich-factions.png',width:1774,height:887,box:full?[column*354.8,40,354.8,830]:[column*354.8,combat?90:({cossacks:110,commonwealth:100,crimea:120,sweden:95,ottoman:60})[key],354.8,combat?430:650],classes:'faction-portrait faction-'+key+' '+extra,label,fit:full?'xMidYMid meet':'xMidYMin slice'});
 }
 export function regionalScene(cityId,extra='',label=''){
  const coordinates={forest:[0,0],mountain:[768,0],harbor:[0,512],ottoman:[768,512]};

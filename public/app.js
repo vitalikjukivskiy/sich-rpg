@@ -1,12 +1,12 @@
-import {campaignOrigin,trackQuest,trackedQuest,clearQuest,afterTaskAction,observeQuestState} from './quest-return.js?v=20261028-return2';
-import {questHub,focusQuest} from './quest-hub.js?v=20261028-return2';
-import {contextNavigation} from './navigation.js?v=20261028-return2';
-import {captureViewDraft,restoreViewDraft} from './drafts.js?v=20261028-return2';
-import {portrait,skinPicker,factionPortrait} from './skins.js?v=20261028-return2';
-import {fitViewport} from './viewport.js?v=20261028-return2';
-import {blockPicker,battleLog} from './battle-ui.js?v=20261028-return2';
-import {icon} from './icons.js?v=20261028-return2';
-import * as classic from './classic.js?v=20261028-return2';
+import {campaignOrigin,trackQuest,trackedQuest,clearQuest,afterTaskAction,observeQuestState} from './quest-return.js?v=20261029-layout1';
+import {questHub,focusQuest} from './quest-hub.js?v=20261029-layout1';
+import {contextNavigation} from './navigation.js?v=20261029-layout1';
+import {captureViewDraft,restoreViewDraft} from './drafts.js?v=20261029-layout1';
+import {portrait,skinPicker,factionPortrait} from './skins.js?v=20261029-layout1';
+import {fitViewport} from './viewport.js?v=20261029-layout1';
+import {blockPicker,battleLog} from './battle-ui.js?v=20261029-layout1';
+import {icon} from './icons.js?v=20261029-layout1';
+import * as classic from './classic.js?v=20261029-layout1';
 let renderedWatch='',serverOffset=0,sessionGeneration=0,renderedBattleKey='',refreshPending=false,connectionFailures=0;
 const viewDrafts=new Map();
 let healingReturn=null;
@@ -76,7 +76,8 @@ function render({preserveDrafts=false,restoreRoute=false}={}){
  classic.setup({state,route,nav,icon,esc,progress,btn,statNames,readyQuests,qProgress,pageHeading,questTask:trackedQuest(state),send:sendWorld,refresh:render});
  document.title=(route==='city'?state.cities.find(c=>c.id===state.player.city).name:(nav.find(n=>n[0]===route)?.[2]||({roads:'Дорожні пригоди',trials:'Випробування ради',forest:'Кампанія',smith:'Кузня',hospital:'Лікарня'})[route]||'Січ: доба шаблі'))+' · Січ: доба шаблі';
  const draft=previousMain&&previousMain.dataset.player!==state.player.id?'':$('#chat-input')?.value||'';const oldForm=$('#duel-turn-form'),duelDraft=oldForm?new FormData(oldForm):null;const oldRound=oldForm?.dataset.round,oldDuelId=oldForm?.dataset.duelId;const focusName=document.activeElement?.id;
- $('#app').innerHTML=classic.header()+classic.roadStatus()+'<div class="workspace">'+classic.sidebar()+'<main id="main" tabindex="-1" data-route="'+route+'" data-player="'+state.player.id+'" data-battle-key="'+battleKey()+'" class="route-'+route+'">'+contextNavigation(route)+taskProgressBanner()+pages[route]()+'</main>'+classic.rightbar()+'</div>'+classic.chat()+'<footer><span>СІЧ · Українська браузерна RPG</span><span>Самостійна реалізація · Спільний світ</span><a href="#library">Правила та можливості</a></footer>';
+ const combatView=route==='arena'&&!!(state.player.battle||state.duel?.players.some(u=>u.id!==state.player.id));
+ $('#app').innerHTML=classic.header()+classic.roadStatus()+'<div class="workspace '+(combatView?'combat-workspace':'')+'">'+classic.sidebar()+'<main id="main" tabindex="-1" data-route="'+route+'" data-player="'+state.player.id+'" data-battle-key="'+battleKey()+'" class="route-'+route+'">'+contextNavigation(route)+taskProgressBanner()+pages[route]()+'</main>'+classic.rightbar()+'</div>'+classic.chat()+'<footer><span>СІЧ · Українська браузерна RPG</span><span>Самостійна реалізація · Спільний світ</span><a href="#library">Правила та можливості</a></footer>';
  const navElement=document.querySelector('.classic-header nav'),activeLink=navElement?.querySelector('[aria-current="page"]');if(navElement&&activeLink&&navElement.scrollWidth>navElement.clientWidth)navElement.scrollLeft=activeLink.offsetLeft-navElement.offsetLeft-(navElement.clientWidth-activeLink.clientWidth)/2;
  const newForm=$('#duel-turn-form');if(newForm){newForm.dataset.round=state.duel.round;newForm.dataset.duelId=state.duel.id;if(duelDraft&&String(state.duel.round)===oldRound&&state.duel.id===oldDuelId){for(const input of newForm.querySelectorAll('input')){if(input.type==='hidden')input.value=duelDraft.get(input.name);else input.checked=duelDraft.getAll(input.name).includes(input.value);}const zones=newForm.querySelectorAll('[name="guard-zone"]:checked').length;newForm.querySelector('.block-count').textContent=`Обрано ${zones} з 2 зон`;newForm.querySelector('[type="submit"]').disabled=zones!==2;}}
  if(block<0)document.querySelector('[data-action="turn"]')?.setAttribute('disabled','');fitViewport({logKey:(state.duel||state.player.battle)?.id,resetLog:!preserveDrafts&&!restoreRoute});renderedWatch=watchState();$('#chat-input').value=draft;if(focusName==='chat-input')$('#chat-input').focus();$('#chat-messages').scrollTop=$('#chat-messages').scrollHeight;if(viewDraft)restoreViewDraft(viewDraft,{restoreTactics});renderedBattleKey=battleKey();updateConnectionStatus();
