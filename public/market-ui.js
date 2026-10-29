@@ -1,5 +1,5 @@
-import {itemArt} from './skins.js?v=20261029-layout1';
-import {plural} from './uk.js?v=20261029-layout1';
+import {itemArt} from './skins.js?v=20261029-layout2';
+import {plural} from './uk.js?v=20261029-layout2';
 let context,tab='browse',search='',category='all',sort='new',selection='';
 const pages={browse:0,mine:0,mail:0},PAGE_SIZE=2;
 const sellDraft={quantity:'1',price:'',hours:'24'};
