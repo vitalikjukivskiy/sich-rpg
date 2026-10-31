@@ -3,11 +3,31 @@ const labels=['Голова','Груди','Пояс','Ноги'];
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function blockPicker(index=0){return `<div class="block-picker"><input type="hidden" name="block" value="${index}">${labels.map((label,i)=>`<label class="choice"><input type="checkbox" name="guard-zone" value="${i}" ${(pairs[index]||[]).includes(i)?'checked':''}>${label}</label>`).join('')}<small class="block-count" aria-live="polite">Обрано ${(pairs[index]||[]).length} з 2 зон</small></div>`;}
 export function battleLog(lines,names=[]){
- const quoted=names.filter(Boolean).map(name=>name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
- const words=['КРИТИЧНИЙ УДАР','ЧАС ВИЙШОВ','ПЕРЕМОЖЕЦЬ','ДЕЗОРІЄНТАЦІЯ','Перемога','Поразка','НІЧИЯ','УХИЛЕННЯ','антикрит','блок','пропущено','\\d+ шкоди'];
- const pattern=new RegExp('('+[...quoted,...words].join('|')+')','gi');
- return '<ol>'+[...lines].reverse().map(line=>'<li class="battle-log-entry">'+String(line).split(pattern).map((part,i)=>i%2?'<strong>'+escape(part)+'</strong>':escape(part)).join('')+'</li>').join('')+'</ol>';
+ const actors=new Set(names.filter(Boolean).map(name=>String(name).toLocaleLowerCase('uk-UA')));
+ const quoted=names.filter(Boolean).map(name=>String(name).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+ const words=['КРИТИЧНИЙ УДАР','ЧАС ВИЙШОВ','ПЕРЕМОЖЕЦЬ','дезорієнтація(?: на наступний хід)?','Перемога','Поразка','НІЧИЯ','УХИЛЕННЯ','антикрит','блок','пропущено','\\+\\d+ здоров[’\u0027]я','\\d+ шкоди'];
+ const pattern=new RegExp([...quoted,...words].join('|'),'gi');
+ const legend='<div class="battle-legend" aria-label="Кольори бойових подій">'+[['damage','Шкода'],['critical','Крит'],['heal','Лікування'],['block','Блок'],['dodge','Ухилення'],['effect','Ефект'],['timeout','Час вийшов']].map(([kind,label])=>`<span class="event-${kind}">${label}</span>`).join('')+'</div>';
+ const format=line=>{
+  let html='',offset=0;line=String(line);
+  for(const match of line.matchAll(pattern)){
+   const part=match[0],lower=part.toLocaleLowerCase('uk-UA');let kind='';
+   if(!actors.has(lower)){
+    if(/критичний удар/i.test(part))kind='critical';
+    else if(/час вийшов|пропущено/i.test(part))kind='timeout';
+    else if(/^\+\d+/.test(part))kind='heal';
+    else if(/шкоди/i.test(part))kind=/^[^.]*КРИТИЧНИЙ УДАР/i.test(line.slice(match.index+part.length))?'critical':'damage';
+    else if(/^блок$/i.test(part))kind='block';
+    else if(/ухилення/i.test(part))kind='dodge';
+    else if(/дезорієнтація/i.test(part))kind='effect';
+   }
+   html+=escape(line.slice(offset,match.index))+`<strong${kind?` class="event-${kind}"`:''}>${escape(part)}</strong>`;offset=match.index+part.length;
+  }
+  return html+escape(line.slice(offset));
+ };
+ return legend+'<ol>'+[...lines].reverse().map(line=>'<li class="battle-log-entry">'+format(line)+'</li>').join('')+'</ol>';
 }
+
 document.addEventListener('change',e=>{
  if(e.target.name!=='guard-zone')return;
  const picker=e.target.closest('.block-picker');

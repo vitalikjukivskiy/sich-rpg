@@ -1,0 +1,155 @@
+/* Customer concept: a paper playing field inside a narrow metal frame. */
+:root{--ink:#211c15;--muted:#665c4d;--paper:#eee3ca;--surface:#f5ecd7;--line:#aa9a7c;--red:#8b2925;--gold:#8e703d;--serif:Georgia,'Times New Roman',serif;font-family:Arial,'Segoe UI',sans-serif;color:#211c15;background:#b7ad98;font-size:13px}
+body{background:repeating-linear-gradient(30deg,#fff1 0 1px,transparent 1px 5px),linear-gradient(110deg,#c1b59d,#e4dac3 50%,#b9ad95);color:#211c15}
+h1,h2,h3,h4,.button,.context-nav,.section-tabs,.filter-tabs{font-family:Arial,'Segoe UI',sans-serif}
+.panel,.parchment,.hero-heading,.hero-parchment,.location-exits,.location-next,.combat-workspace .opponent-panel,main{background:repeating-linear-gradient(32deg,#927e4906 0 1px,transparent 1px 5px),radial-gradient(ellipse at top left,#fff7e1aa,transparent 65%),#eee3ca;color:#211c15;border-color:#9e9078;box-shadow:inset 0 0 0 1px #fff8,0 1px 2px #302b2440}
+.ornate{border:3px double #706755;box-shadow:inset 0 0 0 1px #f9eed3,0 1px 2px #302b2460}
+.ornate::before,.ornate::after{color:#716854;font-size:11px}
+.button{background:linear-gradient(#faf2dd,#d3c7ac);border:1px solid #8e8168;border-radius:2px;color:#272016;text-shadow:0 1px #fff8;box-shadow:inset 0 1px #fff9,0 1px 1px #0003}
+.button.primary{background:linear-gradient(#a34b3f,#72221f);border-color:#57231b;color:#fff8e7;text-shadow:0 1px #34160f}
+.button:hover:not(:disabled){filter:brightness(1.08)}
+button:disabled{opacity:.5}
+.page-heading h1{font-size:25px}.page-heading .eyebrow{font-size:10px;letter-spacing:.5px;color:#6b5940}
+.context-nav,.section-tabs,.market-tabs{background:linear-gradient(#f6ecd4,#ded1b4);border-color:#a4967b;border-radius:2px}
+.context-nav a,.section-tabs button,.market-tabs button{color:#362b1b}
+.context-nav a[aria-current],.section-tabs button.selected,.market-tabs button.selected{background:#cbb68a;color:#21190e;border-color:#8d7854}
+.classic-header{background:repeating-linear-gradient(0deg,#fff1 0 1px,transparent 1px 4px),linear-gradient(#4a4942,#242722 48%,#4f5048);border:3px double #a3987f;color:#eee6d4;box-shadow:0 2px 3px #0005}
+.classic-logo{color:#e8c780;text-shadow:1px 2px 1px #100d08;justify-content:flex-start}
+.classic-logo .solar-mark{font-size:36px;line-height:1;color:#cfba8b}
+.header-tools{display:flex;justify-content:flex-end;gap:2px;min-width:0}
+.header-tools a,.header-tools button{display:flex;align-items:center;justify-content:center;border:1px solid #938a77;background:linear-gradient(#65665d,#34372f);border-radius:2px;color:#fff8e9;font-size:12px;font-weight:bold;padding:2px 12px;min-height:25px;white-space:nowrap}
+.classic-header nav a{background:linear-gradient(#f6edda,#d7ccb3);color:#211c14;border:1px solid #8b8069;border-radius:2px;margin:0;font-size:12px;font-weight:bold;text-shadow:0 1px #fff9}
+.classic-header nav a.active{background:linear-gradient(#b36951,#80342a);border-color:#5f3123;color:#fff5e3;text-shadow:0 1px #351a11}
+.classic-wallet{font-size:11px;color:#ebdfc4}.classic-wallet button{color:#eee3ca}
+.hero-heading{padding:4px 5px!important}
+.hero-heading h2{font-family:Arial,'Segoe UI',sans-serif;font-size:16px;line-height:1.2;margin:0 0 4px;text-shadow:0 1px #fff9}
+.hero-heading h2 small{color:#74372b;font-size:13px}
+.hero-heading .classic-resource{position:relative;display:block;height:18px;margin:3px 0!important}
+.hero-heading .classic-resource>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.hero-heading .classic-resource>progress{display:block;width:100%;height:18px;border:1px solid #514d3c;box-shadow:inset 0 0 2px #0008;border-radius:0;background:#766954}
+.hero-heading .classic-resource>strong{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:bold 12px/18px Arial;color:#fff;text-shadow:0 1px 2px #000}
+progress.health::-webkit-progress-value{background:linear-gradient(#f35245,#b61612)}
+progress.energy::-webkit-progress-value{background:linear-gradient(#54d23d,#1d8418)}
+progress.health::-moz-progress-bar{background:linear-gradient(#f35245,#b61612)}
+progress.energy::-moz-progress-bar{background:linear-gradient(#54d23d,#1d8418)}
+.hero-portrait{border-top:1px solid #8d816c;border-bottom:1px solid #8d816c}
+.equipment-column{top:0!important;bottom:0!important;width:58px!important;padding:2px;background:#e5dbc4;gap:3px!important}
+.equipment-column.left{left:0}.equipment-column.right{right:0}
+.equipment-slot{width:100%!important;height:auto!important;flex:1 1 0!important;min-height:0;border:2px ridge #b0a48b;background:linear-gradient(130deg,#f6eedb,#c2b69d);box-shadow:inset 0 0 3px #6f604850}
+.equipment-slot .item-sprite{background-color:transparent}.equipment-slot:not(.filled) .item-sprite{opacity:.3;filter:grayscale(1)}
+.equipment-slot .empty-slot{color:#74664b;font-size:14px;text-shadow:none}
+.equipment-slot b{background:#eee3cadd;color:#402812;text-shadow:0 1px #fff}
+.hero-parchment{padding:4px 6px!important}
+.hero-class{font:700 11px/14px Arial;margin-bottom:2px}
+.hero-stats{margin:3px 0;padding-top:3px;gap:0 7px}
+.hero-stats>div,.combat-workspace .hero-stats>div{font:11px/12px Arial;padding:2px 0}
+.hero-stats strong{font:700 11px/12px Arial}.hero-stats .icon{width:11px;height:11px}
+.combat-summary{font:10px/12px Arial;padding:2px 0;gap:1px 5px}
+.hero-parchment>.button{font-size:11px;min-height:25px;padding:3px 6px}
+.portrait-caption{font:10px/13px Arial;color:#f8edce}
+.hero-under,.hero-under a{color:#403423}
+.location-status{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:25px;flex-shrink:0}
+.location-status h1{font:bold 18px/1.25 Arial;margin:0;min-width:0}
+.location-status>span{font-size:13px;white-space:nowrap}
+.location-exits{border:2px ridge #b3a78c;border-radius:3px;box-shadow:inset 0 0 0 1px #f5ead5}
+.location-exits h2{font:bold 18px/1.2 Arial;padding-bottom:6px;border-color:#b3a486}
+.location-exits nav>a{color:#241e16;padding:3px 5px;gap:7px}
+.location-exits nav>a strong{font-size:14px;font-weight:400}.location-exits nav>a .icon{color:#544936;width:14px;height:14px}
+.location-exits nav>a:hover{background:#d7c7a2;border-color:#a89876}
+.location-exits nav>a>.icon:last-child{display:none}
+.location-scene{border:2px ridge #9e9279;box-shadow:0 1px 2px #0005}
+.location-caption{padding:15px 10px 8px}.location-caption p{font:12px/1.3 Arial}
+.location-next{border:1px solid #a99a7e;border-left:0;box-shadow:none;padding:7px 9px!important;background:#e9ddc2}
+.location-next h2{font:bold 15px/1.25 Arial!important;margin:0 0 3px!important}.location-next p{font-size:11px;line-height:1.3}
+.location-next .button{min-height:29px;font-size:11px}
+.classic-chat{background:#eee3ca;border-color:#6e6451;color:#211c15}
+.classic-chat .chat-tabs{background:linear-gradient(#e9dfc8,#c8bda4);border-color:#92856b;gap:3px;padding:3px 4px}
+.classic-chat .chat-tabs button{border:2px ridge #b0a38b;border-radius:3px;background:linear-gradient(#f8efd9,#c8bca1);color:#251d13;font:bold 13px Arial;min-height:29px;min-width:105px;padding:3px 10px;box-shadow:none}
+.classic-chat .chat-tabs button.active{background:linear-gradient(#a24b41,#72201e);color:#fff5e3;border-color:#9e6c55}
+.classic-chat .chat-tabs>span{color:#5c503e;font-size:10px}
+.classic-chat .chat-messages{background:repeating-linear-gradient(32deg,#927e4905 0 1px,transparent 1px 5px),#f1e6cf;color:#211b13;font:13px/1.5 Arial}
+.classic-chat .chat-messages p{font:13px/1.5 Arial;padding:3px 0}.classic-chat .chat-messages strong{font:bold 13px Arial;color:#174e7c}
+.classic-chat .chat-messages time{color:#7e7460;font:11px Arial}.classic-chat .chat-empty{font:italic 13px Arial;color:#776851}
+.classic-chat .online-panel{background:#e9dec5;border-left:2px ridge #b1a58a;color:#211a12}
+.classic-chat .online-panel h3{font:bold 14px/1.3 Arial;border-bottom:1px solid #a99a7d;padding:4px 0 7px;margin-bottom:5px}
+.classic-chat .online-panel button{font:12px/1.4 Arial;color:#292014;padding:4px 2px;overflow-wrap:anywhere}
+.classic-chat .online-panel button:disabled{opacity:1;font-weight:bold}.classic-chat .online-panel button.selected{background:#d6c29a}
+.classic-chat #chat-form{background:#d1c4a8;border-color:#8e8065}.classic-chat #chat-input{background:#fff8e8;color:#241d13;border:2px ridge #b5a88c;box-shadow:inset 0 1px 2px #0003}
+.combat-workspace .opponent-panel{border:3px double #766b57}.opponent-panel h2{font:bold 17px/1.2 Arial}
+.opponent-health-value{color:#3f3020}.opponent-facts{font-family:Arial}
+.combat-workspace .tactics,.combat-workspace .battle-log{background:#f1e6ce;border-color:#a89a7c;box-shadow:inset 0 0 0 1px #fff5,0 1px 2px #0003}
+.tactics .choice{color:#2b2217;background:#e9d8b1;border-color:#c1ae85}.tactics .choice:has(input:checked){background:#d5c49d;box-shadow:inset 3px 0 #84382a}
+.battle-log li,.combat-workspace .battle-log li{color:#30271b;font-family:Arial;line-height:1.4}
+.battle-log strong{font-weight:800;color:#15110c}
+.battle-log .event-damage{color:#a52a2a}.battle-log .event-critical{color:#74338b}.battle-log .event-heal{color:#237039}.battle-log .event-block{color:#295d87}.battle-log .event-dodge{color:#505b70}.battle-log .event-effect{color:#945015}.battle-log .event-timeout{color:#a12525}
+.battle-log .event-label{font-size:10px;font-weight:800;display:inline-block;margin-right:6px;padding:1px 4px;border:1px solid currentColor;border-radius:2px;background:#fff8}
+.battle-legend{display:flex;gap:4px 10px;flex-wrap:wrap;font:10px/1.3 Arial;margin:0 0 5px;padding-bottom:5px;border-bottom:1px solid #c5b697}
+.battle-legend span{font-weight:bold}.item-card,.market-lot,.forge-row{border-color:#b7a78a}
+.item-card h3,.market-lot h3{color:#2b2116}.item-card p,.market-lot p{color:#66543b}
+@media(min-width:1000px) and (min-height:650px){
+ #app{gap:5px;padding-bottom:5px}
+ .classic-header{display:grid;grid-template-columns:260px minmax(0,1fr) auto;grid-template-rows:25px 25px;gap:0 6px;height:58px;min-height:58px;padding:2px 7px}
+ .classic-logo{grid-column:1;grid-row:1/3;width:auto;height:auto;font-size:27px;gap:9px}.classic-logo small{font-size:9px;letter-spacing:1px}
+ .header-tools{grid-column:2/4;grid-row:1}.header-tools a,.header-tools button{min-height:24px;padding:1px 12px}
+ .classic-header nav{grid-column:2;grid-row:2;justify-content:flex-end;gap:2px;height:25px;min-width:0}
+ .classic-header nav a{flex:0 1 100px;min-height:24px;height:25px;padding:1px 10px;font-size:12px}
+ .classic-wallet{grid-column:3;grid-row:2;gap:6px;padding-left:4px;justify-content:flex-end}
+ .workspace{grid-template-columns:270px minmax(0,1fr);gap:5px 8px;padding:0 7px}
+ .workspace.combat-workspace{grid-template-columns:270px minmax(0,1fr) 225px;gap:5px 8px}
+ .workspace>main,.workspace>main:not(.route-city){padding:8px}
+ .workspace>main.route-city{display:flex;flex-direction:column;gap:7px;padding:8px;background:repeating-linear-gradient(32deg,#927e4905 0 1px,transparent 1px 5px),#eee3ca}
+ .location-hub{grid-template-columns:minmax(0,1fr) 250px;gap:11px;flex:1;min-height:0;max-width:none}
+ .location-scene{min-height:200px}.location-exits{padding:8px 9px}
+ .location-exits nav{grid-auto-rows:minmax(24px,1fr);gap:1px}.location-exits nav>a{min-height:24px}
+ .hero-portrait,.combat-workspace .hero-portrait{min-height:210px}
+ .classic-chat{flex-basis:clamp(190px,27vh,295px);margin:0 7px}
+ .chat-body{grid-template-columns:minmax(0,1fr) 230px}
+ .combat-workspace .opponent-portrait-frame{height:clamp(210px,35vh,390px)}
+}
+@media(min-width:1000px) and (max-width:1199px) and (min-height:650px){
+ .classic-header{grid-template-columns:230px minmax(0,1fr) auto}.classic-header nav a{padding:1px 6px;font-size:11px}
+ .workspace{grid-template-columns:240px minmax(0,1fr)}.workspace.combat-workspace{grid-template-columns:240px minmax(0,1fr) 185px}
+ .location-hub{grid-template-columns:minmax(0,1fr) 205px;gap:8px}.location-exits nav>a strong{font-size:13px}
+ .equipment-column{width:53px!important}.chat-body{grid-template-columns:minmax(0,1fr) 190px}
+}
+@media(min-width:1000px) and (min-height:650px) and (max-height:719px){
+ .classic-chat{flex-basis:170px}.hero-portrait,.combat-workspace .hero-portrait{min-height:190px}
+ .combat-summary,.experience-row{display:none}.hero-stats{margin:2px 0;padding-top:2px}.hero-parchment>.button{min-height:24px}
+ .location-status{min-height:20px}.location-status h1{font-size:16px}.location-exits{padding:5px 7px}
+ .location-exits h2{font-size:16px;margin-bottom:3px;padding-bottom:3px}.location-exits nav{grid-auto-rows:minmax(21px,1fr)}.location-exits nav>a{min-height:21px;padding:2px 4px}
+ .location-next{padding:5px 7px!important}.location-next h2{font-size:14px!important}
+ .combat-workspace .opponent-portrait-frame{height:185px}
+}
+@media(max-width:999px),(max-height:649px){
+ .classic-header{display:flex;flex-wrap:wrap;height:auto;min-height:0;gap:3px;padding:3px 5px;position:sticky;top:0}
+ .classic-logo{flex:1;height:37px;font-size:23px}.classic-logo small{font-size:7px}.classic-logo .solar-mark{font-size:29px}
+ .header-tools{order:2;width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px}
+ .header-tools a,.header-tools button{font-size:10px;padding:3px 2px;min-height:27px}
+ .classic-header nav{order:3;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));height:auto;flex-basis:100%;gap:2px;margin:0}
+ .classic-header nav a{font-size:12px;min-height:30px;padding:5px 3px}
+ .classic-wallet{padding:0;gap:5px}.classic-wallet button{width:25px}
+ .location-status{display:block;padding:3px 0}.location-status h1{font-size:20px}.location-status>span{display:block;font-size:11px;margin-top:4px}
+ .location-hub{margin:7px 0 10px}.location-exits nav>a{min-height:43px}
+ .location-caption p{font-size:12px}.location-next h2{font-size:18px!important}
+ .classic-chat .chat-tabs button{min-width:75px;font-size:12px}.classic-chat .chat-tabs>span{display:none}
+ .classic-chat .online-panel h3{font-size:12px}.route-arena .tactics .duel-clock{top:143px}
+ .battle-legend{font-size:10px}
+}
+@media(min-width:1000px) and (min-height:650px) and (max-height:719px){
+ .combat-workspace .tactics{padding:6px;margin-bottom:4px}
+ .combat-workspace .duel-clock{padding:3px 6px;font-size:11px;line-height:1.2}
+ .combat-workspace .duel-clock strong{font-size:18px}
+ .combat-workspace .tactics>.duel-clock{margin-bottom:5px}
+ .combat-workspace .tactic-grid legend{font-size:11px;padding-bottom:4px}
+ .combat-workspace .tactics .choice,.combat-workspace .block-picker .choice{min-height:24px;padding:3px 5px;margin-bottom:2px;font-size:11px}
+ .combat-workspace .tactics .choice small{font-size:9px;line-height:1.1}
+ .combat-workspace .power-choice{font-size:10px!important;line-height:1.2;margin:4px 0!important;padding-top:0}
+ .combat-workspace .battle-actions{margin-top:4px}
+ .combat-workspace .battle-actions .button{min-height:29px;font-size:11px;padding:5px 9px}
+ .combat-workspace .battle-log{margin-top:4px;padding:5px}
+ .battle-legend{font-size:9px;gap:2px 7px;margin-bottom:3px;padding-bottom:3px}
+}
+.hero-heading progress.health::-webkit-progress-value{background:linear-gradient(#ed3e30,#ad130e)}
+.hero-heading progress.energy::-webkit-progress-value{background:linear-gradient(#2eaa25,#166c12)}
+.hero-heading progress.health::-moz-progress-bar{background:linear-gradient(#ed3e30,#ad130e)}
+.hero-heading progress.energy::-moz-progress-bar{background:linear-gradient(#2eaa25,#166c12)}
