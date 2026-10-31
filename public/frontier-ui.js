@@ -1,5 +1,5 @@
-import {factionPortrait,regionalScene,itemArt} from './skins.js?v=20261101-concept1';
-import {plural} from './uk.js?v=20261101-concept1';
+import {factionPortrait,regionalScene,itemArt} from './skins.js?v=20261101-concept2';
+import {plural} from './uk.js?v=20261101-concept2';
 let context,trialView='challenges',trialSelection='';
 const statNames={strength:'сили',agility:'спритності',intuition:'вправності'};
 export function journeyTabs(ctx){return `<nav class="journey-tabs" aria-label="Шляхи пригод">${[['forest','Сюжетна кампанія'],['roads','Дорожні пригоди'],['trials','Випробування ради']].map(([id,t])=>`<a href="#${id}" class="${ctx.route===id?'active':''}">${t}</a>`).join('')}</nav>`;}
