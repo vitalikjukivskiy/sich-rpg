@@ -1,12 +1,12 @@
-import {campaignOrigin,trackQuest,trackedQuest,clearQuest,afterTaskAction,observeQuestState} from './quest-return.js?v=20261101-concept1';
-import {questHub,focusQuest} from './quest-hub.js?v=20261101-concept1';
-import {contextNavigation} from './navigation.js?v=20261101-concept1';
-import {captureViewDraft,restoreViewDraft} from './drafts.js?v=20261101-concept1';
-import {portrait,skinPicker,factionPortrait} from './skins.js?v=20261101-concept1';
-import {fitViewport} from './viewport.js?v=20261101-concept1';
-import {blockPicker,battleLog} from './battle-ui.js?v=20261101-concept1';
-import {icon} from './icons.js?v=20261101-concept1';
-import * as classic from './classic.js?v=20261101-concept1';
+import {campaignOrigin,trackQuest,trackedQuest,clearQuest,afterTaskAction,observeQuestState} from './quest-return.js?v=20261101-concept2';
+import {questHub,focusQuest} from './quest-hub.js?v=20261101-concept2';
+import {contextNavigation} from './navigation.js?v=20261101-concept2';
+import {captureViewDraft,restoreViewDraft} from './drafts.js?v=20261101-concept2';
+import {portrait,skinPicker,factionPortrait} from './skins.js?v=20261101-concept2';
+import {fitViewport} from './viewport.js?v=20261101-concept2';
+import {blockPicker,battleLog} from './battle-ui.js?v=20261101-concept2';
+import {icon} from './icons.js?v=20261101-concept2';
+import * as classic from './classic.js?v=20261101-concept2';
 let renderedWatch='',serverOffset=0,sessionGeneration=0,renderedBattleKey='',refreshPending=false,connectionFailures=0;
 const viewDrafts=new Map();
 let healingReturn=null;
@@ -124,6 +124,8 @@ function updateConnectionStatus(){
  status.textContent='Зв’язок із сервером відновлюється. Ваш прогрес збережено.';
 }
 async function refreshState(force=false){
+ force=force===true;
+ if(force&&refreshPending)await new Promise(resolve=>{const wait=()=>{if(!refreshPending)resolve();else setTimeout(wait,100);};wait();});
  if(!state||busy||refreshPending||document.hidden)return;refreshPending=true;
  try{const updated=await request();if(busy||(updated.revision||0)<(state.revision||0))return;
  connectionFailures=0;updateConnectionStatus();
