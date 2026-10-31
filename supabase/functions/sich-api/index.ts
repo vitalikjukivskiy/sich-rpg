@@ -45,7 +45,7 @@ async function commitWorld(before:World,next:World){
 function snapshot(db:World,p:any){
  migrate(p);const clanId=p.clanId;
  const registeredIds=new Set(Object.values(db.accounts).map((a:any)=>a.player));
- return {build:'beta-0.2.4-20261028',serverTime:Date.now(),revision:db.revision,player:{...p,actionReceipts:undefined,journey:p.journey?{...p.journey,events:undefined,pending:undefined}:null},derived:derived(p),cities,items,opponents,quests,...worldSnapshot(db,p),...marketSnapshot(db,p),registered:registeredIds.has(p.id),rankings:Object.values(db.players).filter((x:any)=>registeredIds.has(x.id)||x.id===p.id).sort((a:any,b:any)=>b.wins-a.wins||b.level-a.level).slice(0,20).map((x:any)=>({id:x.id,name:x.name,level:x.level,wins:x.wins,losses:x.losses})),chat:db.chat.filter((m:any)=>!m.channel||m.channel==='city'||m.channel==='clan'&&clanId&&m.clanId===clanId||m.channel==='private'&&(m.from===p.id||m.to===p.id)).slice(-60)};
+ return {build:'beta-0.2.7-20261101',serverTime:Date.now(),revision:db.revision,player:{...p,actionReceipts:undefined,journey:p.journey?{...p.journey,events:undefined,pending:undefined}:null},derived:derived(p),cities,items,opponents,quests,...worldSnapshot(db,p),...marketSnapshot(db,p),registered:registeredIds.has(p.id),rankings:Object.values(db.players).filter((x:any)=>registeredIds.has(x.id)||x.id===p.id).sort((a:any,b:any)=>b.wins-a.wins||b.level-a.level).slice(0,20).map((x:any)=>({id:x.id,name:x.name,level:x.level,wins:x.wins,losses:x.losses})),chat:db.chat.filter((m:any)=>!m.channel||m.channel==='city'||m.channel==='trade'||m.channel==='clan'&&clanId&&m.clanId===clanId||m.channel==='private'&&(m.from===p.id||m.to===p.id)).slice(-60)};
 }
 const te=new TextEncoder();
 async function hashPassword(password:string,salt:string){
@@ -99,7 +99,7 @@ async function perform(req:Request, route:string, body:any, incoming:string,ip:s
    }else if(route==='/api/chat'){
     if(!allow(`chat:${p.id}`,12))throw new ApiError('Повідомлення надходять надто швидко.',429);
     const message=String(body.message||'').trim();if(message.length<1||message.length>300)throw new ApiError('Повідомлення: від 1 до 300 символів.');
-    const channel=body.channel||'city';if(!['city','clan','private'].includes(channel))throw new ApiError('Невідомий канал.');
+    const channel=body.channel||'city';if(!['city','trade','clan','private'].includes(channel))throw new ApiError('Невідомий канал.');
     if(channel==='clan'&&!p.clanId)throw new ApiError('Ви не у курені.');
     if(channel==='private'&&(!next.players[body.to]||body.to===p.id))throw new ApiError('Оберіть іншого персонажа.');
     next.chat.push({from:p.id,to:channel==='private'?body.to:null,channel,clanId:channel==='clan'?p.clanId:null,name:p.name,text:message,at:now,city:p.city});next.chat=next.chat.slice(-500);
