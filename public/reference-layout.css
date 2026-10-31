@@ -24,52 +24,60 @@
 .location-next p{font-size:12px;line-height:1.4;margin:0;color:#6e4e2b}
 .location-next .button{min-height:34px;flex-shrink:0;font-size:12px;white-space:nowrap}
 
+.hero-heading{flex-shrink:0;padding:8px 9px;border-bottom:1px solid #9d7c40}.hero-heading h2{font-size:17px;line-height:1.2;text-align:center;margin:0 0 6px;overflow-wrap:anywhere}.hero-heading h2 small{font-size:12px}.hero-heading .classic-resource{margin:4px 0}.hero-portrait>.legacy-skin.paperdoll-skin{object-fit:contain;object-position:center top}.route-city>.context-nav{display:none}
+
 @media(min-width:1000px) and (min-height:650px){
  html,body{height:100%;overflow:hidden}
- #app{height:100dvh;display:flex;flex-direction:column;gap:7px;padding-bottom:6px}
- .classic-header{height:52px;min-height:52px;flex-shrink:0;padding:0 10px;flex-wrap:nowrap}
- .classic-logo{flex:0 0 134px;width:134px;height:auto;font-size:23px}
- .classic-header nav{order:0;flex-basis:auto;height:auto;overflow:visible}
- .classic-header nav a{font-size:13px;min-width:0;padding:0 11px}
+ #app{height:100dvh;display:flex;flex-direction:column;gap:5px;padding-bottom:5px}
+ .classic-header{height:38px;min-height:38px;flex-shrink:0;padding:0 8px;flex-wrap:nowrap}
+ .classic-logo{flex:0 0 118px;width:118px;height:auto;font-size:20px;gap:6px}
+ .classic-logo small{font-size:6px;letter-spacing:1.5px}
+ .classic-header nav{order:0;flex-basis:auto;height:auto;overflow:visible;justify-content:center}
+ .classic-header nav a{flex:0 1 110px;font-size:12px;min-width:0;padding:0 13px;margin:2px 0}
  .classic-wallet{height:auto;gap:8px;padding-left:10px}
  .classic-wallet button{max-width:none}
  .classic-wallet button span{display:none}
  .classic-wallet .header-health{display:none!important}
- .workspace{width:100%;max-width:none;flex:1;min-height:0;margin:0;padding:0 9px;display:grid;grid-template-columns:205px minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:6px 12px;align-items:stretch}
+ .workspace{width:100%;max-width:none;flex:1;min-height:0;margin:0;padding:0 8px;display:grid;grid-template-columns:260px minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:5px 9px;align-items:stretch}
  .workspace>.left-sidebar{display:block;grid-column:1;grid-row:1/3;min-height:0;overflow:hidden}
  .workspace:not(.combat-workspace)>.right-sidebar{display:none}
- .workspace>main,.workspace>main:not(.route-city){grid-column:2;grid-row:1;height:100%;min-height:0;min-width:0;padding:12px;overflow:auto;scroll-padding:12px;overscroll-behavior:contain}
+ .workspace>main,.workspace>main:not(.route-city){grid-column:2;grid-row:1;height:100%;min-height:0;min-width:0;padding:10px;overflow:auto;scroll-padding:10px;overscroll-behavior:contain}
  .workspace>.screen-pages{grid-column:2;grid-row:2}
- .workspace:not(.combat-workspace)>main>*{max-width:1100px}
- .workspace>main>.location-hub,.workspace>main>.location-next{max-width:810px}
- .workspace>main.route-city{display:block;padding:12px;background:linear-gradient(120deg,#d7bc89,#e9d7b1 55%,#c6a977);border:3px double #91713c;box-shadow:inset 0 0 40px #76502c30,0 2px 5px #0008}
+ .workspace:not(.combat-workspace)>main>*{max-width:none}
+ .workspace>main>.location-hub,.workspace>main>.location-next{max-width:none}
+ .workspace>main.route-city{display:flex;flex-direction:column;gap:10px;padding:10px;background:linear-gradient(120deg,#d7bc89,#e9d7b1 55%,#c6a977);border:3px double #91713c;box-shadow:inset 0 0 40px #76502c30,0 2px 5px #0008}
  .route-city>.context-nav{margin:0 0 10px;padding:0 0 7px;border:0;border-bottom:1px solid #ac8c51;background:none}
- .location-scene{height:255px}
- .location-exits{padding:8px 9px}
+ .location-hub{grid-template-columns:minmax(0,1fr) 260px;flex:1;min-height:0;margin:0;gap:10px;align-items:stretch}
+ .location-scene{height:auto;min-height:245px}
+ .location-exits{padding:10px 11px;display:flex;flex-direction:column}
  .location-exits h2{font-size:18px;margin-bottom:5px;padding-bottom:5px}
- .location-exits nav{gap:0}
- .location-exits nav>a{min-height:24px;padding:3px 5px}
- .location-next{padding:9px 13px}
+ .location-exits nav{flex:1;gap:1px;align-content:start;grid-auto-rows:minmax(26px,1fr)}
+ .location-exits nav>a{min-height:26px;padding:4px 6px}
+ .location-exits nav>a strong{font-size:14px}
+ .location-next{padding:10px 13px;flex-shrink:0}
  .location-next small{display:none}
  .location-next h2{font-size:18px;margin:0 0 4px}
  .location-next p{font-size:11px;line-height:1.4}
  .hero-panel{height:calc(100% - 24px);min-height:0;display:flex;flex-direction:column}
- .hero-portrait{flex:1;height:auto;min-height:180px}
- .hero-parchment{flex-shrink:0;padding:7px 8px}
+ .hero-portrait{flex:1;height:auto;min-height:225px}
+ .hero-parchment{flex-shrink:0;padding:6px 8px}
  .hero-parchment h2{font-size:17px;line-height:1.2;margin:0 0 5px}
- .hero-class{font-size:11px;margin-bottom:5px}
+ .hero-class{font-size:12px;margin-bottom:3px}
  .classic-resource{grid-template-columns:64px minmax(0,1fr) 55px;font-size:11px;gap:4px;margin:4px 0}
  .classic-resource strong{font-size:10px;white-space:nowrap}
- .hero-stats{margin:6px 0;padding-top:5px;gap:0 7px}
- .hero-stats>div{font-size:11px;padding:3px 0;gap:4px}
+ .experience-row{display:block;margin:4px 0}
+ .experience-row>span,.experience-row>strong{display:none}
+ .experience-row>progress{display:block;width:100%;height:4px}
+ .hero-stats{margin:4px 0;padding-top:3px;gap:0 8px}
+ .hero-stats>div{font-size:11px;padding:2px 0;gap:4px}
  .hero-stats strong{font-size:12px}
- .combat-summary{font-size:11px;padding:5px 0;gap:4px 7px}
- .hero-parchment>.button{min-height:30px;padding:5px 8px;font-size:11px}
- .equipment-column{top:9px;bottom:25px;width:34px;gap:4px}
- .equipment-slot{width:34px;height:31px;min-height:0;flex:0 1 31px}
+ .combat-summary{font-size:11px;padding:3px 0;gap:3px 7px}
+ .hero-parchment>.button{min-height:27px;padding:4px 8px;font-size:11px}
+ .equipment-column{--gear-size:clamp(42px,6.5vh,62px);top:10px;bottom:24px;width:var(--gear-size);gap:5px}
+ .equipment-slot{width:var(--gear-size);height:var(--gear-size);min-height:0;flex:0 0 var(--gear-size)}
  .hero-under{font-size:10px;margin:6px 2px;gap:5px}
  .hero-under a{font-size:10px}
- .classic-chat{position:relative;inset:auto;z-index:auto;display:flex;flex-direction:column;flex:0 0 clamp(210px,29vh,270px);height:auto;min-height:0;max-width:none;margin:0 9px;box-shadow:0 2px 8px #0005}
+ .classic-chat{position:relative;inset:auto;z-index:auto;display:flex;flex-direction:column;flex:0 0 clamp(190px,26vh,270px);height:auto;min-height:0;max-width:none;margin:0 8px;box-shadow:0 2px 8px #0005}
  .chat-body{display:grid;grid-template-columns:minmax(0,1fr) 210px;flex:1;min-height:0}
  .classic-chat .chat-main{display:flex;flex-direction:column;min-height:0}
  .classic-chat .chat-messages{flex:1;height:auto!important;min-height:0;overflow:auto;padding:8px 12px}
@@ -77,36 +85,39 @@
  .classic-chat .online-panel{padding:6px 9px;min-height:0;max-height:none;overflow:auto}
  .classic-chat+footer{display:none}
  .chat-toggle{display:none}
+ .hero-heading{padding:6px 8px}
+ .hero-heading h2{font-size:17px;margin-bottom:4px}
+ .hero-heading .classic-resource{margin:3px 0}
+ .character-full>.character-skin{height:clamp(230px,34vh,370px);width:220px;max-width:100%;margin:0 auto 10px}
 }
 
 @media(min-width:1000px) and (max-width:1199px) and (min-height:650px){
- .classic-logo{flex-basis:116px;width:116px}
- .classic-header nav a{font-size:12px;padding:0 7px}
+ .classic-logo{flex-basis:105px;width:105px}
+ .classic-header nav a{flex-basis:100px;font-size:12px;padding:0 9px}
  .classic-wallet{gap:6px;padding-left:8px}
  .chat-body{grid-template-columns:minmax(0,1fr) 185px}
- .location-hub{grid-template-columns:minmax(0,1fr) 222px;gap:10px}
- .location-scene{height:255px}
+ .workspace{grid-template-columns:230px minmax(0,1fr)}
+ .location-hub{grid-template-columns:minmax(0,1fr) 220px;gap:8px}
  .location-exits{padding:8px 9px}
 }
 
 @media(min-width:1000px) and (min-height:650px) and (max-height:719px){
- .hero-portrait{min-height:155px}
- .equipment-column{width:28px;top:8px;bottom:22px;gap:3px}
- .equipment-slot{width:28px;height:24px;flex-basis:24px}
+ .hero-portrait{min-height:210px}
+ .equipment-column{top:8px;bottom:20px;gap:4px}
  .experience-row,.hero-parchment .combat-summary{display:none}
  .hero-parchment{padding:6px 7px}
  .hero-parchment h2{font-size:16px;margin-bottom:3px}
  .hero-class{margin-bottom:3px}
  .hero-stats{margin:4px 0;padding-top:4px}
- .classic-chat{flex-basis:200px}
+ .classic-chat{flex-basis:185px}
  .workspace>main.route-city{padding:9px}
  .route-city>.context-nav{margin-bottom:6px;padding-bottom:3px}
- .location-scene{height:235px}
+ .location-scene{min-height:240px}
  .location-exits{padding:6px 9px}
  .location-exits h2{font-size:17px;margin-bottom:4px;padding-bottom:4px}
  .location-exits nav>a{min-height:22px;padding:2px 5px}
  .location-exits nav>a strong{font-size:12px;line-height:1.2}
- .location-hub{margin-bottom:9px}
+ .location-hub{margin-bottom:0}
  .location-next{padding:8px 11px}
  .location-next h2{font-size:18px}
 }
@@ -120,6 +131,12 @@
 }
 
 @media(max-width:899px),(max-height:649px){
+ .classic-logo{height:36px;font-size:21px}
+ .classic-logo small{font-size:6px}
+ .classic-header nav{margin-bottom:3px}
+ .classic-header nav a{min-height:29px;padding:4px 3px}
+ .route-arena .tactics .duel-clock{top:103px}
+ .character-full>.character-skin{height:260px;width:220px;max-width:100%}
  .location-hub{grid-template-columns:1fr;gap:10px;margin:0 0 10px;max-width:none}
  .location-scene{height:225px;min-height:0}
  .location-caption,.location-scene>figcaption{padding:22px 12px 12px}
@@ -155,5 +172,3 @@
  .location-exits nav>a small{font-size:11px}
  .location-exits nav>a>.icon{width:14px;height:14px}
 }
-
-.hero-heading{flex-shrink:0;padding:8px 9px;border-bottom:1px solid #9d7c40}.hero-heading h2{font-size:17px;line-height:1.2;text-align:center;margin:0 0 6px;overflow-wrap:anywhere}.hero-heading h2 small{font-size:12px}.hero-heading .classic-resource{margin:4px 0}.hero-portrait>.legacy-skin.paperdoll-skin{object-fit:contain;object-position:center top}.route-city>.context-nav{display:none}

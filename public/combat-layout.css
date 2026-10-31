@@ -12,7 +12,7 @@
 .combat-workspace .tactics .choice small{display:block}
 
 @media(min-width:1000px) and (min-height:650px){
- .workspace.combat-workspace{grid-template-columns:205px minmax(0,1fr) 215px;grid-template-rows:minmax(0,1fr) auto;gap:6px 10px;align-items:stretch}
+ .workspace.combat-workspace{grid-template-columns:260px minmax(0,1fr) 230px;grid-template-rows:minmax(0,1fr) auto;gap:6px 10px;align-items:stretch}
  .combat-workspace>.left-sidebar{display:block;grid-column:1;grid-row:1/3;min-height:0;overflow:hidden}
  .combat-workspace>.opponent-sidebar{display:block;grid-column:3;grid-row:1/3;min-height:0;overflow:auto;padding:0}
  .combat-workspace>main,.combat-workspace>main:not(.route-city){grid-column:2;grid-row:1;min-width:0;min-height:0;height:100%;padding:10px;overflow:auto;scroll-padding:10px}
@@ -23,20 +23,20 @@
  .combat-workspace .page-heading .eyebrow{display:none}
  .combat-workspace main:has(.tactics)>.page-heading{display:none}
  .combat-workspace .hero-panel{height:calc(100% - 24px)}
- .combat-workspace .hero-portrait{min-height:165px}
- .combat-workspace .hero-parchment{padding:8px}
+ .combat-workspace .hero-portrait{min-height:225px}
+ .combat-workspace .hero-parchment{padding:6px 8px}
  .combat-workspace .hero-parchment h2{font-size:17px;line-height:1.2}
- .combat-workspace .hero-class{font-size:11px;margin-bottom:5px}
+ .combat-workspace .hero-class{font-size:12px;margin-bottom:3px}
  .combat-workspace .classic-resource{grid-template-columns:62px minmax(0,1fr) 55px;font-size:10px}
  .combat-workspace .classic-resource strong{font-size:10px}
- .combat-workspace .hero-stats>div{font-size:11px;padding:4px 0}
+ .combat-workspace .hero-stats>div{font-size:11px;padding:2px 0}
  .combat-workspace .combat-summary{font-size:10px;gap:5px 8px}
  .combat-workspace .opponent-panel{padding:10px;min-height:0}
  .combat-workspace .opponent-panel h2{font-size:18px;margin-bottom:8px}
  .combat-workspace .opponent-health-value{font-size:11px;margin:5px 0 9px}
- .combat-workspace .opponent-portrait-frame{height:clamp(185px,30vh,285px);margin-bottom:10px}
+ .combat-workspace .opponent-portrait-frame{height:clamp(240px,40vh,440px);margin-bottom:10px}
  .combat-workspace .opponent-facts{font-size:11px;gap:6px}
- .combat-workspace .tactics{max-width:800px;padding:10px;margin:0 auto 8px}
+ .combat-workspace .tactics{max-width:none;padding:10px;margin:0 auto 8px}
  .combat-workspace .tactic-grid{display:grid;grid-template-columns:minmax(105px,.9fr) minmax(125px,1.05fr) minmax(170px,1.4fr);gap:10px}
  .combat-workspace .tactic-grid fieldset{display:block;grid-column:auto;min-width:0;margin:0;padding:0;border:0}
  .combat-workspace .tactic-grid legend{font-size:12px;line-height:1.3;padding:0 0 7px;margin:0;float:none;width:auto;font-weight:bold}
@@ -49,7 +49,7 @@
  .combat-workspace .power-choice{font-size:11px!important;line-height:1.35;margin:7px 0!important;display:block}
  .combat-workspace .power-choice input{vertical-align:middle}
  .combat-workspace .power-choice small{display:none}
- .combat-workspace .duel-clock{max-width:800px;margin:0 auto 8px;padding:7px 10px;text-align:center;font-size:12px;line-height:1.35}
+ .combat-workspace .duel-clock{max-width:none;margin:0 auto 8px;padding:7px 10px;text-align:center;font-size:12px;line-height:1.35}
  .combat-workspace .duel-clock strong{font-size:22px;color:#17120c}
  .combat-workspace .duel-clock.urgent strong{color:#8d2119}
  .combat-workspace .tactics>.duel-clock{margin:0 0 10px}
@@ -62,9 +62,9 @@
  .combat-workspace .battle-log li{font-size:12px;line-height:1.4;padding:5px 0}
  .combat-workspace .log-pages{font-size:11px;margin-top:4px}
  .combat-workspace .log-pages .button{min-height:25px;font-size:11px;padding:4px 8px}
- .combat-workspace .enemy-intent{max-width:800px;margin:0 auto 8px;padding:8px 10px}
+ .combat-workspace .enemy-intent{max-width:none;margin:0 auto 8px;padding:8px 10px}
  .combat-workspace .enemy-intent p{font-size:12px;line-height:1.4;margin:4px 0 0}
- .combat-workspace .battle-result,.combat-workspace .waiting-duel{max-width:800px;margin:0 auto;padding:18px}
+ .combat-workspace .battle-result,.combat-workspace .waiting-duel{max-width:none;margin:0 auto;padding:18px}
  .combat-workspace .battle-result h2,.combat-workspace .waiting-duel h2{font-size:25px;margin:0 0 9px}
  .combat-workspace .battle-result p,.combat-workspace .waiting-duel p{font-size:13px;line-height:1.5}
  .combat-workspace .battle-result>.quest-emblem{width:34px;height:34px;margin:10px auto 18px}
@@ -74,11 +74,11 @@
 }
 
 @media(min-width:1000px) and (max-width:1199px) and (min-height:650px){
- .workspace.combat-workspace{grid-template-columns:185px minmax(0,1fr) 185px;gap:6px 8px}
+ .workspace.combat-workspace{grid-template-columns:230px minmax(0,1fr) 195px;gap:6px 8px}
  .combat-workspace>main,.combat-workspace>main:not(.route-city){padding:8px}
  .combat-workspace .classic-resource{grid-template-columns:55px minmax(0,1fr) 49px;font-size:9px;gap:4px}
  .combat-workspace .classic-resource strong{font-size:9px}
- .combat-workspace .hero-parchment{padding:7px}
+ .combat-workspace .hero-parchment{padding:6px 7px}
  .combat-workspace .hero-parchment h2{font-size:15px}
  .combat-workspace .hero-stats>div{font-size:10px}
  .combat-workspace .combat-summary{font-size:9px;gap:4px 6px}
@@ -117,4 +117,16 @@
  .combat-workspace .combatant>.combat-skin,.combat-workspace .combatant>.combat-face,.combat-workspace .combatant>img{display:block;width:34px;height:46px;flex:0 0 34px;object-fit:cover}
  .combat-workspace .battle-log{margin-top:10px}
  .combat-workspace .battle-log li{font-size:12px;line-height:1.45}
+}
+
+@media(min-width:1000px) and (min-height:650px) and (max-height:719px){
+ .combat-workspace .hero-portrait{min-height:210px}
+ .combat-workspace .opponent-portrait-frame{height:200px}
+}
+
+@media(max-width:899px),(max-height:649px){
+ .combat-workspace .combatant>.combat-skin,.combat-workspace .combatant>.combat-face,.combat-workspace .combatant>img{width:46px;height:64px;flex-basis:46px}
+}
+@media(max-width:370px){
+ .combat-workspace .combatant>.combat-skin,.combat-workspace .combatant>.combat-face,.combat-workspace .combatant>img{width:38px;height:54px;flex-basis:38px}
 }

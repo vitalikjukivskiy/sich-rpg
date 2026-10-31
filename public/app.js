@@ -1,12 +1,12 @@
-import {campaignOrigin,trackQuest,trackedQuest,clearQuest,afterTaskAction,observeQuestState} from './quest-return.js?v=20261029-layout2';
-import {questHub,focusQuest} from './quest-hub.js?v=20261029-layout2';
-import {contextNavigation} from './navigation.js?v=20261029-layout2';
-import {captureViewDraft,restoreViewDraft} from './drafts.js?v=20261029-layout2';
-import {portrait,skinPicker,factionPortrait} from './skins.js?v=20261029-layout2';
-import {fitViewport} from './viewport.js?v=20261029-layout2';
-import {blockPicker,battleLog} from './battle-ui.js?v=20261029-layout2';
-import {icon} from './icons.js?v=20261029-layout2';
-import * as classic from './classic.js?v=20261029-layout2';
+import {campaignOrigin,trackQuest,trackedQuest,clearQuest,afterTaskAction,observeQuestState} from './quest-return.js?v=20261101-concept1';
+import {questHub,focusQuest} from './quest-hub.js?v=20261101-concept1';
+import {contextNavigation} from './navigation.js?v=20261101-concept1';
+import {captureViewDraft,restoreViewDraft} from './drafts.js?v=20261101-concept1';
+import {portrait,skinPicker,factionPortrait} from './skins.js?v=20261101-concept1';
+import {fitViewport} from './viewport.js?v=20261101-concept1';
+import {blockPicker,battleLog} from './battle-ui.js?v=20261101-concept1';
+import {icon} from './icons.js?v=20261101-concept1';
+import * as classic from './classic.js?v=20261101-concept1';
 let renderedWatch='',serverOffset=0,sessionGeneration=0,renderedBattleKey='',refreshPending=false,connectionFailures=0;
 const viewDrafts=new Map();
 let healingReturn=null;
@@ -101,6 +101,7 @@ function account(mode='register'){const registered=state.registered;$('#account-
 document.addEventListener('click',e=>{const taskLink=e.target.closest('a[data-track-quest]');if(taskLink&&state){trackQuest(state,{id:taskLink.dataset.trackQuest,kind:taskLink.dataset.trackKind});}const heal=e.target.closest('a[data-campaign-return]');if(heal&&state)healingReturn={playerId:state.player.id,campaignId:heal.dataset.campaignReturn};if(e.target.closest('[data-focus-quest]')){e.preventDefault();const task=trackedQuest(state);if(task){openTaskProgress(task);render();}return;}const b=e.target.closest('button');if(!b||b.disabled)return;
  if(b.hasAttribute('data-clear-quest')){clearQuest(state);render({preserveDrafts:true});return;}
  if(b.hasAttribute('data-retry'))return boot();
+ if(b.hasAttribute('data-refresh')){b.disabled=true;refreshState(true).then(ok=>{if(ok)toast('Дані оновлено.');}).finally(()=>{if(b.isConnected)b.disabled=false;});return;}
  if(b.dataset.skin)return act({type:'skin',skin:b.dataset.skin},'Образ персонажа змінено.');
  if(b.dataset.go)return go(b.dataset.go);
  if(b.hasAttribute('data-account'))return account();
@@ -122,13 +123,13 @@ function updateConnectionStatus(){
  if(!status){status=document.createElement('div');status.className='connection-status';status.setAttribute('role','status');document.querySelector('.classic-header')?.after(status);}
  status.textContent='Зв’язок із сервером відновлюється. Ваш прогрес збережено.';
 }
-async function refreshState(){
+async function refreshState(force=false){
  if(!state||busy||refreshPending||document.hidden)return;refreshPending=true;
  try{const updated=await request();if(busy||(updated.revision||0)<(state.revision||0))return;
  connectionFailures=0;updateConnectionStatus();
  const roundChanged=state.player.battle?.round!==updated.player.battle?.round||state.player.battle?.id!==updated.player.battle?.id;if(roundChanged){power=false;ability=false;shot=false;}state=updated;classic.setup({state,route,nav,icon,esc,progress,btn,statNames,readyQuests,qProgress,pageHeading,questTask:trackedQuest(state),send:sendWorld,refresh:render});
  const after=watchState();
- if(renderedWatch!==after){render({preserveDrafts:true});return;}
+ if(force||renderedWatch!==after){render({preserveDrafts:true});return true;}
  const box=$('#chat-messages'),atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<30,html=classic.chatMessages();if(box.innerHTML!==html){box.innerHTML=html;if(atBottom)box.scrollTop=box.scrollHeight;}
  }catch(error){if(!error.stale){connectionFailures++;updateConnectionStatus();}}finally{refreshPending=false;}
 }

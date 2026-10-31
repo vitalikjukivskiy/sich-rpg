@@ -22,7 +22,7 @@ export function factionPortrait(id,extra='',label=''){
 }
 export function regionalScene(cityId,extra='',label=''){
  const coordinates={forest:[0,0],mountain:[768,0],harbor:[0,512],ottoman:[768,512]};
- if(!coordinates[cityId])return `<img class="regional-city region-castle ${escape(extra)}" src="./assets/sich-city.png" alt="${escape(label||'Запорозька Січ')}" decoding="async">`;
+ if(!coordinates[cityId])return `<img class="regional-city region-castle ${escape(extra)}" src="./assets/sich-square-v2.png" alt="${escape(label||'Запорозька Січ')}" decoding="async">`;
  return atlasFrame({file:'sich-cities.png',width:1536,height:1024,box:[...coordinates[cityId],768,512],classes:'regional-city region-'+cityId+' '+extra,label,fit:'xMidYMid slice'});
 }
 export function itemArt(art,extra='',label=''){
