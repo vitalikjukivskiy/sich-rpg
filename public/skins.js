@@ -26,6 +26,7 @@ export function regionalScene(cityId,extra='',label=''){
  return atlasFrame({file:'sich-cities.png',width:1536,height:1024,box:[...coordinates[cityId],768,512],classes:'regional-city region-'+cityId+' '+extra,label,fit:'xMidYMid slice'});
 }
 export function itemArt(art,extra='',label=''){
+ if(art==='ring')return `<svg class="item-sprite art-ring ${escape(extra)}" viewBox="0 0 100 100" ${label?`role="img" aria-label="${escape(label)}"`:'aria-hidden="true"'} focusable="false"><ellipse cx="50" cy="64" rx="25" ry="25" fill="none" stroke="#8b672e" stroke-width="12"/><ellipse cx="50" cy="64" rx="25" ry="25" fill="none" stroke="#d9b66a" stroke-width="5"/><path d="M32 19 50 12 68 19 73 39 63 51 37 51 27 39Z" fill="#d4ae60" stroke="#715024" stroke-width="3"/><path d="M50 20v24m-10-20v12l10 8 10-8V24M44 30l6 5 6-5" fill="none" stroke="#765329" stroke-width="4" stroke-linejoin="round"/></svg>`;
  const classMatch=/^(weapon|armor)-(sabre|hammer|mace|pike|axe)$/.exec(art);
  if(classMatch)return atlasFrame({file:'class-equipment.png',width:1983,height:793,box:[classKeys.indexOf(classMatch[2])*396.6,classMatch[1]==='armor'?364:0,396.6,classMatch[1]==='armor'?429:364],classes:'item-sprite art-'+art+' '+extra,label});
  const legacy={sword:[0,0],axe:[1,0],pistol:[2,0],mail:[3,0],plate:[3,0],helmet:[0,1],boots:[1,1],shield:[2,1],potion:[3,1],belt:[0,2],amulet:[1,2],ring:[1,2],bulava:[2,2],scroll:[3,2],ore:[0,3],herb:[1,3],resin:[2,3],clan:[3,3]},cell=legacy[art]||legacy.scroll;

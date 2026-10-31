@@ -30,6 +30,12 @@ const b=await api('/api/register',one.token,{name:'Тестовий козак',
 const logged=await api('/api/login',two.token,{name:'Тестовий козак',password:'super-secret-pass'});assert.equal(logged.data.player.name,'Тестовий козак');
 await api('/api/chat',logged.token,{message:'Слава Січі!'});
 const chat=await api('/api/state',one.token);assert.ok(chat.data.chat.some(m=>m.text==='Слава Січі!'));
+const recipient=await api('/api/state'),spectator=await api('/api/state');
+await api('/api/chat',logged.token,{message:'Торгова перевірка',channel:'trade'});
+assert.ok((await api('/api/state',recipient.token)).data.chat.some(m=>m.text==='Торгова перевірка'&&m.channel==='trade'));
+await api('/api/chat',logged.token,{message:'Приватна перевірка',channel:'private',to:recipient.data.player.id});
+assert.ok((await api('/api/state',recipient.token)).data.chat.some(m=>m.text==='Приватна перевірка'));
+assert.ok(!(await api('/api/state',spectator.token)).data.chat.some(m=>m.text==='Приватна перевірка'));
 const repeat={type:'buy',item:'potion',requestId:'01234567-89ab-cdef-0123-456789abcdef'};
 const bought=await api('/api/action',one.token,repeat),again=await api('/api/action',one.token,repeat);
 assert.equal(again.data.player.gold,bought.data.player.gold);assert.equal(again.data.player.instances.length,bought.data.player.instances.length);
