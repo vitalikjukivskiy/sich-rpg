@@ -1,0 +1,206 @@
+{
+  "schema": 1,
+  "capturedAt": "2026-11-01",
+  "scope": "Підтверджені публічними довідниками розділи. Це не повний перелік приватних вікон клієнта та не позначка готової реалізації.",
+  "sections": [
+    {
+      "id": "inventory",
+      "label": "Спорядження",
+      "source": "http://lib.carnage.com.ru/items/",
+      "sections": [
+        "Шоломи",
+        "Чоботи",
+        "Броня",
+        "Рукавиці",
+        "Пояси",
+        "Щити",
+        "Наручі",
+        "Штани",
+        "Наплічники",
+        "Каблучки",
+        "Намиста",
+        "Сережки",
+        "Кастети",
+        "Дубини",
+        "Мечі",
+        "Ножі",
+        "Сокири",
+        "Молоти",
+        "Списи",
+        "Ліцензії",
+        "Камені",
+        "Руни"
+      ],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "exchange",
+      "label": "Біржа",
+      "source": "http://lib.carnage.com.ru/world/builds/exchange/",
+      "sections": [
+        "Товари",
+        "Мої ставки",
+        "Продати",
+        "Видача й повернення",
+        "Статистика"
+      ],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "repair",
+      "label": "Майстерня",
+      "source": "http://lib.carnage.com.ru/world/builds/repair/",
+      "sections": [
+        "Ремонт",
+        "Покращення",
+        "Посилення",
+        "Зачарування",
+        "Клановий ремонт"
+      ],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "hospital",
+      "label": "Лікарня",
+      "source": "http://lib.carnage.com.ru/world/builds/hospital/",
+      "sections": [
+        "Лікування",
+        "Зміна параметрів"
+      ],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "townhall",
+      "label": "Ратуша",
+      "source": "http://lib.carnage.com.ru/world/builds/hall/",
+      "sections": [
+        "Реєстрація клану",
+        "Вибори консула",
+        "Вибори голови клану"
+      ],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "lottery",
+      "label": "Лотерея",
+      "source": "http://lib.carnage.com.ru/world/tournaments/",
+      "sections": [
+        "5 із 25",
+        "Перевірити тираж",
+        "Колесо деміургів",
+        "Бінго",
+        "Чарівні камінці"
+      ],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "fishing",
+      "label": "Риболовля",
+      "source": "http://lib.carnage.com.ru/world/fishing/",
+      "sections": [
+        "Спорядження рибалки",
+        "Гільдія рибалок",
+        "Завдання",
+        "Турніри",
+        "Водяники",
+        "Риба та юшка"
+      ],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "alignments",
+      "label": "Схильності",
+      "source": "http://lib.carnage.com.ru/aligns/",
+      "sections": [
+        "Темрява",
+        "Світло",
+        "Порядок",
+        "Хаос",
+        "Консули",
+        "Взаємини",
+        "Хранителі",
+        "Карма"
+      ],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "professions",
+      "label": "Професії",
+      "source": "http://lib.carnage.com.ru/license/",
+      "sections": [
+        "Найманець",
+        "Торговець",
+        "Священник",
+        "Наставник",
+        "Лікар"
+      ],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "dungeons",
+      "label": "Підземелля",
+      "source": "http://lib.carnage.com.ru/world/ruptures1/",
+      "sections": [
+        "Нора",
+        "Розлом",
+        "Темниця",
+        "Катакомби",
+        "Лабіринт"
+      ],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "towns",
+      "label": "Міста",
+      "source": "http://lib.carnage.com.ru/world/towns/",
+      "sections": [
+        "Лютеція",
+        "Ар Каїм",
+        "Моріон",
+        "Саркел",
+        "Кітеж",
+        "Анкор",
+        "Аврора",
+        "Карта світу"
+      ],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "achievements",
+      "label": "Досягнення",
+      "source": "http://lib.carnage.com.ru/achs/",
+      "sections": [],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "pets",
+      "label": "Тварини",
+      "source": "https://vendetta.ucoz.net/index/zhivotnye/0-27",
+      "sections": [
+        "Бойові",
+        "Їздові",
+        "Постоялий двір"
+      ],
+      "status": "documented-not-ported"
+    },
+    {
+      "id": "alchemy",
+      "label": "Алхімія",
+      "source": "https://vendetta.ucoz.net/index/alkhimija/0-44",
+      "sections": [
+        "Рецепти",
+        "Каталізатори",
+        "Ступені майстерності"
+      ],
+      "status": "documented-not-ported"
+    }
+  ],
+  "unverifiedClientWindows": [
+    "Усі розділи особистої інформації персонажа",
+    "Повна структура інвентарю та кількість одночасних прикрас",
+    "Банк: рахунки, перекази, обмін і ліміти",
+    "Бойові заявки, перегляд поточних і завершених боїв, командні режими",
+    "Налаштування, контакти, ігнорування, приватні угоди",
+    "Прийоми, руни, стан травм і тимчасові ефекти"
+  ]
+}

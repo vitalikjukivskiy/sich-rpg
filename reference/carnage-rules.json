@@ -1,0 +1,571 @@
+{
+  "schema": 1,
+  "capturedAt": "2026-11-01",
+  "integration": "reference-only",
+  "attributeContributions": {
+    "source": "https://vendetta.ucoz.net/index/0_lvl/0-6",
+    "status": "archival-explicit",
+    "perPoint": {
+      "strength": {
+        "stamina": 6
+      },
+      "agility": {
+        "dodge": 3,
+        "antiDodge": 3
+      },
+      "instinct": {
+        "critical": 3,
+        "antiCritical": 3
+      },
+      "vitality": {
+        "health": 6
+      }
+    },
+    "unknown": [
+      "Вплив сили на формулу шкоди",
+      "Вплив інтелекту поза вимогами предметів",
+      "Перетворення модифікаторів на імовірності"
+    ]
+  },
+  "buildRecommendations": {
+    "kind": "recommended-builds-not-item-requirements-or-progression",
+    "entries": [
+      {
+        "level": 0,
+        "weapon": "club",
+        "stats": {
+          "strength": 5,
+          "agility": 3,
+          "instinct": 3,
+          "vitality": 4
+        },
+        "source": "https://vendetta.ucoz.net/index/0_lvl/0-6"
+      },
+      {
+        "level": 0,
+        "weapon": "knife",
+        "stats": {
+          "strength": 4,
+          "agility": 4,
+          "instinct": 4,
+          "vitality": 3
+        },
+        "source": "https://vendetta.ucoz.net/index/0_lvl/0-6"
+      },
+      {
+        "level": 0,
+        "weapon": "spear",
+        "stats": {
+          "strength": 4,
+          "agility": 3,
+          "instinct": 4,
+          "vitality": 4
+        },
+        "source": "https://vendetta.ucoz.net/index/0_lvl/0-6"
+      },
+      {
+        "level": 0,
+        "weapon": "axe",
+        "stats": {
+          "strength": 4,
+          "agility": 3,
+          "instinct": 4,
+          "vitality": 4
+        },
+        "source": "https://vendetta.ucoz.net/index/0_lvl/0-6"
+      },
+      {
+        "level": 0,
+        "weapon": "hammer",
+        "stats": {
+          "strength": 5,
+          "agility": 3,
+          "instinct": 3,
+          "vitality": 4
+        },
+        "source": "https://vendetta.ucoz.net/index/0_lvl/0-6"
+      },
+      {
+        "level": 0,
+        "weapon": "sword",
+        "stats": {
+          "strength": 4,
+          "agility": 4,
+          "instinct": 3,
+          "vitality": 4
+        },
+        "source": "https://vendetta.ucoz.net/index/0_lvl/0-6"
+      },
+      {
+        "level": 1,
+        "weapon": "club",
+        "stats": {
+          "strength": 11,
+          "agility": 3,
+          "instinct": 3,
+          "vitality": 6
+        },
+        "source": "https://vendetta.ucoz.net/index/1_lvl/0-11"
+      },
+      {
+        "level": 1,
+        "weapon": "knife",
+        "stats": {
+          "strength": 8,
+          "agility": 5,
+          "instinct": 5,
+          "vitality": 5
+        },
+        "source": "https://vendetta.ucoz.net/index/1_lvl/0-11"
+      },
+      {
+        "level": 1,
+        "weapon": "spear",
+        "stats": {
+          "strength": 8,
+          "agility": 5,
+          "instinct": 5,
+          "vitality": 5
+        },
+        "source": "https://vendetta.ucoz.net/index/1_lvl/0-11"
+      },
+      {
+        "level": 1,
+        "weapon": "axe",
+        "stats": {
+          "strength": 6,
+          "agility": 3,
+          "instinct": 8,
+          "vitality": 6
+        },
+        "source": "https://vendetta.ucoz.net/index/1_lvl/0-11"
+      },
+      {
+        "level": 1,
+        "weapon": "hammer",
+        "stats": {
+          "strength": 10,
+          "agility": 4,
+          "instinct": 3,
+          "vitality": 6
+        },
+        "source": "https://vendetta.ucoz.net/index/1_lvl/0-11"
+      },
+      {
+        "level": 1,
+        "weapon": "sword",
+        "stats": {
+          "strength": 7,
+          "agility": 6,
+          "instinct": 5,
+          "vitality": 5
+        },
+        "source": "https://vendetta.ucoz.net/index/1_lvl/0-11"
+      },
+      {
+        "level": 2,
+        "weapon": "club",
+        "stats": {
+          "strength": 15,
+          "agility": 3,
+          "instinct": 3,
+          "vitality": 10
+        },
+        "source": "https://vendetta.ucoz.net/index/2_lvl/0-12"
+      },
+      {
+        "level": 2,
+        "weapon": "knife",
+        "stats": {
+          "strength": 13,
+          "agility": 6,
+          "instinct": 6,
+          "vitality": 6
+        },
+        "source": "https://vendetta.ucoz.net/index/2_lvl/0-12"
+      },
+      {
+        "level": 2,
+        "weapon": "spear",
+        "stats": {
+          "strength": 14,
+          "agility": 5,
+          "instinct": 6,
+          "vitality": 6
+        },
+        "source": "https://vendetta.ucoz.net/index/2_lvl/0-12"
+      },
+      {
+        "level": 2,
+        "weapon": "axe",
+        "stats": {
+          "strength": 10,
+          "agility": 3,
+          "instinct": 10,
+          "vitality": 8
+        },
+        "source": "https://vendetta.ucoz.net/index/2_lvl/0-12"
+      },
+      {
+        "level": 2,
+        "weapon": "hammer",
+        "stats": {
+          "strength": 14,
+          "agility": 6,
+          "instinct": 3,
+          "vitality": 8
+        },
+        "source": "https://vendetta.ucoz.net/index/2_lvl/0-12"
+      },
+      {
+        "level": 2,
+        "weapon": "sword",
+        "stats": {
+          "strength": 11,
+          "agility": 7,
+          "instinct": 5,
+          "vitality": 8
+        },
+        "source": "https://vendetta.ucoz.net/index/2_lvl/0-12"
+      },
+      {
+        "level": 3,
+        "weapon": "club",
+        "stats": {
+          "strength": 18,
+          "agility": 3,
+          "instinct": 3,
+          "vitality": 15
+        },
+        "source": "https://vendetta.ucoz.net/index/komplekty_oruzhija/0-13"
+      },
+      {
+        "level": 3,
+        "weapon": "knife",
+        "stats": {
+          "strength": 16,
+          "agility": 8,
+          "instinct": 8,
+          "vitality": 7
+        },
+        "source": "https://vendetta.ucoz.net/index/komplekty_oruzhija/0-13"
+      },
+      {
+        "level": 3,
+        "weapon": "spear",
+        "stats": {
+          "strength": 16,
+          "agility": 5,
+          "instinct": 8,
+          "vitality": 10
+        },
+        "source": "https://vendetta.ucoz.net/index/komplekty_oruzhija/0-13"
+      },
+      {
+        "level": 3,
+        "weapon": "axe",
+        "stats": {
+          "strength": 14,
+          "agility": 3,
+          "instinct": 12,
+          "vitality": 10
+        },
+        "source": "https://vendetta.ucoz.net/index/komplekty_oruzhija/0-13"
+      },
+      {
+        "level": 3,
+        "weapon": "hammer",
+        "stats": {
+          "strength": 19,
+          "agility": 7,
+          "instinct": 5,
+          "vitality": 8
+        },
+        "source": "https://vendetta.ucoz.net/index/komplekty_oruzhija/0-13"
+      },
+      {
+        "level": 3,
+        "weapon": "sword",
+        "stats": {
+          "strength": 12,
+          "agility": 12,
+          "instinct": 3,
+          "vitality": 12
+        },
+        "source": "https://vendetta.ucoz.net/index/komplekty_oruzhija/0-13"
+      },
+      {
+        "level": 4,
+        "weapon": "club",
+        "stats": {
+          "strength": 22,
+          "agility": 3,
+          "instinct": 3,
+          "vitality": 20
+        },
+        "source": "https://vendetta.ucoz.net/index/4_lvl/0-16"
+      },
+      {
+        "level": 4,
+        "weapon": "knife",
+        "stats": {
+          "strength": 16,
+          "agility": 11,
+          "instinct": 11,
+          "vitality": 10
+        },
+        "source": "https://vendetta.ucoz.net/index/4_lvl/0-16"
+      },
+      {
+        "level": 4,
+        "weapon": "spear",
+        "stats": {
+          "strength": 22,
+          "agility": 6,
+          "instinct": 10,
+          "vitality": 11
+        },
+        "source": "https://vendetta.ucoz.net/index/4_lvl/0-16"
+      },
+      {
+        "level": 4,
+        "weapon": "axe",
+        "stats": {
+          "strength": 17,
+          "agility": 3,
+          "instinct": 14,
+          "vitality": 14
+        },
+        "source": "https://vendetta.ucoz.net/index/4_lvl/0-16"
+      },
+      {
+        "level": 4,
+        "weapon": "hammer",
+        "stats": {
+          "strength": 24,
+          "agility": 9,
+          "instinct": 5,
+          "vitality": 10
+        },
+        "source": "https://vendetta.ucoz.net/index/4_lvl/0-16"
+      },
+      {
+        "level": 4,
+        "weapon": "sword",
+        "stats": {
+          "strength": 15,
+          "agility": 15,
+          "instinct": 4,
+          "vitality": 14
+        },
+        "source": "https://vendetta.ucoz.net/index/4_lvl/0-16"
+      },
+      {
+        "level": 5,
+        "weapon": "club",
+        "stats": {
+          "strength": 26,
+          "agility": 4,
+          "instinct": 4,
+          "vitality": 24
+        },
+        "source": "https://vendetta.ucoz.net/index/5_lvl/0-17"
+      },
+      {
+        "level": 5,
+        "weapon": "knife",
+        "stats": {
+          "strength": 21,
+          "agility": 13,
+          "instinct": 12,
+          "vitality": 12
+        },
+        "source": "https://vendetta.ucoz.net/index/5_lvl/0-17"
+      },
+      {
+        "level": 5,
+        "weapon": "spear",
+        "stats": {
+          "strength": 25,
+          "agility": 7,
+          "instinct": 13,
+          "vitality": 13
+        },
+        "source": "https://vendetta.ucoz.net/index/5_lvl/0-17"
+      },
+      {
+        "level": 5,
+        "weapon": "axe",
+        "stats": {
+          "strength": 20,
+          "agility": 4,
+          "instinct": 17,
+          "vitality": 17
+        },
+        "source": "https://vendetta.ucoz.net/index/5_lvl/0-17"
+      },
+      {
+        "level": 5,
+        "weapon": "hammer",
+        "stats": {
+          "strength": 26,
+          "agility": 13,
+          "instinct": 6,
+          "vitality": 13
+        },
+        "source": "https://vendetta.ucoz.net/index/5_lvl/0-17"
+      },
+      {
+        "level": 5,
+        "weapon": "sword",
+        "stats": {
+          "strength": 18,
+          "agility": 18,
+          "instinct": 5,
+          "vitality": 17
+        },
+        "source": "https://vendetta.ucoz.net/index/5_lvl/0-17"
+      }
+    ]
+  },
+  "enchanting": {
+    "source": "http://lib.carnage.com.ru/world/builds/repair/",
+    "maxRank": 5,
+    "successPercent": [
+      90,
+      50,
+      30,
+      15,
+      10
+    ],
+    "bonusPercent": [
+      3,
+      6,
+      9,
+      12,
+      15
+    ],
+    "failureRank": 0,
+    "boundAfterFirstSuccess": true,
+    "boundSurvivesFailure": true,
+    "elementPriceMinor": 100,
+    "elementPriceCurrency": "florin",
+    "unknown": [
+      "Відповідність кожного виду чарування конкретному бойовому ефекту",
+      "Порядок округлення та поєднання бафів"
+    ]
+  },
+  "repair": {
+    "source": "http://lib.carnage.com.ru/world/builds/repair/",
+    "unitPriceMinor": 10,
+    "currency": "florin",
+    "discount": {
+      "reputation": 1000,
+      "percent": 5
+    },
+    "unrepairableCategories": [
+      "stone"
+    ],
+    "warningRemaining": 5,
+    "redRemaining": 3,
+    "autoUnequipRemaining": 1,
+    "unknown": [
+      "Імовірність зношення в кожному режимі бою",
+      "Округлення вартості зі знижкою",
+      "Падіння вартості зношеної речі"
+    ]
+  },
+  "alchemy": {
+    "source": "https://vendetta.ucoz.net/index/alkhimija/0-44",
+    "status": "archival-explicit",
+    "maxTier": 11,
+    "skillStep": 50,
+    "brewMs": 300000,
+    "buffMs": 10800000,
+    "statBonusPerTier": 1,
+    "healPercentPerTier": 10,
+    "maxHealPercent": 100,
+    "catalystPricesMinor": [
+      500,
+      1000,
+      1500,
+      2000,
+      2500,
+      3000,
+      3500,
+      4000,
+      4500,
+      5000,
+      5500
+    ],
+    "currency": "florin",
+    "unknown": [
+      "Актуальний повний каталог рецептів",
+      "Неоднакові вимоги до навички в описах останнього ступеня"
+    ]
+  },
+  "combat": {
+    "source": "http://lib.carnage.com.ru/faq/",
+    "defaultTimeoutMs": 600000,
+    "timeoutReductionIntervalMs": 900000,
+    "timeoutReductionMs": 60000,
+    "minimumReducedTimeoutMs": 180000,
+    "expiredWaitingDuelMs": 3600000,
+    "chaoticMinimumPlayers": 4,
+    "bloodyWinXpMultiplier": 1.5,
+    "bloodyLossInjuryPercent": 75,
+    "finalCriticalInjuryPercent": 25,
+    "unknown": [
+      "Точна формула шкоди, криту, ухилення й пробиття блока",
+      "Числові множники атакувальної та захисної позицій",
+      "Точна формула КБО, досвіду, доблесті та карми"
+    ]
+  },
+  "redistribution": {
+    "source": "http://lib.carnage.com.ru/world/builds/hospital/",
+    "freePerWeek": 1,
+    "maximumFree": 10,
+    "unavailableWithInjury": true,
+    "unknown": [
+      "Вартість лікування для кожного рівня",
+      "Початковий запас безкоштовних перерозподілів"
+    ]
+  },
+  "sourceConflicts": [
+    {
+      "topic": "minimumClanLevel",
+      "sources": [
+        {
+          "url": "http://lib.carnage.com.ru/faq/",
+          "value": 3
+        },
+        {
+          "url": "http://lib.carnage.com.ru/world/builds/hall/",
+          "value": 2
+        }
+      ],
+      "resolved": false
+    },
+    {
+      "topic": "healerLicenseLevel",
+      "sources": [
+        {
+          "url": "https://vendetta.ucoz.net/index/5_lvl/0-17",
+          "value": 5
+        },
+        {
+          "url": "http://lib.carnage.com.ru/items/license",
+          "value": 1
+        }
+      ],
+      "resolved": false
+    }
+  ],
+  "scopeDecision": {
+    "originalWeaponTypes": 6,
+    "originalDefaultTimeoutMs": 600000,
+    "priority": "lutecia-1-to-1",
+    "userDecision": "Лише власний дизайн і українська мова; попередні 5 класів і таймер 30 с замінюються правилами Лютеції.",
+    "status": "confirmed"
+  }
+}

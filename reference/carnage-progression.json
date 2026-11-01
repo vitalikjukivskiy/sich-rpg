@@ -1,0 +1,976 @@
+{
+  "schema": 1,
+  "status": "archival-reference-only",
+  "sources": [
+    "http://carnage.ucoz.lv/index/0-9",
+    "https://novichkam.do.am/index/tablica_opyta/0-8"
+  ],
+  "crossCheckedPrefixRows": 91,
+  "coverage": {
+    "minLevel": 0,
+    "maxLevel": 11,
+    "lastXp": 29000000,
+    "level12AndAbove": "not-confirmed"
+  },
+  "notes": [
+    "Числа узгоджені на спільній частині двох опублікованих таблиць; це не перевірка чинного сервера.",
+    "Останній запис не є підтвердженням максимального рівня.",
+    "Рекомендації збірок не використані для обчислення цих порогів."
+  ],
+  "rows": [
+    {
+      "level": 0,
+      "xp": 0,
+      "statAward": 3,
+      "totalStats": 15,
+      "florinAwardMinor": 600,
+      "totalFlorinsMinor": 600,
+      "baseXp": 10
+    },
+    {
+      "level": 0,
+      "xp": 50,
+      "statAward": 1,
+      "totalStats": 16,
+      "florinAwardMinor": 800,
+      "totalFlorinsMinor": 1400,
+      "baseXp": 10
+    },
+    {
+      "level": 0,
+      "xp": 100,
+      "statAward": 1,
+      "totalStats": 17,
+      "florinAwardMinor": 800,
+      "totalFlorinsMinor": 2200,
+      "baseXp": 10
+    },
+    {
+      "level": 0,
+      "xp": 150,
+      "statAward": 1,
+      "totalStats": 18,
+      "florinAwardMinor": 800,
+      "totalFlorinsMinor": 3000,
+      "baseXp": 10
+    },
+    {
+      "level": 1,
+      "xp": 200,
+      "statAward": 5,
+      "totalStats": 23,
+      "florinAwardMinor": 1000,
+      "totalFlorinsMinor": 4000,
+      "baseXp": 30
+    },
+    {
+      "level": 1,
+      "xp": 300,
+      "statAward": 1,
+      "totalStats": 24,
+      "florinAwardMinor": 800,
+      "totalFlorinsMinor": 4800,
+      "baseXp": 30
+    },
+    {
+      "level": 1,
+      "xp": 400,
+      "statAward": 1,
+      "totalStats": 25,
+      "florinAwardMinor": 800,
+      "totalFlorinsMinor": 5600,
+      "baseXp": 30
+    },
+    {
+      "level": 1,
+      "xp": 500,
+      "statAward": 1,
+      "totalStats": 26,
+      "florinAwardMinor": 1600,
+      "totalFlorinsMinor": 7200,
+      "baseXp": 30
+    },
+    {
+      "level": 2,
+      "xp": 600,
+      "statAward": 5,
+      "totalStats": 31,
+      "florinAwardMinor": 1600,
+      "totalFlorinsMinor": 8800,
+      "baseXp": 45
+    },
+    {
+      "level": 2,
+      "xp": 900,
+      "statAward": 1,
+      "totalStats": 32,
+      "florinAwardMinor": 1600,
+      "totalFlorinsMinor": 10400,
+      "baseXp": 45
+    },
+    {
+      "level": 2,
+      "xp": 1050,
+      "statAward": 1,
+      "totalStats": 33,
+      "florinAwardMinor": 1600,
+      "totalFlorinsMinor": 12000,
+      "baseXp": 45
+    },
+    {
+      "level": 2,
+      "xp": 1200,
+      "statAward": 1,
+      "totalStats": 34,
+      "florinAwardMinor": 1600,
+      "totalFlorinsMinor": 13600,
+      "baseXp": 45
+    },
+    {
+      "level": 3,
+      "xp": 1350,
+      "statAward": 5,
+      "totalStats": 39,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 16800,
+      "baseXp": 75
+    },
+    {
+      "level": 3,
+      "xp": 1850,
+      "statAward": 1,
+      "totalStats": 40,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 20000,
+      "baseXp": 75
+    },
+    {
+      "level": 3,
+      "xp": 2100,
+      "statAward": 1,
+      "totalStats": 41,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 23200,
+      "baseXp": 75
+    },
+    {
+      "level": 3,
+      "xp": 2350,
+      "statAward": 1,
+      "totalStats": 42,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 26400,
+      "baseXp": 75
+    },
+    {
+      "level": 3,
+      "xp": 2600,
+      "statAward": 1,
+      "totalStats": 43,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 29600,
+      "baseXp": 75
+    },
+    {
+      "level": 4,
+      "xp": 2850,
+      "statAward": 5,
+      "totalStats": 48,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 34400,
+      "baseXp": 120
+    },
+    {
+      "level": 4,
+      "xp": 3650,
+      "statAward": 1,
+      "totalStats": 49,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 37600,
+      "baseXp": 120
+    },
+    {
+      "level": 4,
+      "xp": 4450,
+      "statAward": 1,
+      "totalStats": 50,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 40800,
+      "baseXp": 120
+    },
+    {
+      "level": 4,
+      "xp": 5250,
+      "statAward": 1,
+      "totalStats": 51,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 44000,
+      "baseXp": 120
+    },
+    {
+      "level": 4,
+      "xp": 6050,
+      "statAward": 1,
+      "totalStats": 52,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 47200,
+      "baseXp": 120
+    },
+    {
+      "level": 4,
+      "xp": 6850,
+      "statAward": 1,
+      "totalStats": 53,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 50400,
+      "baseXp": 120
+    },
+    {
+      "level": 5,
+      "xp": 7650,
+      "statAward": 5,
+      "totalStats": 58,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 55200,
+      "baseXp": 190
+    },
+    {
+      "level": 5,
+      "xp": 10150,
+      "statAward": 1,
+      "totalStats": 59,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 60000,
+      "baseXp": 190
+    },
+    {
+      "level": 5,
+      "xp": 11400,
+      "statAward": 1,
+      "totalStats": 60,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 64800,
+      "baseXp": 190
+    },
+    {
+      "level": 5,
+      "xp": 12650,
+      "statAward": 1,
+      "totalStats": 61,
+      "florinAwardMinor": 5600,
+      "totalFlorinsMinor": 70400,
+      "baseXp": 190
+    },
+    {
+      "level": 5,
+      "xp": 13900,
+      "statAward": 1,
+      "totalStats": 62,
+      "florinAwardMinor": 5600,
+      "totalFlorinsMinor": 76000,
+      "baseXp": 190
+    },
+    {
+      "level": 5,
+      "xp": 15150,
+      "statAward": 1,
+      "totalStats": 63,
+      "florinAwardMinor": 5600,
+      "totalFlorinsMinor": 81600,
+      "baseXp": 190
+    },
+    {
+      "level": 5,
+      "xp": 16400,
+      "statAward": 1,
+      "totalStats": 64,
+      "florinAwardMinor": 5600,
+      "totalFlorinsMinor": 87200,
+      "baseXp": 190
+    },
+    {
+      "level": 6,
+      "xp": 17650,
+      "statAward": 5,
+      "totalStats": 69,
+      "florinAwardMinor": 6400,
+      "totalFlorinsMinor": 93600,
+      "baseXp": 300
+    },
+    {
+      "level": 6,
+      "xp": 20650,
+      "statAward": 1,
+      "totalStats": 70,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 98400,
+      "baseXp": 300
+    },
+    {
+      "level": 6,
+      "xp": 23650,
+      "statAward": 1,
+      "totalStats": 71,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 103200,
+      "baseXp": 300
+    },
+    {
+      "level": 6,
+      "xp": 26650,
+      "statAward": 1,
+      "totalStats": 72,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 108000,
+      "baseXp": 300
+    },
+    {
+      "level": 6,
+      "xp": 29650,
+      "statAward": 1,
+      "totalStats": 73,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 112800,
+      "baseXp": 300
+    },
+    {
+      "level": 6,
+      "xp": 32650,
+      "statAward": 1,
+      "totalStats": 74,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 117600,
+      "baseXp": 300
+    },
+    {
+      "level": 6,
+      "xp": 35650,
+      "statAward": 1,
+      "totalStats": 75,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 122400,
+      "baseXp": 300
+    },
+    {
+      "level": 6,
+      "xp": 38650,
+      "statAward": 1,
+      "totalStats": 76,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 127200,
+      "baseXp": 300
+    },
+    {
+      "level": 7,
+      "xp": 41650,
+      "statAward": 5,
+      "totalStats": 81,
+      "florinAwardMinor": 6400,
+      "totalFlorinsMinor": 133600,
+      "baseXp": 450
+    },
+    {
+      "level": 7,
+      "xp": 47650,
+      "statAward": 1,
+      "totalStats": 82,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 136800,
+      "baseXp": 450
+    },
+    {
+      "level": 7,
+      "xp": 52150,
+      "statAward": 1,
+      "totalStats": 83,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 140000,
+      "baseXp": 450
+    },
+    {
+      "level": 7,
+      "xp": 56650,
+      "statAward": 1,
+      "totalStats": 84,
+      "florinAwardMinor": 3200,
+      "totalFlorinsMinor": 143200,
+      "baseXp": 450
+    },
+    {
+      "level": 7,
+      "xp": 61150,
+      "statAward": 1,
+      "totalStats": 85,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 148000,
+      "baseXp": 450
+    },
+    {
+      "level": 7,
+      "xp": 67150,
+      "statAward": 1,
+      "totalStats": 86,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 152800,
+      "baseXp": 450
+    },
+    {
+      "level": 7,
+      "xp": 73150,
+      "statAward": 1,
+      "totalStats": 87,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 157600,
+      "baseXp": 450
+    },
+    {
+      "level": 7,
+      "xp": 79150,
+      "statAward": 1,
+      "totalStats": 88,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 162400,
+      "baseXp": 450
+    },
+    {
+      "level": 7,
+      "xp": 85150,
+      "statAward": 1,
+      "totalStats": 89,
+      "florinAwardMinor": 4800,
+      "totalFlorinsMinor": 167200,
+      "baseXp": 450
+    },
+    {
+      "level": 8,
+      "xp": 95000,
+      "statAward": 5,
+      "totalStats": 94,
+      "florinAwardMinor": 9600,
+      "totalFlorinsMinor": 176800,
+      "baseXp": 900
+    },
+    {
+      "level": 8,
+      "xp": 135000,
+      "statAward": 1,
+      "totalStats": 95,
+      "florinAwardMinor": 6400,
+      "totalFlorinsMinor": 183200,
+      "baseXp": 900
+    },
+    {
+      "level": 8,
+      "xp": 170000,
+      "statAward": 1,
+      "totalStats": 96,
+      "florinAwardMinor": 6000,
+      "totalFlorinsMinor": 189200,
+      "baseXp": 900
+    },
+    {
+      "level": 8,
+      "xp": 200000,
+      "statAward": 1,
+      "totalStats": 97,
+      "florinAwardMinor": 7000,
+      "totalFlorinsMinor": 196200,
+      "baseXp": 900
+    },
+    {
+      "level": 8,
+      "xp": 230000,
+      "statAward": 1,
+      "totalStats": 98,
+      "florinAwardMinor": 8000,
+      "totalFlorinsMinor": 204200,
+      "baseXp": 900
+    },
+    {
+      "level": 8,
+      "xp": 260000,
+      "statAward": 1,
+      "totalStats": 99,
+      "florinAwardMinor": 6000,
+      "totalFlorinsMinor": 210200,
+      "baseXp": 900
+    },
+    {
+      "level": 8,
+      "xp": 290000,
+      "statAward": 1,
+      "totalStats": 100,
+      "florinAwardMinor": 100,
+      "totalFlorinsMinor": 210300,
+      "baseXp": 900
+    },
+    {
+      "level": 8,
+      "xp": 320000,
+      "statAward": 1,
+      "totalStats": 101,
+      "florinAwardMinor": 6000,
+      "totalFlorinsMinor": 216300,
+      "baseXp": 900
+    },
+    {
+      "level": 8,
+      "xp": 350000,
+      "statAward": 1,
+      "totalStats": 102,
+      "florinAwardMinor": 7000,
+      "totalFlorinsMinor": 223300,
+      "baseXp": 900
+    },
+    {
+      "level": 8,
+      "xp": 380000,
+      "statAward": 1,
+      "totalStats": 103,
+      "florinAwardMinor": 8000,
+      "totalFlorinsMinor": 231300,
+      "baseXp": 900
+    },
+    {
+      "level": 9,
+      "xp": 400000,
+      "statAward": 5,
+      "totalStats": 108,
+      "florinAwardMinor": 15000,
+      "totalFlorinsMinor": 246300,
+      "baseXp": 1400
+    },
+    {
+      "level": 9,
+      "xp": 800000,
+      "statAward": 1,
+      "totalStats": 109,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 256300,
+      "baseXp": 1400
+    },
+    {
+      "level": 9,
+      "xp": 1000000,
+      "statAward": 1,
+      "totalStats": 110,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 266300,
+      "baseXp": 1400
+    },
+    {
+      "level": 9,
+      "xp": 1200000,
+      "statAward": 1,
+      "totalStats": 111,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 276300,
+      "baseXp": 1400
+    },
+    {
+      "level": 9,
+      "xp": 1400000,
+      "statAward": 1,
+      "totalStats": 112,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 286300,
+      "baseXp": 1400
+    },
+    {
+      "level": 9,
+      "xp": 1600000,
+      "statAward": 1,
+      "totalStats": 113,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 296300,
+      "baseXp": 1400
+    },
+    {
+      "level": 9,
+      "xp": 1800000,
+      "statAward": 1,
+      "totalStats": 114,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 306300,
+      "baseXp": 1400
+    },
+    {
+      "level": 9,
+      "xp": 2000000,
+      "statAward": 1,
+      "totalStats": 115,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 316300,
+      "baseXp": 1400
+    },
+    {
+      "level": 9,
+      "xp": 2200000,
+      "statAward": 1,
+      "totalStats": 116,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 326300,
+      "baseXp": 1400
+    },
+    {
+      "level": 9,
+      "xp": 2400000,
+      "statAward": 1,
+      "totalStats": 117,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 336300,
+      "baseXp": 1400
+    },
+    {
+      "level": 9,
+      "xp": 2600000,
+      "statAward": 1,
+      "totalStats": 118,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 346300,
+      "baseXp": 1400
+    },
+    {
+      "level": 10,
+      "xp": 3000000,
+      "statAward": 10,
+      "totalStats": 128,
+      "florinAwardMinor": 30000,
+      "totalFlorinsMinor": 376300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 3300000,
+      "statAward": 1,
+      "totalStats": 129,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 386300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 3500000,
+      "statAward": 1,
+      "totalStats": 130,
+      "florinAwardMinor": 5000,
+      "totalFlorinsMinor": 391300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 3900000,
+      "statAward": 1,
+      "totalStats": 131,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 401300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 4000000,
+      "statAward": 1,
+      "totalStats": 132,
+      "florinAwardMinor": 1000,
+      "totalFlorinsMinor": 402300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 4500000,
+      "statAward": 1,
+      "totalStats": 133,
+      "florinAwardMinor": 20000,
+      "totalFlorinsMinor": 422300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 4700000,
+      "statAward": 1,
+      "totalStats": 134,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 432300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 5000000,
+      "statAward": 1,
+      "totalStats": 135,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 442300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 5200000,
+      "statAward": 1,
+      "totalStats": 136,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 452300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 5500000,
+      "statAward": 1,
+      "totalStats": 137,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 462300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 5800000,
+      "statAward": 1,
+      "totalStats": 138,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 472300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 6000000,
+      "statAward": 1,
+      "totalStats": 139,
+      "florinAwardMinor": 15000,
+      "totalFlorinsMinor": 487300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 6500000,
+      "statAward": 1,
+      "totalStats": 140,
+      "florinAwardMinor": 20000,
+      "totalFlorinsMinor": 507300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 6700000,
+      "statAward": 1,
+      "totalStats": 141,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 517300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 7000000,
+      "statAward": 1,
+      "totalStats": 142,
+      "florinAwardMinor": 15000,
+      "totalFlorinsMinor": 532300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 7300000,
+      "statAward": 1,
+      "totalStats": 143,
+      "florinAwardMinor": 15000,
+      "totalFlorinsMinor": 547300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 7600000,
+      "statAward": 1,
+      "totalStats": 144,
+      "florinAwardMinor": 15000,
+      "totalFlorinsMinor": 562300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 8000000,
+      "statAward": 1,
+      "totalStats": 145,
+      "florinAwardMinor": 15000,
+      "totalFlorinsMinor": 577300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 8400000,
+      "statAward": 1,
+      "totalStats": 146,
+      "florinAwardMinor": 15000,
+      "totalFlorinsMinor": 592300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 8600000,
+      "statAward": 1,
+      "totalStats": 147,
+      "florinAwardMinor": 10000,
+      "totalFlorinsMinor": 602300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 9000000,
+      "statAward": 1,
+      "totalStats": 148,
+      "florinAwardMinor": 15000,
+      "totalFlorinsMinor": 617300,
+      "baseXp": 2200
+    },
+    {
+      "level": 10,
+      "xp": 9500000,
+      "statAward": 1,
+      "totalStats": 149,
+      "florinAwardMinor": 20000,
+      "totalFlorinsMinor": 637300,
+      "baseXp": 2200
+    },
+    {
+      "level": 11,
+      "xp": 10000000,
+      "statAward": 10,
+      "totalStats": 159,
+      "florinAwardMinor": 50000,
+      "totalFlorinsMinor": 687300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 11000000,
+      "statAward": 2,
+      "totalStats": 161,
+      "florinAwardMinor": 30000,
+      "totalFlorinsMinor": 717300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 12000000,
+      "statAward": 2,
+      "totalStats": 163,
+      "florinAwardMinor": 25000,
+      "totalFlorinsMinor": 742300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 13000000,
+      "statAward": 2,
+      "totalStats": 165,
+      "florinAwardMinor": 20000,
+      "totalFlorinsMinor": 762300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 14000000,
+      "statAward": 2,
+      "totalStats": 167,
+      "florinAwardMinor": 30000,
+      "totalFlorinsMinor": 792300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 15000000,
+      "statAward": 2,
+      "totalStats": 169,
+      "florinAwardMinor": 25000,
+      "totalFlorinsMinor": 817300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 17000000,
+      "statAward": 2,
+      "totalStats": 171,
+      "florinAwardMinor": 30000,
+      "totalFlorinsMinor": 847300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 18000000,
+      "statAward": 1,
+      "totalStats": 172,
+      "florinAwardMinor": 20000,
+      "totalFlorinsMinor": 867300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 19000000,
+      "statAward": 1,
+      "totalStats": 173,
+      "florinAwardMinor": 20000,
+      "totalFlorinsMinor": 887300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 20000000,
+      "statAward": 3,
+      "totalStats": 176,
+      "florinAwardMinor": 50000,
+      "totalFlorinsMinor": 937300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 22000000,
+      "statAward": 2,
+      "totalStats": 178,
+      "florinAwardMinor": 30000,
+      "totalFlorinsMinor": 967300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 23000000,
+      "statAward": 1,
+      "totalStats": 179,
+      "florinAwardMinor": 20000,
+      "totalFlorinsMinor": 987300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 25000000,
+      "statAward": 2,
+      "totalStats": 181,
+      "florinAwardMinor": 50000,
+      "totalFlorinsMinor": 1037300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 26000000,
+      "statAward": 3,
+      "totalStats": 184,
+      "florinAwardMinor": 30000,
+      "totalFlorinsMinor": 1067300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 28000000,
+      "statAward": 3,
+      "totalStats": 187,
+      "florinAwardMinor": 30000,
+      "totalFlorinsMinor": 1097300,
+      "baseXp": 3500
+    },
+    {
+      "level": 11,
+      "xp": 29000000,
+      "statAward": 2,
+      "totalStats": 189,
+      "florinAwardMinor": 20000,
+      "totalFlorinsMinor": 1117300,
+      "baseXp": 3500
+    }
+  ]
+}
