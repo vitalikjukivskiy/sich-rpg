@@ -2,7 +2,7 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 const root=new URL('../',import.meta.url);
 const dir=new URL('../supabase/functions/sich-api/engine/',import.meta.url);
-const names=['requests','balance','balance-parameters','clanworks','combat','content','factions','game','inventory','market','roads','story','trials','world'];
+const names=['prototype','canon','canon-data','requests','balance','balance-parameters','clanworks','combat','content','factions','game','inventory','market','roads','story','trials','world'];
 await mkdir(dir,{recursive:true});
 await mkdir(new URL('./public/',dir),{recursive:true});
 for(const name of names){

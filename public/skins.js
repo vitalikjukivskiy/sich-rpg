@@ -8,7 +8,7 @@ function atlasFrame({file,width,height,box,classes,label='',fit='xMidYMid meet'}
  return `<svg class="${escape(classes)}" viewBox="${box.join(' ')}" preserveAspectRatio="${fit}" ${accessibility} focusable="false"><defs><clipPath id="${clip}"><rect x="${box[0]}" y="${box[1]}" width="${box[2]}" height="${box[3]}"/></clipPath></defs><g clip-path="url(#${clip})"><image href="./assets/${file}" width="${width}" height="${height}"/></g></svg>`;
 }
 export function portrait(player,classId='sabre',extra=''){
- const skin=player.skin&&player.skin!=='auto'?player.skin:classId;
+ const mapped={knife:'sabre',sword:'sabre',club:'mace',spear:'pike',unarmed:'sabre'}[classId]||classId;const skin=player.skin&&player.skin!=='auto'?player.skin:mapped;
  if(skin==='legacy')return '<img class="legacy-skin '+escape(extra)+'" src="./assets/sich-hero.png" alt="Козак у традиційному жупані" decoding="async">';
  const key=Object.hasOwn(skinNames,skin)?skin:'sabre',index=classKeys.indexOf(key),combat=extra.split(/\s+/).includes('combat-skin'),character=extra.split(/\s+/).includes('character-skin'),full=/paperdoll-skin|opponent-full-skin/.test(extra);
  // The atlas is five equal columns. ViewBox isolates one column, so any frame size
@@ -26,6 +26,8 @@ export function regionalScene(cityId,extra='',label=''){
  return atlasFrame({file:'sich-cities.png',width:1536,height:1024,box:[...coordinates[cityId],768,512],classes:'regional-city region-'+cityId+' '+extra,label,fit:'xMidYMid slice'});
 }
 export function itemArt(art,extra='',label=''){
+ const simple={'shield-round':'M50 12C75 12 87 28 85 50S69 82 50 90C31 82 17 68 15 50S25 12 50 12ZM50 27V75M27 45H73M40 37H60V60H40Z',knife:'M25 77 62 17 72 24 42 81ZM29 68 45 78M23 88 33 72',knuckle:'M20 55V37a8 8 0 0 1 16 0V30a8 8 0 0 1 16 0v2a8 8 0 0 1 16 0v8a8 8 0 0 1 16 0v26H20Z',gloves:'M30 80V42l8-4V22l9-2 4 25 7-15 8 4-5 23 12-6 5 9-17 20Z',pants:'M25 18H75L72 85H53L50 48 46 85H27Z',shoulders:'M12 50 23 27 41 35 50 23 59 35 77 27 88 50 73 65 59 56H41L27 65Z',bracelet:'M24 25H76L70 78H30ZM29 34H71M32 66H68',earrings:'M34 20V37a14 14 0 1 0 8 0M64 20V37a14 14 0 1 0 8 0',gem:'M50 12 81 34 70 73 50 89 30 73 19 34ZM19 34H81M30 73 50 12 70 73M19 34 50 89 81 34'}[art];
+ if(simple)return `<svg class="item-sprite art-${escape(art)} ${escape(extra)}" viewBox="0 0 100 100" ${label?`role="img" aria-label="${escape(label)}"`:'aria-hidden="true"'} focusable="false"><path d="${simple}" fill="#cab07c" stroke="#5c472d" stroke-width="4" stroke-linejoin="round"/></svg>`;
  if(art==='ring')return `<svg class="item-sprite art-ring ${escape(extra)}" viewBox="0 0 100 100" ${label?`role="img" aria-label="${escape(label)}"`:'aria-hidden="true"'} focusable="false"><ellipse cx="50" cy="64" rx="25" ry="25" fill="none" stroke="#8b672e" stroke-width="12"/><ellipse cx="50" cy="64" rx="25" ry="25" fill="none" stroke="#d9b66a" stroke-width="5"/><path d="M32 19 50 12 68 19 73 39 63 51 37 51 27 39Z" fill="#d4ae60" stroke="#715024" stroke-width="3"/><path d="M50 20v24m-10-20v12l10 8 10-8V24M44 30l6 5 6-5" fill="none" stroke="#765329" stroke-width="4" stroke-linejoin="round"/></svg>`;
  const classMatch=/^(weapon|armor)-(sabre|hammer|mace|pike|axe)$/.exec(art);
  if(classMatch)return atlasFrame({file:'class-equipment.png',width:1983,height:793,box:[classKeys.indexOf(classMatch[2])*396.6,classMatch[1]==='armor'?364:0,396.6,classMatch[1]==='armor'?429:364],classes:'item-sprite art-'+art+' '+extra,label});

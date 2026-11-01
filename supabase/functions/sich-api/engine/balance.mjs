@@ -1,9 +1,13 @@
 import {items} from './game.mjs';
 import {equippedRank} from './inventory.mjs';
 import {STYLE_MATCHUP_RATIOS,LEVEL_MATCHUP_RATIOS,COMBAT_PACE} from './balance-parameters.mjs';
+import {canonicalProfile,canEquipCanonical,sourceRequirements,canonicalRules} from './canon.mjs';
 // Beta 0.2: authoritative, deterministic-with-injected-rng combat rules.
-export const ROUND_MS=30_000;
+export const ROUND_MS=30_000; // Legacy fights retain their original timer during migration.
 export const STANCES={attack:{damage:1.10,incoming:1,block:.55,dodge:0},defense:{damage:.85,incoming:1,block:.75,dodge:0}};
+// Public sources describe directions of stance effects, not their coefficients.
+// This explicit prototype formula can be replaced without changing item ratings.
+export const PROTOTYPE_STANCES={attack:{offense:1.1,guard:.9},defense:{offense:.9,guard:1.1}};
 export const CLASS_RULES={
  sabre:{name:'Шабля',vitalityHp:6,hp:850,attack:100,crit:25,antiCrit:7,dodge:30,antiDodge:5,critMultiplier:1.65,ability:'Ковзний крок',cost:15,cooldown:4},
  hammer:{name:'Молот',vitalityHp:10,hp:1150,attack:110,crit:4,antiCrit:30,dodge:6,antiDodge:30,critMultiplier:1.25,ability:'Точний розмах',cost:15,cooldown:3},
@@ -16,7 +20,7 @@ export const BLOCKS=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
 export const clamp=(lo,hi,n)=>Math.max(lo,Math.min(hi,n));
 export function classOf(p){
  const item=p?.equipment?.weapon||'sword';
- const catalog=items.find(i=>i.id===item);if(catalog?.combatClass)return catalog.combatClass;
+ const catalog=items.find(i=>i.id===item);if(p.canonVersion)return canonicalProfile(p,items).classId;if(catalog?.combatClass)return catalog.combatClass;
  if(['hammer','war_hammer','starter_hammer'].includes(item))return 'hammer';
  if(['mace','club','war_mace','starter_mace'].includes(item))return 'mace';
  if(['pike','war_pike','starter_pike'].includes(item))return 'pike';
@@ -24,13 +28,16 @@ export function classOf(p){
  return 'sabre'; // legacy and ranged items remain usable, without losing items.
 }
 export function requirement(item,level=5){
+ if(item?.canonical)return sourceRequirements(item);
  if(!item?.combatClass)return {};
  const step=Math.max(0,Math.floor((level-5)/3));
  const base={sabre:{agility:12,intuition:10},hammer:{strength:12,intuition:10},mace:{strength:12,vitality:12},pike:{intuition:12,agility:10,strength:7},axe:{strength:14,vitality:10}}[item.combatClass]||{};
  return Object.fromEntries(Object.entries(base).map(([k,v])=>[k,level<5?5+Math.round((v-5)*(level-1)/4):v+step]));
 }
-export function meetsRequirements(p,item){return Object.entries(requirement(item,item.level)).every(([k,v])=>(p.stats?.[k]||0)>=v);}
+export function meetsRequirements(p,item){return item?.canonical?canEquipCanonical(p,item,items):Object.entries(requirement(item,item.level)).every(([k,v])=>(p.stats?.[k]||0)>=v);}
+export function abilityRule(p){return p.canonVersion?{cost:0,cooldown:0,ability:null}:CLASS_RULES[classOf(p)];}
 export function combatProfile(p){
+ if(p.canonVersion)return canonicalProfile(p,items);
  const key=classOf(p),r=CLASS_RULES[key],s=p.stats||{},perk={damage:p.faction==='cossacks'?2:0,armor:p.faction==='commonwealth'?2:0,hp:p.faction==='ottoman'?10:0,crit:p.faction==='sweden'?3:0,dodge:p.faction==='crimea'?3:0};
  const bonus=(stat)=>Math.max(0,(s[stat]||5)-5);
  const soft=(n)=>n<=20?n:20+(n-20)*0.35;
@@ -46,11 +53,14 @@ export function combatProfile(p){
 export function validMove(m){return !!m&&Number.isInteger(m.attack)&&m.attack>=0&&m.attack<4&&Number.isInteger(m.block)&&m.block>=0&&m.block<6&&['attack','defense'].includes(m.stance)&&(m.ability===undefined||typeof m.ability==='boolean')&&(m.power===undefined||typeof m.power==='boolean');}
 export function resolveHit(attacker,defender,attack,defense,rng=Math.random){
  if(!attack)return {damage:0,miss:true,pass:true};
- const a=attacker,b=defender,ability=!!attack.ability;
+ const a=attacker,b=defender,sourceMode=a.profile.ruleset==='lutecia-public',ability=!sourceMode&&!!attack.ability;
  const stance=STANCES[attack.stance],guard=STANCES[b.stance]||STANCES.attack;
- const dodge=clamp(3,35,b.profile.dodge+guard.dodge-(a.profile.antiDodge+(a.profile.classId==='hammer'&&ability?12:0))*0.75+(b.profile.classId==='sabre'&&b.ability?8:0));
+ const pose=PROTOTYPE_STANCES[attack.stance],defensePose=PROTOTYPE_STANCES[b.stance]||PROTOTYPE_STANCES.attack;
+ const dodgeRating=Math.max(0,b.profile.dodge)*defensePose.guard,accuracy=Math.max(0,a.profile.antiDodge)*pose.offense;
+ const dodge=sourceMode?clamp(0,45,45*dodgeRating/(dodgeRating+accuracy+20)):clamp(3,35,b.profile.dodge+guard.dodge-(a.profile.antiDodge+(a.profile.classId==='hammer'&&ability?12:0))*0.75+(b.profile.classId==='sabre'&&b.ability?8:0));
  if(rng()*100<dodge)return {damage:0,dodged:true};
- const critChance=clamp(3,40,a.profile.crit-b.profile.antiCrit*0.65),crit=rng()*100<critChance;
+ const critRating=Math.max(0,a.profile.crit)*pose.offense,antiCritRating=Math.max(0,b.profile.antiCrit)*defensePose.guard;
+ const critChance=sourceMode?clamp(0,60,60*critRating/(critRating+antiCritRating+20)):clamp(3,40,a.profile.crit-b.profile.antiCrit*0.65),crit=rng()*100<critChance;
  const critBonus=(a.profile.critMultiplier-1+(a.profile.classId==='axe'&&ability?.15:0))*Math.max(.7,1-b.profile.antiCrit*.007);
  const zone=[1.10,1,1.05,.95][attack.attack];
  const key=`${a.profile.classId}:${b.profile.classId}`,reverse=`${b.profile.classId}:${a.profile.classId}`;
@@ -58,15 +68,17 @@ export function resolveHit(attacker,defender,attack,defense,rng=Math.random){
  const anchors=[...new Set([10,...Object.keys(LEVEL_MATCHUP_RATIOS).map(Number)])].sort((a,b)=>a-b),low=anchors.filter(n=>n<=level).at(-1)??anchors[0],high=anchors.find(n=>n>=level)??anchors.at(-1);
  const ratio=n=>{const table=n===10?STYLE_MATCHUP_RATIOS:LEVEL_MATCHUP_RATIOS[n]||STYLE_MATCHUP_RATIOS;return table[key]??(table[reverse]?1/table[reverse]:1);};
  const coefficient=low===high?ratio(low):Math.exp(Math.log(ratio(low))+(Math.log(ratio(high))-Math.log(ratio(low)))*(level-low)/(high-low));
- const tempo=Math.sqrt(coefficient);
- const damage=(a.profile.pace??COMBAT_PACE)*tempo*a.profile.attack*zone*(crit?1+critBonus:1)*
+ const tempo=sourceMode?1:Math.sqrt(coefficient);
+ const baseDamage=sourceMode&&Number.isFinite(a.profile.minDamage)?a.profile.minDamage+Math.floor(rng()*(a.profile.maxDamage-a.profile.minDamage+1)):a.profile.attack;
+ const damage=(a.profile.pace??COMBAT_PACE)*tempo*baseDamage*zone*(crit?1+critBonus:1)*
   stance.damage*guard.incoming*(attack.power?1.2:1);
  const zoneArmor=b.profile.zoneArmor?.[attack.attack]??b.profile.armor;
  const armor=clamp(0,.4,zoneArmor/(zoneArmor+250));
  let blockStrength=BLOCKS[b.block]?.includes(attack.attack)?guard.block:0;
+ if(sourceMode)blockStrength=crit?0:BLOCKS[b.block]?.includes(attack.attack)?1:0;
  if(a.profile.classId==='pike'&&ability)blockStrength=Math.max(0,blockStrength-.15);
  if(b.disoriented)blockStrength=Math.max(0,blockStrength-.20);
- const final=Math.max(1,Math.round(damage*(1-armor)*(1-blockStrength)));
+ const final=blockStrength===1?0:Math.max(1,Math.round(damage*(1-armor)*(1-blockStrength)));
  return {damage:final,crit,blocked:blockStrength>0,dodged:false,zone:attack.attack,antiCritMitigated:crit&&b.profile.antiCrit>0,control:a.profile.classId==='mace'&&ability&&!b.immunity};
 }
 export function formatCombatLog(name,hit,other){
@@ -75,6 +87,7 @@ export function formatCombatLog(name,hit,other){
  return `${name}: удар у ${ZONES[hit.zone]} — ${hit.damage} шкоди${hit.crit?'! КРИТИЧНИЙ УДАР':''}${hit.blocked?' (блок)':''}${hit.control?' (дезорієнтація на наступний хід)':''}${hit.antiCritMitigated?' (антикрит зменшив силу криту)':''}.`;
 }
 export function priceFloor(item,rank=0){
+ if(item?.canonical)return Math.max(2,item.priceMinor/100);
  const rarity={common:1,fine:1.3,uncommon:1.3,rare:1.8,epic:2.8,legendary:4.5}[item?.rarity]||1;
  return Math.max(2,Math.ceil((item?.price||1)*rarity*(1+Math.max(0,rank)*.35)));
 }

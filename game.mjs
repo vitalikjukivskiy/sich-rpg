@@ -1,9 +1,11 @@
+import {canonicalEncounter,campaignQuest} from './prototype.mjs';
 import { randomUUID } from 'node:crypto';
-import {combatProfile,classOf,CLASS_RULES,clamp,STANCES,resolveHit,formatCombatLog} from './balance.mjs';
+import {combatProfile,classOf,CLASS_RULES,clamp,STANCES,resolveHit,formatCombatLog,abilityRule} from './balance.mjs';
 import {equippedRank} from './inventory.mjs';
 import {rules} from './factions.mjs';
 import {extraItems,extraOpponents,extraQuests,progressOf} from './content.mjs';
 import {enemyPlan} from './combat.mjs';
+import {canonicalItems,canonicalProfile,awardProgression,nextMilestone,roundTimeout} from './canon.mjs';
 
 export const cities = [
   { id: 'castle', name: 'Запорозька Січ', description: 'Дніпро, дерев’яні укріплення й козацька рада. Тут починається ваша дорога.', tag: 'Військо Запорозьке' },
@@ -27,12 +29,17 @@ export const items = [
   { id:'amulet', name:'Срібний хрестик', slot:'amulet', icon:'spark', price:185, level:2, damage:3, armor:3, description:'Робота січового майстра. Створюється з трав і майстрового припасу.' },
 ];
 export const opponents = [
+  {id:'training',name:'Навчальне опудало',level:0,hp:24,damage:2,armor:0,xp:10,gold:0,tag:'Початкове тренування',difficulty:'Початківцям',training:true},
   {id:'recruit',name:'Побратим-новак',level:1,hp:65,damage:8,armor:1,xp:45,gold:32,tag:'Тренувальний герць',difficulty:'Легко'},
   {id:'guard',name:'Курінний боєць',level:2,hp:115,damage:13,armor:4,xp:80,gold:55,tag:'Випробування майстерності',difficulty:'Середньо'},
   {id:'knight',name:'Досвідчений сотник',level:3,hp:165,damage:19,armor:7,xp:125,gold:90,tag:'Виклик досвідченим',difficulty:'Складно'},
   {id:'lisovyk',name:'Отаман розбійників',level:3,hp:185,damage:18,armor:6,xp:150,gold:105,tag:'Небезпечна переправа',difficulty:'Небезпечно',forest:true},
 ];
 export const quests = [
+  {id:'intro_welcome',name:'Ласкаво просимо на Січ',text:'Зверніться до писаря та отримайте перший припас.',target:1,metric:'introduced',gold:5,xp:20,icon:'scroll'},
+  {id:'intro_mentor',name:'Порада наставника',text:'Поговоріть із наставником на площі.',target:1,metric:'metMentor',gold:5,xp:20,icon:'person'},
+  {id:'intro_stats',name:'Підготовка новобранця',text:'Розподіліть три початкові очки характеристик.',target:3,metric:'statsAllocated',gold:0,xp:0,rewardItem:'canon_armor-55',icon:'armor'},
+  {id:'intro_training',name:'Перші тренування',text:'Здобудьте 50 досвіду в початкових тренувальних боях.',target:50,metric:'trainingXp',gold:5,xp:0,icon:'swords'},
   {id:'first',name:'Перший крок до слави',text:'Переможіть у першому поєдинку на арені.',target:1,metric:'wins',gold:65,xp:35,icon:'swords'},
   {id:'merchant',name:'Підготовка до пригод',text:'Придбайте будь-який предмет у крамниці.',target:1,metric:'purchases',gold:35,xp:20,icon:'bag'},
   {id:'veteran',name:'Слава козацького герцю',text:'Здобудьте три перемоги на арені.',target:3,metric:'wins',gold:120,xp:90,icon:'shield'},
@@ -41,13 +48,17 @@ export const quests = [
   {id:'forest',name:'Небезпечна переправа',text:'Розбийте ватагу отамана на переправі.',target:1,metric:'forestWins',gold:180,xp:100,icon:'shield'},
   {id:'smith',name:'Шабля доброго майстра',text:'Покращте будь-який предмет у кузні.',target:1,metric:'forged',gold:70,xp:35,icon:'sword'},
 ];
-items.push(...extraItems);opponents.push(...extraOpponents);quests.push(...extraQuests);
+items.push(...extraItems,...canonicalItems);opponents.push(...extraOpponents);quests.push(...extraQuests);
 export const blocks = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
 export const zones = ['голову','груди','пояс','ноги'];
 export function newPlayer(name='Мандрівник') {
   return {id:randomUUID(),name,city:'castle',level:1,xp:0,gold:240,hp:100,energy:60,stats:{strength:5,agility:5,intuition:5,vitality:5},points:0,inventory:['sword','shield','potion','potion'],equipment:{weapon:'sword',shield:'shield'},wins:0,losses:0,purchases:0,visited:['castle'],claimed:[],battle:null,history:[],alignment:'Вільний козак',createdAt:Date.now()};
 }
+export function newCanonicalPlayer(name='Мандрівник') {
+  return {id:randomUUID(),name,canonVersion:1,progressionCursor:0,sestercesMinor:0,city:'castle',level:0,xp:0,gold:6,hp:18,energy:18,stats:{strength:3,agility:3,intuition:3,vitality:3},points:3,introduced:1,metMentor:0,statsAllocated:0,trainingXp:0,inventory:[],equipment:{},wins:0,losses:0,purchases:0,visited:['castle'],claimed:[],battle:null,history:[],alignment:'Вільний козак',createdAt:Date.now()};
+}
 export function derived(p) {
+  if(p.canonVersion){const profile=canonicalProfile(p,items),next=p.level>11?null:nextMilestone(p.xp);return {...profile,damage:profile.attack,potionHeal:Math.max(1,Math.round(profile.maxHp*.18)),maxEnergy:profile.maxStamina,abilityCost:0,abilityCooldown:0,nextXp:next?.xp??null,nextMilestone:next,modifiersAreRatings:true};}
   const gear=Object.entries(p.equipment).map(([slot,id])=>{const item=items.find(i=>i.id===id);if(!item)return null;const rank=equippedRank(p,slot,id);return {...item,damage:(item.damage||0)+(['weapon','pistol'].includes(item.slot)?rank*2:0),armor:(item.armor||0)+(!['weapon','pistol'].includes(item.slot)?rank*2:0)};}).filter(Boolean);
   const perk={damage:p.faction==='cossacks'?2:0,armor:p.faction==='commonwealth'?2:0,hp:p.faction==='ottoman'?10:0,crit:p.faction==='sweden'?3:0,dodge:p.faction==='crimea'?3:0};
   const soft=n=>n<=20?n:20+(n-20)*.35;
@@ -64,30 +75,36 @@ export function questProgress(p,q) {return q.metric==='visited'?p.visited.length
 function requireThat(condition,message) {if(!condition) throw new Error(message);}
 function idle(p) {requireThat(!p.battle||p.battle.result,'Спочатку завершіть поточний поєдинок.');}
 export function award(p,xp,gold) {
+  if(!p.canonVersion)return awardLegacy(p,xp,gold);
+  const level=p.level,reached=awardProgression(p,xp,gold);
+  if(p.level>level){p.hp=derived(p).maxHp;p.energy=derived(p).maxEnergy;}return reached;
+}
+function awardLegacy(p,xp,gold) {
   p.xp+=xp;p.gold+=gold;
-  while(p.xp>=p.level*100){p.xp-=p.level*100;p.level++;p.points+=3;p.hp=derived(p).maxHp;p.energy=60;}
+  while(p.xp>=p.level*100){p.xp-=p.level*100;p.level++;p.points+=3;p.hp=derived(p).maxHp;p.energy=derived(p).maxEnergy;}
 }
 function finish(p,result) {
-  const b=p.battle;b.result=result;
-  if(result==='win'){p.wins++;if(b.enemy.forest){p.forestWins=(p.forestWins||0)+1;p.materials??={herb:0,ore:0,resin:0};p.materials.resin+=2;}award(p,b.enemy.xp,b.enemy.gold);b.log.push(`Перемога! +${b.enemy.xp} досвіду, +${b.enemy.gold} талерів.${b.enemy.forest?' Здобуто 2 мірки пороху.':''}`);}
+  const b=p.battle;b.result=result;const reachedAwards=[];const earned=p.canonVersion?Math.floor(b.enemy.xp*Math.max(0,Math.min(1,(b.enemy.hp-b.enemy.currentHp)/b.enemy.hp))):0;if(p.canonVersion){reachedAwards.push(...award(p,earned,0));if(b.enemy.training)p.trainingXp=(p.trainingXp||0)+earned;}
+  if(result==='win'){p.wins++;if(b.enemy.training&&!p.canonVersion)p.trainingXp=(p.trainingXp||0)+b.enemy.xp;if(b.enemy.forest){p.forestWins=(p.forestWins||0)+1;p.materials??={herb:0,ore:0,resin:0};p.materials.resin+=2;}if(!p.canonVersion)award(p,b.enemy.xp,b.enemy.gold);b.log.push(`Перемога! +${b.enemy.xp} досвіду${b.enemy.gold?', +'+b.enemy.gold+' флоринів':''}.${b.enemy.forest?' Здобуто 2 мірки пороху.':''}`);}
   else if(result==='draw'){b.log.push('Нічия. Поєдинок завершено без переможця. Відновіть сили перед наступним герцем.');}
-  else {p.losses++;b.log.push('Поразка. Відновіть сили у лікарні та спробуйте іншу тактику.');}
+  else {p.losses++;if(p.canonVersion&&earned)b.log.push(`Отримано ${earned} досвіду за завдану шкоду.`);b.log.push('Поразка. Відновіть сили у лікарні та спробуйте іншу тактику.');}
+  if(p.canonVersion)for(const reward of reachedAwards)b.log.push(`НОВИЙ ПОРІГ: ${reward.xp} досвіду. Очки характеристик: +${reward.statAward}. Флорини: +${reward.florinAwardMinor/100}.`);
   p.history.unshift({id:b.id,enemy:b.enemy.name,result,round:b.round,at:Date.now()});p.history=p.history.slice(0,20);
 }
 export function action(p,a,rng=Math.random) {
   requireThat(a && typeof a.type==='string','Невідома дія.');
   switch(a.type){
     case 'travel': idle(p);requireThat(cities.some(c=>c.id===a.city),'Такого міста немає.');p.city=a.city;if(!p.visited.includes(a.city))p.visited.push(a.city);break;
-    case 'rest': idle(p);p.hp=derived(p).maxHp;p.energy=60;break;
-    case 'buy': {idle(p);const i=items.find(i=>i.id===a.item);requireThat(i,'Предмет не знайдено.');requireThat(p.level>=i.level,'Недостатній рівень.');requireThat(p.gold>=i.price,'Бракує талерів.');requireThat(p.inventory.length<60,'У наплічнику немає місця.');p.gold-=i.price;p.inventory.push(i.id);p.purchases++;break;}
+    case 'rest': idle(p);p.hp=derived(p).maxHp;p.energy=derived(p).maxEnergy;break;
+    case 'buy': {idle(p);const i=items.find(i=>i.id===a.item);requireThat(i,'Предмет не знайдено.');requireThat(p.level>=i.level,'Недостатній рівень.');requireThat(p.gold>=i.price,'Бракує флоринів.');requireThat(p.inventory.length<60,'У наплічнику немає місця.');p.gold-=i.price;p.inventory.push(i.id);p.purchases++;break;}
     case 'sell': {idle(p);const i=items.find(i=>i.id===a.item);requireThat(i&&p.inventory.includes(i.id),'Предмет не знайдено.');const amount=p.inventory.filter(id=>id===i.id).length;requireThat(!Object.values(p.equipment).includes(i.id)||amount>1,'Спочатку зніміть цей предмет.');p.inventory.splice(p.inventory.indexOf(i.id),1);p.gold+=Math.floor(i.price/2);break;}
     case 'equip': {idle(p);const i=items.find(i=>i.id===a.item);requireThat(i&&p.inventory.includes(i.id),'Предмет не знайдено.');requireThat(i.slot!=='consumable','Цей предмет потрібно використати.');requireThat(p.level>=i.level,'Недостатній рівень.');if(p.equipment[i.slot]===i.id)delete p.equipment[i.slot];else p.equipment[i.slot]=i.id;break;}
-    case 'stat': {idle(p);requireThat(['strength','agility','intuition','vitality'].includes(a.stat),'Невідома характеристика.');requireThat(p.points>0,'Немає вільних очок.');const previous=derived(p).maxHp;p.stats[a.stat]++;p.points--;if(a.stat==='vitality')p.hp+=derived(p).maxHp-previous;break;}
-    case 'claim': {idle(p);const q=quests.find(q=>q.id===a.quest);requireThat(q,'Завдання не знайдено.');requireThat(!p.claimed.includes(q.id),'Нагороду вже отримано.');requireThat(questProgress(p,q)>=q.target,'Завдання ще не виконано.');p.claimed.push(q.id);award(p,q.xp,q.gold);break;}
-    case 'battle': {idle(p);requireThat(p.hp>0,'Відновіть здоров’я у лікарні.');const e=opponents.find(e=>e.id===a.enemy);requireThat(e,'Суперника не знайдено.');p.battle={id:randomUUID(),enemy:{...e,currentHp:e.hp},round:0,result:null,log:[`Ви викликали на поєдинок: ${e.name}. Оберіть удар, блок і стійку.`],deadline:Date.now()+30000,stamina:100};break;}
+    case 'stat': {idle(p);requireThat(['strength','agility','intuition','vitality'].includes(a.stat),'Невідома характеристика.');requireThat(p.points>0,'Немає вільних очок.');const previous=derived(p).maxHp,previousEnergy=derived(p).maxEnergy;p.stats[a.stat]++;p.points--;p.statsAllocated=(p.statsAllocated||0)+1;if(a.stat==='vitality')p.hp+=derived(p).maxHp-previous;if(p.canonVersion&&a.stat==='strength')p.energy+=derived(p).maxEnergy-previousEnergy;break;}
+    case 'claim': {idle(p);const original=quests.find(q=>q.id===a.quest),q=original&&p.canonVersion?campaignQuest(original):original;requireThat(q,'Завдання не знайдено.');requireThat(!p.claimed.includes(q.id),'Нагороду вже отримано.');requireThat(questProgress(p,q)>=q.target,'Завдання ще не виконано.');p.claimed.push(q.id);award(p,q.xp,q.gold);break;}
+    case 'battle': {idle(p);requireThat(p.hp>0,'Відновіть здоров’я у лікарні.');const template=opponents.find(e=>e.id===a.enemy),e=template&&p.canonVersion?canonicalEncounter(template,a.encounterLevel??template.level):template;requireThat(e,'Суперника не знайдено.');requireThat(!p.canonVersion||p.level>0||e.training,'На нульовому рівні доступні початкові тренування.');requireThat(!p.canonVersion||e.level<=p.level+1,'Цей суперник поки надто сильний: доступні суперники щонайбільше на рівень вище.');const startedAt=Date.now();p.battle={id:randomUUID(),enemy:{...e,currentHp:e.hp},round:0,result:null,log:[`Ви викликали на поєдинок: ${e.name}. Оберіть удар, блок і стійку.`],startedAt,deadline:startedAt+(p.canonVersion?roundTimeout(startedAt,startedAt):30000),stamina:100};break;}
     case 'leave': requireThat(p.battle?.result,'Поєдинок ще триває.');p.battle=null;break;
     case 'surrender': requireThat(p.battle&&!p.battle.result,'Немає активного поєдинку.');finish(p,'loss');break;
-    case 'potion': {requireThat(!p.battle||Date.now()<(p.battle.deadline||Infinity),'Час раунду минув.');requireThat(p.inventory.includes('potion'),'У вас немає зілля.');requireThat(!p.battle?.result,'Спочатку закрийте завершений бій.');requireThat(p.hp>0&&p.hp<derived(p).maxHp,'Зцілення зараз не потрібне.');const heal=derived(p).potionHeal;p.inventory.splice(p.inventory.indexOf('potion'),1);p.hp=Math.min(derived(p).maxHp,p.hp+heal);if(p.battle){const intent=p.battle.intent;p.battle.round++;const hit=resolveHit({profile:npcProfile(p.battle.enemy,intent)},{profile:pveProfile(p),block:-1,stance:'attack'},{attack:intent?.zone??Math.floor(rng()*4),block:-1,stance:'attack'},null,rng),damage=hit.damage;p.battle.intent=enemyPlan(p.battle);if(p.battle.enemyEffect){p.battle.enemyEffect.disoriented=Math.max(0,p.battle.enemyEffect.disoriented-1);p.battle.enemyEffect.immunity=Math.max(0,p.battle.enemyEffect.immunity-1);}p.hp=Math.max(0,p.hp-damage);p.battle.log.push(`Ви випили настоянку (+${heal} здоров’я). Суперник завдав ${damage} шкоди.`);if(p.hp===0)finish(p,'loss');else if(p.battle.round>=100)finish(p,'draw');else p.battle.deadline=Date.now()+30000;}break;}
+    case 'potion': {requireThat(!p.battle||Date.now()<(p.battle.deadline||Infinity),'Час раунду минув.');requireThat(p.inventory.includes('potion'),'У вас немає зілля.');requireThat(!p.battle?.result,'Спочатку закрийте завершений бій.');requireThat(p.hp>0&&p.hp<derived(p).maxHp,'Зцілення зараз не потрібне.');const heal=Math.min(derived(p).potionHeal,derived(p).maxHp-p.hp);p.inventory.splice(p.inventory.indexOf('potion'),1);p.hp=Math.min(derived(p).maxHp,p.hp+heal);if(p.battle){const intent=p.battle.intent;p.battle.round++;const hit=resolveHit({profile:npcProfile(p.battle.enemy,intent)},{profile:pveProfile(p),block:-1,stance:'attack'},{attack:intent?.zone??Math.floor(rng()*4),block:-1,stance:'attack'},null,rng),damage=hit.damage;p.battle.intent=enemyPlan(p.battle);if(p.battle.enemyEffect){p.battle.enemyEffect.disoriented=Math.max(0,p.battle.enemyEffect.disoriented-1);p.battle.enemyEffect.immunity=Math.max(0,p.battle.enemyEffect.immunity-1);}p.hp=Math.max(0,p.hp-damage);p.battle.log.push(`Ви випили настоянку (+${heal} здоров’я). Суперник завдав ${damage} шкоди.`);if(p.hp===0)finish(p,'loss');else if(p.battle.round>=100)finish(p,'draw');else p.battle.deadline=Date.now()+(p.canonVersion?roundTimeout(p.battle.startedAt||Date.now()):30000);}break;}
     case 'timeout': {
       const b=p.battle;requireThat(b&&!b.result,'Немає активного поєдинку.');
       requireThat(Date.now()>=(b.deadline||Infinity),'Час раунду ще не завершився.');
@@ -96,7 +113,7 @@ export function action(p,a,rng=Math.random) {
       b.round++;p.hp=Math.max(0,p.hp-hit.damage);b.intent=enemyPlan(b);
       if(b.enemyEffect){b.enemyEffect.disoriented=Math.max(0,b.enemyEffect.disoriented-1);b.enemyEffect.immunity=Math.max(0,b.enemyEffect.immunity-1);}
       b.log.push(`ЧАС ВИЙШОВ! ${p.name}: атаку пропущено, захист зон не спрацював. ${formatCombatLog(b.enemy.name,hit,p.name)}`);
-      if(!p.hp)finish(p,'loss');else if(b.round>=100)finish(p,'draw');else b.deadline+=30000;b.log=b.log.slice(-60);break;
+      if(!p.hp)finish(p,'loss');else if(b.round>=100)finish(p,'draw');else b.deadline+=(p.canonVersion?roundTimeout(b.startedAt||b.deadline,b.deadline):30000);b.log=b.log.slice(-60);break;
     }
     case 'turn': {
       const b=p.battle;requireThat(b&&!b.result,'Немає активного поєдинку.');
@@ -107,7 +124,7 @@ export function action(p,a,rng=Math.random) {
       requireThat(a.power===undefined||typeof a.power==='boolean','Невідомий прийом.');
       requireThat(a.shot===undefined||typeof a.shot==='boolean','Невідомий постріл.');
       requireThat(a.ability===undefined||typeof a.ability==='boolean','Невідомий прийом.');
-      b.stamina??=100;const style=CLASS_RULES[classOf(p)],useAbility=!!a.ability;
+      b.stamina??=100;const style=abilityRule(p),useAbility=!!a.ability;requireThat(!p.canonVersion||!useAbility&&!a.power&&!a.shot,'Цей прийом не належить до правил поточного бою.');
       requireThat(!useAbility||b.round>=(b.abilityReady||0),'Прийом ще відновлюється.');
       requireThat(!useAbility||(b.stamina??100)>=style.cost+(a.power?20:0),'Бракує витривалості для прийому.');
       requireThat(!a.power||(b.stamina??100)>=20,'Для сильної атаки потрібно 20 бойової витривалості.');
@@ -125,12 +142,12 @@ export function action(p,a,rng=Math.random) {
       b.round++;b.intent=enemyPlan(b);b.enemy.currentHp=Math.max(0,b.enemy.currentHp-outgoing.damage);p.hp=Math.max(0,p.hp-incoming.damage);
       b.log.push(`Хід ${b.round}. ${formatCombatLog(p.name,outgoing,b.enemy.name)} ${formatCombatLog(b.enemy.name,incoming,p.name)}`);
       if(p.hp===0&&b.enemy.currentHp===0)finish(p,'draw');else if(p.hp===0)finish(p,'loss');else if(b.enemy.currentHp===0)finish(p,'win');
-      if(!b.result&&b.round>=100)finish(p,'draw');if(!b.result)b.deadline=Date.now()+30000; b.log=b.log.slice(-60);break;
+      if(!b.result&&b.round>=100)finish(p,'draw');if(!b.result)b.deadline=Date.now()+(p.canonVersion?roundTimeout(b.startedAt||Date.now()):30000); b.log=b.log.slice(-60);break;
     }
     default: throw new Error('Невідома дія.');
   }
   return p;
 }
 
-export function pveProfile(p){const d=derived(p),full=combatProfile(p);return {...full,crit:d.crit,dodge:d.dodge,antiCrit:d.antiCrit,antiDodge:d.antiDodge,pace:1,attack:d.damage,armor:d.armor*6.25,zoneArmor:full.zoneArmor?.map(n=>Math.max(0,n-60+d.armor-(full.armor-60))*6.25)};}
-export function npcProfile(enemy,intent){return {classId:'npc',pace:1,attack:enemy.damage*(intent?.damage||1),armor:(enemy.armor+(intent?.armor||0))*6.25,crit:enemy.crit??12,antiCrit:enemy.antiCrit??6,dodge:enemy.dodge??8,antiDodge:enemy.antiDodge??6,critMultiplier:1.5};}
+export function pveProfile(p){const d=derived(p),full=combatProfile(p);if(p.canonVersion)return full;return {...full,crit:d.crit,dodge:d.dodge,antiCrit:d.antiCrit,antiDodge:d.antiDodge,pace:1,attack:d.damage,armor:d.armor*6.25,zoneArmor:full.zoneArmor?.map(n=>Math.max(0,n-60+d.armor-(full.armor-60))*6.25)};}
+export function npcProfile(enemy,intent){if(enemy.profile){const factor=intent?.damage||1;return {...enemy.profile,armor:enemy.profile.armor+(intent?.armor||0),zoneArmor:enemy.profile.zoneArmor?.map(n=>n+(intent?.armor||0)),minDamage:Math.max(1,Math.round(enemy.profile.minDamage*factor)),maxDamage:Math.max(1,Math.round(enemy.profile.maxDamage*factor))};}return {classId:'npc',pace:1,attack:enemy.damage*(intent?.damage||1),armor:(enemy.armor+(intent?.armor||0))*6.25,crit:enemy.crit??12,antiCrit:enemy.antiCrit??6,dodge:enemy.dodge??8,antiDodge:enemy.antiDodge??6,critMultiplier:1.5};}

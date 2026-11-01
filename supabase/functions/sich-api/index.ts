@@ -1,3 +1,5 @@
+import {migrateProgression} from './engine/canon.mjs';
+import {canonicalEncounter,campaignQuest} from './engine/prototype.mjs';
 /**
  * «Січ: доба шаблі» — повнофункціональний сервер гри для Supabase Edge.
  * Логіка всіх поєдинків, економіки, куренів, квестів і шляхів імпортована без скорочень.
@@ -6,7 +8,7 @@
  */
 import {applyRequest} from './engine/requests.mjs';
 import {prepareClan,recordClanProgress} from './engine/clanworks.mjs';
-import {newPlayer,derived,cities,items,opponents,quests} from './engine/game.mjs';
+import {newCanonicalPlayer as newPlayer,derived,cities,items,opponents,quests} from './engine/game.mjs';
 import {action,migrate,clanAction,duelAction,advanceDuels,advanceBattles,worldSnapshot} from './engine/world.mjs';
 import {marketAction,marketSnapshot,expireMarket} from './engine/market.mjs';
 
@@ -45,7 +47,7 @@ async function commitWorld(before:World,next:World){
 function snapshot(db:World,p:any){
  migrate(p);const clanId=p.clanId;
  const registeredIds=new Set(Object.values(db.accounts).map((a:any)=>a.player));
- return {build:'beta-0.2.7-20261101',serverTime:Date.now(),revision:db.revision,player:{...p,actionReceipts:undefined,journey:p.journey?{...p.journey,events:undefined,pending:undefined}:null},derived:derived(p),cities,items,opponents,quests,...worldSnapshot(db,p),...marketSnapshot(db,p),registered:registeredIds.has(p.id),rankings:Object.values(db.players).filter((x:any)=>registeredIds.has(x.id)||x.id===p.id).sort((a:any,b:any)=>b.wins-a.wins||b.level-a.level).slice(0,20).map((x:any)=>({id:x.id,name:x.name,level:x.level,wins:x.wins,losses:x.losses})),chat:db.chat.filter((m:any)=>!m.channel||m.channel==='city'||m.channel==='trade'||m.channel==='clan'&&clanId&&m.clanId===clanId||m.channel==='private'&&(m.from===p.id||m.to===p.id)).slice(-60)};
+ return {build:'prototype-0.3.0-20261101',serverTime:Date.now(),revision:db.revision,player:{...p,actionReceipts:undefined,journey:p.journey?{...p.journey,events:undefined,pending:undefined}:null},derived:derived(p),cities,items:items.filter(i=>!i.canonical||p.inventory.includes(i.id)),opponents:opponents.filter(e=>p.level>0||e.training).map(e=>canonicalEncounter(e)),quests:quests.map(campaignQuest),...worldSnapshot(db,p),...marketSnapshot(db,p),registered:registeredIds.has(p.id),rankings:Object.values(db.players).filter((x:any)=>registeredIds.has(x.id)||x.id===p.id).sort((a:any,b:any)=>b.wins-a.wins||b.level-a.level).slice(0,20).map((x:any)=>({id:x.id,name:x.name,level:x.level,wins:x.wins,losses:x.losses})),chat:db.chat.filter((m:any)=>!m.channel||m.channel==='city'||m.channel==='trade'||m.channel==='clan'&&clanId&&m.clanId===clanId||m.channel==='private'&&(m.from===p.id||m.to===p.id)).slice(-60)};
 }
 const te=new TextEncoder();
 async function hashPassword(password:string,salt:string){
@@ -62,6 +64,7 @@ async function perform(req:Request, route:string, body:any, incoming:string,ip:s
   if(Object.values(next.market||{}).some((l:any)=>l.status==='active'&&l.expiresAt<=now)){expireMarket(next);dirty=true;}
   if(advanceDuels(next,now))dirty=true;
   if(advanceBattles(next,now))dirty=true;
+  for(const actor of Object.values(next.players) as any[]){if(!actor.canonVersion&&!actor.duelId&&(!actor.battle||actor.battle.result)){migrateProgression(actor);migrate(actor);dirty=true;}}
   const automatic=dirty?structuredClone(next):null;
   let session=incoming&&next.sessions[incoming];let outgoing=incoming;
   if(!session||session.expires<=now||!next.players[session.player]){
@@ -106,6 +109,7 @@ async function perform(req:Request, route:string, body:any, incoming:string,ip:s
    }else throw new ApiError('Невідома дія.',404);
   }else if(route!=='/api/state')throw new ApiError('Сторінку не знайдено.',404);
   }catch(error){if(automatic&&!await commitWorld(db,automatic))continue;throw error;}
+  if(!p.canonVersion&&!p.duelId&&(!p.battle||p.battle.result)){migrateProgression(p);migrate(p);dirty=true;}
   if(dirty){
    if(!await commitWorld(db,next))continue;
    return {state:snapshot(next,p),token:outgoing};

@@ -21,7 +21,7 @@ async function api(route,token='',body,expectedStatus=200){
 }
 const one=await api('/api/state');
 assert.ok(one.token&&one.token.length===64);
-assert.equal(one.data.player.level,1);
+assert.equal(one.data.player.level,0);assert.equal(one.data.player.gold,6);assert.equal(one.data.player.canonVersion,1);
 assert.ok(one.data.items.length>5);
 assert.ok(one.data.cities.length>=5);
 const two=await api('/api/state');assert.notEqual(two.token,one.token);
@@ -42,7 +42,8 @@ assert.equal(again.data.player.gold,bought.data.player.gold);assert.equal(again.
 assert.equal(again.data.player.actionReceipts,undefined);
 const three=await api('/api/state'),four=await api('/api/state');
 const parallel=await Promise.all([api('/api/action',three.token,{type:'buy',item:'potion'}),api('/api/action',four.token,{type:'buy',item:'potion'})]);
-assert.ok(parallel.every(x=>x.data.player.gold===215));
+assert.ok(parallel.every(x=>x.data.player.gold===5));
+const {award}=await import('../supabase/functions/sich-api/engine/game.mjs');for(const actor of [three,four])award(db.world.players[actor.data.player.id],200,0);
 const duel=await api('/api/duel',three.token,{type:'create'});await api('/api/duel',four.token,{type:'join',id:duel.data.duel.id});
 const move={type:'turn',attack:2,block:4,stance:'defense',round:0,battleId:duel.data.duel.id};
 await Promise.all([api('/api/duel',three.token,move),api('/api/duel',four.token,move)]);
@@ -50,9 +51,10 @@ const resolved=await api('/api/state',three.token);assert.equal(resolved.data.du
 const clock=Date.now,baseTime=clock();
 try{Date.now=()=>baseTime+70000;await api('/api/state',three.token);const presence=await api('/api/state',four.token);assert.ok(presence.data.online.some(p=>p.id===three.data.player.id));}finally{Date.now=clock;}
 const timed=await api('/api/state');db.world.players[timed.data.player.id].hp=1;
-await api('/api/action',timed.token,{type:'battle',enemy:'recruit'});
+await api('/api/action',timed.token,{type:'battle',enemy:'training'});
 const oldRandom=Math.random;const lethalDeadline=db.world.players[timed.data.player.id].battle.deadline;
 try{Date.now=()=>lethalDeadline;Math.random=()=>.99;await api('/api/action',timed.token,{type:'potion'},400);assert.equal(db.world.players[timed.data.player.id].hp,0);assert.equal(db.world.players[timed.data.player.id].battle.result,'loss');}finally{Date.now=clock;Math.random=oldRandom;}
+award(db.world.players[one.data.player.id],200,0);
 const questStart=await api('/api/action',one.token,{type:'contract',contract:'crossing'});
 const questFight=await api('/api/action',one.token,{type:'campaignFight'});
 assert.equal(questFight.data.player.battle.source,'campaign');

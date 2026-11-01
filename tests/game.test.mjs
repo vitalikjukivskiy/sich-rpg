@@ -10,7 +10,7 @@ test('торгівля, рівневі обмеження та заборона 
  const p=newPlayer(),before=derived(p).armor;action(p,{type:'buy',item:'mail'});assert.equal(p.gold,100);assert.equal(derived(p).armor,before);
  action(p,{type:'equip',item:'mail'});assert.equal(derived(p).armor,before+6);assert.throws(()=>action(p,{type:'sell',item:'mail'}),/зніміть/);
  action(p,{type:'equip',item:'mail'});action(p,{type:'sell',item:'mail'});assert.equal(p.gold,170);assert.equal(p.inventory.includes('mail'),false);
- assert.throws(()=>action(p,{type:'buy',item:'axe'}),/рівень/);p.gold=0;assert.throws(()=>action(p,{type:'buy',item:'potion'}),/талерів/);
+ assert.throws(()=>action(p,{type:'buy',item:'axe'}),/рівень/);p.gold=0;assert.throws(()=>action(p,{type:'buy',item:'potion'}),/флоринів/);
  assert.throws(()=>action(p,{type:'buy',item:'nonexistent'}),/знайдено/);
 });
 test('завдання не виплачує нагороду повторно; підвищення дає очки і здоров’я',()=>{
@@ -45,5 +45,5 @@ test('зілля в бою витрачає предмет і дає супер�
 });
 test('місткість, неіснуючі дії та недостатні очки',()=>{
  const p=newPlayer();p.inventory=Array(60).fill('potion');assert.throws(()=>action(p,{type:'buy',item:'potion'}),/місця/);
- assert.throws(()=>action(p,{type:'stat',stat:'strength'}),/очок/);assert.throws(()=>action(p,{type:'unknown'}),/Невідома/);assert.ok(items.every(i=>i.price>0));
+ assert.throws(()=>action(p,{type:'stat',stat:'strength'}),/очок/);assert.throws(()=>action(p,{type:'unknown'}),/Невідома/);assert.ok(items.every(i=>i.price>=0&&(!i.canonical||i.price>0||!i.purchasable)));
 });

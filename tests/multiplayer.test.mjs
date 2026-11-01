@@ -8,7 +8,7 @@ import {fileURLToPath} from 'node:url';
 const project=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 test('HTTP: двоє учасників дуелі, курінь, приватність каналів і збереження',{timeout:30000},async()=>{
  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'sich-multiplayer-'));let processHandle,base;
- async function start(){processHandle=spawn(process.execPath,['server.mjs'],{cwd:project,env:{...process.env,PORT:'0',GAME_DATA_DIR:dir},windowsHide:true,stdio:['ignore','pipe','pipe']});base=await new Promise((resolve,reject)=>{let out='';processHandle.stdout.on('data',x=>{out+=x;const m=out.match(/localhost:(\d+)/);if(m)resolve('http://127.0.0.1:'+m[1]);});processHandle.once('error',reject);});}
+ async function start(){processHandle=spawn(process.execPath,['server.mjs'],{cwd:project,env:{...process.env,SICH_RULESET:'legacy',PORT:'0',GAME_DATA_DIR:dir},windowsHide:true,stdio:['ignore','pipe','pipe']});base=await new Promise((resolve,reject)=>{let out='';processHandle.stdout.on('data',x=>{out+=x;const m=out.match(/localhost:(\d+)/);if(m)resolve('http://127.0.0.1:'+m[1]);});processHandle.once('error',reject);});}
  async function stop(){const exited=new Promise(r=>processHandle.once('exit',r));processHandle.kill();await exited;}
  function client(){let cookie='';return async(endpoint='/api/state',body)=>{const r=await fetch(base+endpoint,{method:body?'POST':'GET',headers:{'Content-Type':'application/json',Cookie:cookie},...(body?{body:JSON.stringify(body)}:{})});if(r.headers.has('set-cookie'))cookie=r.headers.get('set-cookie').split(';')[0];const data=await r.json();assert.equal(r.status,200,JSON.stringify(data));return data;};}
  await start();const a=client(),b=client(),c=client();

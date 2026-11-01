@@ -14,20 +14,20 @@ export const factionRules={
  sweden:{recovery:3,reputation:1,gatherCost:6,powderYield:2,forgeDiscount:0,shopDiscount:0,marketFee:0.05},
  ottoman:{recovery:3,reputation:1,gatherCost:6,powderYield:1,forgeDiscount:0,shopDiscount:0.05,marketFee:0.03}
 };
-export function rules(p){return factionRules[p.faction]||{...factionRules.commonwealth,forgeDiscount:0};}
-export function requiredLevel(p,item){return p.faction==='sweden'&&item.id==='axe'?1:item.level;}
-export function shopPrice(p,item){return Math.max(1,Math.ceil(item.price*(1-rules(p).shopDiscount)));}
+export function rules(p){if(p.canonVersion)return {recovery:3,reputation:1,gatherCost:6,powderYield:1,forgeDiscount:0,shopDiscount:0,marketFee:.05};return factionRules[p.faction]||{...factionRules.commonwealth,forgeDiscount:0};}
+export function requiredLevel(p,item){if(p.canonVersion&&item.id==='potion')return 0;return p.faction==='sweden'&&item.id==='axe'?1:item.level;}
+export function shopPrice(p,item){return p.canonVersion&&item.id==='potion'?1:item.canonical?item.priceMinor/100:Math.max(1,Math.ceil(item.price*(1-rules(p).shopDiscount)));}
 export function forgePrice(p,rank){return Math.ceil(40*(rank+1)*(1-rules(p).forgeDiscount));}
 const starterData={
- cossacks:{title:'Кошовий припас',text:'Чоботи, 2 настоянки, 3 трави, 2 руди, 2 порохи та 40 талерів.',items:['boots','potion','potion'],gold:40,materials:{herb:3,ore:2,resin:2}},
- commonwealth:{title:'Патент прикордонної служби',text:'Шапка, кушак, 4 руди й 20 талерів.',items:['helmet','belt'],gold:20,materials:{herb:0,ore:4,resin:0}},
- crimea:{title:'Сагайдак мандрівника',text:'Чоботи, кушак, 3 настоянки та 30 талерів.',items:['boots','belt','potion','potion','potion'],gold:30,materials:{herb:2,ore:0,resin:0}},
+ cossacks:{title:'Кошовий припас',text:'Чоботи, 2 настоянки, 3 трави, 2 руди, 2 порохи та 40 флоринів.',items:['boots','potion','potion'],gold:40,materials:{herb:3,ore:2,resin:2}},
+ commonwealth:{title:'Патент прикордонної служби',text:'Шапка, кушак, 4 руди й 20 флоринів.',items:['helmet','belt'],gold:20,materials:{herb:0,ore:4,resin:0}},
+ crimea:{title:'Сагайдак мандрівника',text:'Чоботи, кушак, 3 настоянки та 30 флоринів.',items:['boots','belt','potion','potion','potion'],gold:30,materials:{herb:2,ore:0,resin:0}},
  sweden:{title:'Арсенальний квиток',text:'Мушкет, настоянка та 6 мірок пороху. Мушкет доступний з 1 рівня.',items:['axe','potion'],gold:0,materials:{herb:0,ore:0,resin:6}},
- ottoman:{title:'Караванна частка',text:'Кушак, 3 настоянки, 3 трави та 90 талерів.',items:['belt','potion','potion','potion'],gold:90,materials:{herb:3,ore:0,resin:0}}
+ ottoman:{title:'Караванна частка',text:'Кушак, 3 настоянки, 3 трави та 90 флоринів.',items:['belt','potion','potion','potion'],gold:90,materials:{herb:3,ore:0,resin:0}}
 };
 const traits={
  cossacks:['Побратимство: +2 до базової шкоди в PvE та PvP.','Січова слава: +20% репутації за похід.'],
- commonwealth:['Майстровий патент: −20% ціни гарту в талерах.'],
+ commonwealth:['Майстровий патент: −20% ціни гарту в флоринах.'],
  crimea:['Степова звичка: збір припасу коштує 4 витривалості замість 6.'],
  sweden:['Арсенал: під час заготівлі пороху ви отримуєте 2 мірки.','Мушкет доступний з 1 рівня.'],
  ottoman:['Караванні зв’язки: −5% ціни NPC-крамниці.','Комісія спільного ринку — 3% замість 5%.']

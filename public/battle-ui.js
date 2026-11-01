@@ -1,3 +1,4 @@
+export function countdown(deadline,now=Date.now()){const left=Math.max(0,Math.ceil((deadline-now)/1000));return left>=60?Math.floor(left/60)+':'+String(left%60).padStart(2,'0'):left+' с';}
 const pairs=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
 const labels=['Голова','Груди','Пояс','Ноги'];
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

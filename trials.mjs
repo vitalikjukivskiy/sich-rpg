@@ -1,3 +1,5 @@
+import {campaignTrial} from './prototype.mjs';
+import {roundTimeout} from './canon.mjs';
 import {randomUUID} from 'node:crypto';
 import {items} from './game.mjs';
 import {addInstance,CAPACITY} from './inventory.mjs';
@@ -13,13 +15,13 @@ const check=(v,m)=>{if(!v)throw new Error(m);};
 export function trialAction(p,a){
  check(!p.battle||p.battle.result,'Спочатку завершіть бій.');check(p.storyComplete,'Випробування ради відкриваються після фіналу кампанії.');
  if(a.type==='honorBuy'){
-  const offer=honors.find(o=>o.item===a.item),item=items.find(i=>i.id===offer?.item);check(offer&&item,'Відзнаку не знайдено.');check(p.level>=item.level,'Замалий рівень.');check((p.honor||0)>=offer.cost,'Бракує відзнак ради.');check(p.instances.length<CAPACITY,'У скрині немає місця.');addInstance(p,item.id);p.honor-=offer.cost;return;
+  const offer=honors.find(o=>o.item===a.item),item=items.find(i=>i.id===offer?.item);check(offer&&item,'Відзнаку не знайдено.');check(p.level>=(p.canonVersion?Math.min(11,item.level):item.level),'Замалий рівень.');check((p.honor||0)>=offer.cost,'Бракує відзнак ради.');check(p.instances.length<CAPACITY,'У скрині немає місця.');addInstance(p,item.id);p.honor-=offer.cost;return;
  }
- check(a.type==='trialStart','Невідома дія випробування.');const trial=trials.find(t=>t.id===a.trial);check(trial,'Випробування не знайдено.');check(p.level>=trial.level,'Замалий рівень.');check(!trial.requires||p.trialsCompleted?.includes(trial.requires),'Спочатку пройдіть попереднє випробування.');check(p.hp>0,'Відновіть здоров’я.');
- const id=randomUUID();p.battle={id,source:'trial',enemy:{...trial,currentHp:trial.hp},round:0,result:null,stamina:100,deadline:Date.now()+30000,log:['Рада засвідчує ваш виклик. Суперник: '+trial.name+'.']};p.battle.intent=enemyPlan(p.battle);p.trial={id:trial.id,battleId:id,rewarded:false};
+ check(a.type==='trialStart','Невідома дія випробування.');const trial=(p.canonVersion?trials.map(campaignTrial):trials).find(t=>t.id===a.trial);check(trial,'Випробування не знайдено.');check(p.level>=trial.level,'Замалий рівень.');check(!trial.requires||p.trialsCompleted?.includes(trial.requires),'Спочатку пройдіть попереднє випробування.');check(p.hp>0,'Відновіть здоров’я.');
+ const id=randomUUID(),startedAt=Date.now();p.battle={id,source:'trial',enemy:{...trial,currentHp:trial.hp},round:0,result:null,stamina:100,startedAt,deadline:startedAt+(p.canonVersion?roundTimeout(startedAt,startedAt):30000),log:['Рада засвідчує ваш виклик. Суперник: '+trial.name+'.']};p.battle.intent=enemyPlan(p.battle);p.trial={id:trial.id,battleId:id,rewarded:false};
 }
 export function resolveTrialBattle(p){
  const t=p.trial,b=p.battle;if(!t||t.rewarded||t.battleId!==b?.id||!b.result)return;t.rewarded=true;if(b.result!=='win')return;
  p.trialsCompleted??=[];p.trialRecords??={};const trial=trials.find(x=>x.id===t.id),first=!p.trialsCompleted.includes(t.id),honor=first?trial.firstHonor:trial.honor;p.honor=(p.honor||0)+honor;p.trialWins=(p.trialWins||0)+1;if(first)p.trialsCompleted.push(t.id);p.trialRecords[t.id]=Math.min(p.trialRecords[t.id]||Infinity,b.round);b.log.push('Рада визнає вашу перемогу. +'+honor+' '+plural(honor,'відзнака','відзнаки','відзнак')+'. '+(first?'Нове випробування пройдено.':'Повторний герць зараховано.'));
 }
-export function trialSnapshot(p){return {trials:trials.map(t=>({...t,completed:p.trialsCompleted?.includes(t.id)||false,best:p.trialRecords?.[t.id]||null})),honors:honors.map(h=>({...h,item:items.find(i=>i.id===h.item)}))};}
+export function trialSnapshot(p){return {trials:(p.canonVersion?trials.map(campaignTrial):trials).map(t=>({...t,completed:p.trialsCompleted?.includes(t.id)||false,best:p.trialRecords?.[t.id]||null})),honors:honors.map(h=>({...h,item:(()=>{const item=items.find(i=>i.id===h.item);return p.canonVersion?{...item,level:Math.min(11,item.level)}:item;})()}))};}

@@ -18,10 +18,10 @@ export function findInstance(p,a){
  if(a.instance)return p.instances.find(i=>i.uid===a.instance);
  return p.instances.filter(i=>i.item===a.item).sort((a,b)=>Number(equipped(p,a.uid))-Number(equipped(p,b.uid))||a.rank-b.rank)[0];
 }
-export function addInstance(p,item,rank=0,uid=randomUUID()){
+export function addInstance(p,item,rank=0,uid=randomUUID(),details={}){
  if(p.instances.length>=CAPACITY)throw new Error('У скрині немає місця.');
  if(p.instances.some(i=>i.uid===uid))throw new Error('Цей предмет уже у скрині.');
- const instance={uid,item,rank};p.instances.push(instance);syncInventory(p);return instance;
+ const instance={uid,item,rank};if(Number.isInteger(details.wear)&&details.wear>=0)instance.wear=details.wear;if(details.bound===true)instance.bound=true;p.instances.push(instance);syncInventory(p);return instance;
 }
 export function removeInstance(p,uid){
  const index=p.instances.findIndex(i=>i.uid===uid);if(index<0)throw new Error('Предмет не знайдено.');
