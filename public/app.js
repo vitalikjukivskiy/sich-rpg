@@ -1,13 +1,13 @@
-import {bankPage,settingsPage,applyPreferences,savePreference} from './interface-pages.js?v=20261101-lutecia1';
-import {campaignOrigin,trackQuest,trackedQuest,clearQuest,afterTaskAction,observeQuestState} from './quest-return.js?v=20261101-lutecia1';
-import {questHub,focusQuest} from './quest-hub.js?v=20261101-lutecia1';
-import {contextNavigation} from './navigation.js?v=20261101-lutecia1';
-import {captureViewDraft,restoreViewDraft} from './drafts.js?v=20261101-lutecia1';
-import {portrait,skinPicker,factionPortrait} from './skins.js?v=20261101-lutecia1';
-import {fitViewport} from './viewport.js?v=20261101-lutecia1';
-import {blockPicker,battleLog} from './battle-ui.js?v=20261101-lutecia1';
-import {icon} from './icons.js?v=20261101-lutecia1';
-import * as classic from './classic.js?v=20261101-lutecia1';
+import {bankPage,settingsPage,applyPreferences,savePreference} from './interface-pages.js?v=20261101-lutecia2';
+import {campaignOrigin,trackQuest,trackedQuest,clearQuest,afterTaskAction,observeQuestState} from './quest-return.js?v=20261101-lutecia2';
+import {questHub,focusQuest} from './quest-hub.js?v=20261101-lutecia2';
+import {contextNavigation} from './navigation.js?v=20261101-lutecia2';
+import {captureViewDraft,restoreViewDraft} from './drafts.js?v=20261101-lutecia2';
+import {portrait,skinPicker,factionPortrait,prepareAtlasImages} from './skins.js?v=20261101-lutecia2';
+import {fitViewport} from './viewport.js?v=20261101-lutecia2';
+import {blockPicker,battleLog} from './battle-ui.js?v=20261101-lutecia2';
+import {icon} from './icons.js?v=20261101-lutecia2';
+import * as classic from './classic.js?v=20261101-lutecia2';
 let renderedWatch='',serverOffset=0,sessionGeneration=0,renderedBattleKey='',refreshPending=false,connectionFailures=0;
 const viewDrafts=new Map();
 let healingReturn=null;
@@ -81,7 +81,7 @@ function render({preserveDrafts=false,restoreRoute=false}={}){
  $('#app').innerHTML=classic.header()+'<a class="navigator-rail" href="#world" aria-label="Навігатор: карта міст"><span>Навігатор</span>'+icon('compass')+'</a>'+classic.roadStatus()+'<div class="workspace '+(combatView?'combat-workspace':'')+'">'+classic.sidebar()+'<main id="main" tabindex="-1" data-route="'+route+'" data-player="'+state.player.id+'" data-battle-key="'+battleKey()+'" class="route-'+route+'">'+contextNavigation(route)+taskProgressBanner()+pages[route]()+'</main>'+classic.rightbar()+'</div>'+classic.chat()+'<footer><span>СІЧ · Українська браузерна RPG</span><span>Самостійна реалізація · Спільний світ</span><a href="#library">Правила та можливості</a></footer>';
  const navElement=document.querySelector('.classic-header nav'),activeLink=navElement?.querySelector('[aria-current="page"]');if(navElement&&activeLink&&navElement.scrollWidth>navElement.clientWidth)navElement.scrollLeft=activeLink.offsetLeft-navElement.offsetLeft-(navElement.clientWidth-activeLink.clientWidth)/2;
  const newForm=$('#duel-turn-form');if(newForm){newForm.dataset.round=state.duel.round;newForm.dataset.duelId=state.duel.id;if(duelDraft&&String(state.duel.round)===oldRound&&state.duel.id===oldDuelId){for(const input of newForm.querySelectorAll('input')){if(input.type==='hidden')input.value=duelDraft.get(input.name);else input.checked=duelDraft.getAll(input.name).includes(input.value);}const zones=newForm.querySelectorAll('[name="guard-zone"]:checked').length;newForm.querySelector('.block-count').textContent=`Обрано ${zones} з 2 зон`;newForm.querySelector('[type="submit"]').disabled=zones!==2;}}
- if(block<0)document.querySelector('[data-action="turn"]')?.setAttribute('disabled','');fitViewport({logKey:(state.duel||state.player.battle)?.id,resetLog:!preserveDrafts&&!restoreRoute});renderedWatch=watchState();$('#chat-input').value=draft;if(focusName==='chat-input')$('#chat-input').focus();$('#chat-messages').scrollTop=$('#chat-messages').scrollHeight;if(viewDraft)restoreViewDraft(viewDraft,{restoreTactics});renderedBattleKey=battleKey();updateConnectionStatus();
+ if(block<0)document.querySelector('[data-action="turn"]')?.setAttribute('disabled','');fitViewport({logKey:(state.duel||state.player.battle)?.id,resetLog:!preserveDrafts&&!restoreRoute});renderedWatch=watchState();$('#chat-input').value=draft;if(focusName==='chat-input')$('#chat-input').focus();$('#chat-messages').scrollTop=$('#chat-messages').scrollHeight;if(viewDraft)restoreViewDraft(viewDraft,{restoreTactics});renderedBattleKey=battleKey();updateConnectionStatus();prepareAtlasImages();
 }
 async function sendWorld(path,data,message){
  if(busy)return;const before=state,from=route;busy=true;
