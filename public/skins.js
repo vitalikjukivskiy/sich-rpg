@@ -33,3 +33,17 @@ export function itemArt(art,extra='',label=''){
  return atlasFrame({file:'sich-items.png',width:1254,height:1254,box:[cell[0]*313.5,cell[1]*313.5,313.5,313.5],classes:'item-sprite art-'+escape(art)+' '+extra,label});
 }
 export function skinPicker(player,disabledReason=''){return '<details class="skin-picker"><summary>Образ персонажа · без зміни характеристик</summary><div class="skin-options">'+[['auto','За класом зброї'],...Object.entries(skinNames),['legacy','Класичний козак']].map(([key,label])=>'<button class="button" data-skin="'+key+'" '+(disabledReason?'disabled title="'+escape(disabledReason)+'"':(player.skin||'auto')===key?'disabled':'')+'>'+label+'</button>').join('')+'</div></details>';}
+
+const atlasLoads=new Map();
+function loadAtlas(href){
+ if(atlasLoads.has(href))return atlasLoads.get(href);
+ const pending=new Promise(resolve=>{const img=new Image();img.onload=()=>img.decode().catch(()=>{}).then(()=>resolve(true));img.onerror=()=>resolve(false);img.src=href;});
+ atlasLoads.set(href,pending);pending.then(ok=>{if(!ok&&atlasLoads.get(href)===pending)atlasLoads.delete(href);});return pending;
+}
+export function prepareAtlasImages(root=document){
+ return Promise.all([...root.querySelectorAll('svg image')].map(async image=>{
+  const svg=image.closest('svg'),href=image.getAttribute('href');if(!svg||!href)return;
+  svg.classList.add('atlas-pending');svg.setAttribute('aria-busy','true');const ready=await loadAtlas(href);
+  if(!svg.isConnected)return;svg.classList.remove('atlas-pending');svg.classList.toggle('atlas-error',!ready);svg.removeAttribute('aria-busy');
+ }));
+}
