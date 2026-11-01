@@ -27,7 +27,7 @@ test('request receipts protect milestone awards and unique quest equipment',()=>
  for(const stat of ['strength','agility','intuition'])action(p,{type:'stat',stat});action(p,{type:'claim',quest:'intro_stats'});assert.equal(p.instances.filter(i=>i.item==='canon_armor-55').length,1);assert.throws(()=>action(p,{type:'claim',quest:'intro_stats'}),/вже/);
 });
 test('source requirements exclude self bonuses and equipping immediately updates health, stamina and ratings',()=>{
- const p=player();action(p,{type:'buy',item:'canon_cas-5'});assert.equal(p.gold,1);const knuckle=p.instances[0];action(p,{type:'equip',instance:knuckle.uid});assert.equal(derived(p).minDamage,2);assert.equal(derived(p).maxDamage,4);
+ const p=player();assert.equal(derived(p).className,'Без зброї');action(p,{type:'buy',item:'canon_cas-5'});assert.equal(p.gold,1);const knuckle=p.instances[0];action(p,{type:'equip',instance:knuckle.uid});assert.equal(derived(p).minDamage,2);assert.equal(derived(p).maxDamage,4);assert.equal(derived(p).className,'Кастет');assert.equal(derived(p).classId,'unarmed');
  const armor=addInstance(p,'canon_armor-55');action(p,{type:'equip',instance:armor.uid});assert.equal(derived(p).maxHp,23);assert.equal(derived(p).maxStamina,23);assert.equal(derived(p).crit,9);assert.equal(derived(p).dodge,9);
  const knife=addInstance(p,'canon_kn-1');assert.throws(()=>action(p,{type:'equip',instance:knife.uid}),/рівень/);award(p,200,0);assert.throws(()=>action(p,{type:'equip',instance:knife.uid}),/характеристик/);
  p.stats.agility=5;p.stats.intuition=5;action(p,{type:'equip',instance:knife.uid});assert.equal(derived(p).classId,'knife');assert.equal(derived(p).crit,19);assert.equal(derived(p).dodge,19);assert.equal(derived(p).minDamage,6);assert.equal(derived(p).maxDamage,8);
